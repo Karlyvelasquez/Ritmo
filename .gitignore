@@ -46,3 +46,33 @@ Thumbs.db
 # Coverage
 htmlcov/
 .coverage
+
+# === RITMO Project Security ===
+# Todos los archivos .env del proyecto
+*/ritmo-backend/.env*
+*/telegram-bot/.env*
+.env.*
+
+# Modelos de ML entrenados 
+*.pkl
+*.joblib
+*.model
+features_riesgo.csv
+
+# Configuraciones locales
+config_local.py
+local_config.*
+
+# Logs del sistema
+*.log
+logs/
+
+# Datos sensibles temporales
+temp_data/
+cache/
+backups/
+
+# Certificados
+*.pem
+*.key
+*.crt

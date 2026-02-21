@@ -43,6 +43,47 @@ class EstadoUsuario(str, Enum):
     ACTIVO = "activo"
     INACTIVO = "inactivo"
     BLOQUEADO = "bloqueado"
+    ESPERANDO_CHECKIN = "esperando_checkin"  # Estado para check-in diario
+
+
+class EstadoCheckin(str, Enum):
+    """Estados emocionales para el check-in diario"""
+    BIEN = "bien"
+    NORMAL = "normal"
+    DIFICIL = "dificil"
+
+
+class CheckinDiario(BaseModel):
+    """Modelo para el check-in emocional diario"""
+    user_id: str = Field(..., description="ID del usuario")
+    telegram_id: int = Field(..., description="Telegram ID del usuario")
+    fecha: datetime = Field(..., description="Fecha del check-in")
+    estado_emocional: EstadoCheckin = Field(..., description="Estado emocional reportado")
+    hora_respuesta: datetime = Field(..., description="Hora de respuesta")
+    metodo: Literal["proactivo", "reactivo"] = Field(..., description="Cómo se obtuvo el check-in")
+    mensaje_contexto: Optional[str] = Field(None, description="Mensaje adicional del usuario")
+
+
+class EstadisticasCheckin(BaseModel):
+    """Estadísticas agregadas de check-ins para análisis"""
+    user_id: str = Field(..., description="ID del usuario")
+    fecha_inicio: datetime = Field(..., description="Fecha de inicio del período")
+    fecha_fin: datetime = Field(..., description="Fecha de fin del período")
+    
+    # Métricas de cumplimiento
+    checkins_realizados: int = Field(default=0)
+    checkins_esperados: int = Field(default=7)  # Para períodos de 7 días
+    tasa_cumplimiento: float = Field(default=0.0)
+    
+    # Distribución emocional
+    dias_bien: int = Field(default=0)
+    dias_normal: int = Field(default=0) 
+    dias_dificil: int = Field(default=0)
+    
+    # Tendencias
+    tendencia_negativa: bool = Field(default=False)
+    racha_actual: int = Field(default=0)  # Días consecutivos con mismo estado
+    estado_racha: Optional[EstadoCheckin] = Field(None)
 
 
 class UsuarioTelegram(BaseModel):
@@ -61,3 +102,8 @@ class UsuarioTelegram(BaseModel):
     # Metadatos de sesión
     ultima_interaccion: Optional[datetime] = Field(None)
     configuracion_completada: bool = Field(default=False)
+    
+    # Check-in diario
+    ultimo_checkin: Optional[datetime] = Field(None, description="Fecha del último check-in")
+    checkin_pendiente: bool = Field(default=False, description="Si tiene check-in pendiente hoy")
+    hora_checkin_preferida: str = Field(default="18:00", description="Hora preferida para check-in")

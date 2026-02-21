@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 import os
 
 from routers.contexto import router as contexto_router
+from routers.chat import router as chat_router
+from routers.admin import router as admin_router
 
 # Cargar variables de entorno
 load_dotenv()
@@ -25,6 +27,8 @@ app = FastAPI(
 
 # Registrar routers
 app.include_router(contexto_router)
+app.include_router(chat_router)
+app.include_router(admin_router)
 
 @app.get("/")
 async def root():
@@ -32,7 +36,15 @@ async def root():
     return {
         "message": "RITMO Backend",
         "status": "running",
-        "endpoints_disponibles": ["/docs", "/contexto", "/health"]
+        "endpoints_disponibles": [
+            "/docs", 
+            "/contexto", 
+            "/chat/", 
+            "/chat/proactivo",
+            "/admin/stats",
+            "/admin/system-info",
+            "/health"
+        ]
     }
 
 @app.get("/health")

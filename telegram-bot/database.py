@@ -56,14 +56,14 @@ class DatabaseManager:
             )
 
             if result.data and len(result.data) > 0:
-                logger.info(f"✅ Usuario encontrado por nombre: {nombre}")
+                logger.info(f"Usuario encontrado por nombre: {nombre}")
                 return result.data[0]
 
-            logger.info(f"ℹ️ No se encontró usuario con nombre: {nombre}")
+            logger.info(f"No se encontró usuario con nombre: {nombre}")
             return None
 
         except Exception as e:
-            logger.error(f"❌ Error buscando usuario por nombre '{nombre}': {e}")
+            logger.error(f"Error buscando usuario por nombre '{nombre}': {e}")
             return None
 
     async def buscar_usuario_por_telegram_id(self, telegram_id: int) -> Optional[Dict[str, Any]]:
@@ -80,13 +80,13 @@ class DatabaseManager:
             )
 
             if result.data and len(result.data) > 0:
-                logger.info(f"✅ Usuario vinculado a Telegram ID: {telegram_id}")
+                logger.info(f"Usuario vinculado a Telegram ID: {telegram_id}")
                 return result.data[0]
 
             return None
 
         except Exception as e:
-            logger.error(f"❌ Error buscando por telegram_id {telegram_id}: {e}")
+            logger.error(f"Error buscando por telegram_id {telegram_id}: {e}")
             return None
 
     async def vincular_telegram(self, user_db_id: str, telegram_id: int) -> bool:
@@ -125,3 +125,138 @@ class DatabaseManager:
         except Exception as e:
             logger.error(f"❌ Health check Supabase falló: {e}")
             return False
+
+    # ------------------------------------------------------------------ #
+    #  Check-ins emocionales diarios                                       #
+    # ------------------------------------------------------------------ #
+
+    async def guardar_checkin_diario(
+        self, 
+        user_id: str, 
+        telegram_id: int, 
+        estado_emocional: str,
+        metodo: str = "reactivo",
+        mensaje_contexto: str = None
+    ) -> bool:
+        """
+        Guarda un check-in emocional diario en Supabase.
+        
+        Args:
+            user_id: ID del usuario en la BD principal
+            telegram_id: ID de Telegram del usuario  
+            estado_emocional: "bien", "normal", "dificil"
+            metodo: "proactivo" o "reactivo"
+            mensaje_contexto: Mensaje adicional opcional
+            
+        Returns:
+            bool: True si se guardó exitosamente
+        """
+        try:
+            checkin_data = {
+                'user_id': user_id,
+                'telegram_id': str(telegram_id),
+                'fecha': datetime.utcnow().date().isoformat(),
+                'estado_emocional': estado_emocional,
+                'hora_respuesta': datetime.utcnow().isoformat(),
+                'metodo': metodo,
+                'mensaje_contexto': mensaje_contexto,
+                'created_at': datetime.utcnow().isoformat()
+            }
+
+            result = self.client.table('checkins_diarios').insert(checkin_data).execute()
+            
+            if result.data:
+                logger.info(f"Check-in guardado: {estado_emocional} ({metodo}) para user {user_id}")
+                return True
+            
+            logger.error(f"No se pudo guardar check-in para user {user_id}")
+            return False
+            
+        except Exception as e:
+            logger.error(f"Error guardando check-in para {user_id}: {e}")
+            return False
+
+    async def verificar_checkin_hoy(self, user_id: str) -> bool:
+        """
+        Verifica si el usuario ya hizo su check-in today.
+        
+        Args:
+            user_id: ID del usuario
+            
+        Returns:
+            bool: True si ya hizo check-in hoy
+        """
+        try:
+            hoy = datetime.utcnow().date().isoformat()
+            
+            result = (
+                self.client.table("checkins_diarios")
+                .select("id")
+                .eq("user_id", user_id)
+                .eq("fecha", hoy)
+                .execute()
+            )
+            
+            return bool(result.data and len(result.data) > 0)
+            
+        except Exception as e:
+            logger.error(f"Error verificando check-in hoy para {user_id}: {e}")
+            return False
+
+    async def obtener_ultimo_checkin(self, user_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Obtiene el último check-in del usuario.
+        
+        Args:
+            user_id: ID del usuario
+            
+        Returns:
+            Dict con datos del último check-in o None
+        """
+        try:
+            result = (
+                self.client.table("checkins_diarios")
+                .select("*")
+                .eq("user_id", user_id)
+                .order("fecha", desc=True)
+                .limit(1)
+                .execute()
+            )
+            
+            if result.data and len(result.data) > 0:
+                return result.data[0]
+            
+            return None
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo último check-in para {user_id}: {e}")
+            return None
+
+    async def obtener_checkins_periodo(self, user_id: str, dias: int = 7) -> List[Dict[str, Any]]:
+        """
+        Obtiene check-ins del usuario en los últimos N días.
+        
+        Args:
+            user_id: ID del usuario
+            dias: Número de días hacia atrás (default: 7)
+            
+        Returns:
+            Lista de check-ins del período
+        """
+        try:
+            fecha_limite = (datetime.utcnow() - timedelta(days=dias)).date().isoformat()
+            
+            result = (
+                self.client.table("checkins_diarios")
+                .select("*")
+                .eq("user_id", user_id)
+                .gte("fecha", fecha_limite)
+                .order("fecha", desc=True)
+                .execute()
+            )
+            
+            return result.data if result.data else []
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo check-ins período para {user_id}: {e}")
+            return []

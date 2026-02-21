@@ -11,20 +11,21 @@ from typing import Dict, Any, Optional
 
 from telegram import Bot, Update
 from telegram.ext import (
-    Application, CommandHandler, MessageHandler, 
+    Application, CommandHandler, MessageHandler, CallbackQueryHandler,
     filters, ContextTypes
 )
 
 from config import config
 from models import UsuarioTelegram, EstadoUsuario
 from handlers import (
-    comando_start, comando_help, comando_perfil, comando_estado,
-    procesar_mensaje_texto, procesar_mensaje_audio,
-    procesar_mensaje_multimedia, error_handler,
+    comando_start, comando_help, comando_perfil, comando_estado, comando_checkin_test,
+    comando_debug_usuarios, comando_analisis_personal, comando_analisis_semanal, 
+    comando_reporte_admin, procesar_mensaje_texto, procesar_mensaje_audio,
+    procesar_mensaje_multimedia, procesar_callback_checkin, error_handler,
 )
 from database import DatabaseManager
 from agents import RitmoOrchestrator
-from utils import backend_client
+from checkin_system import CheckinSystem
 
 # Configurar logging
 logging.basicConfig(
@@ -42,9 +43,10 @@ class RitmoTelegramBot:
         self.bot: Bot = None
         self.db_manager = DatabaseManager()
         self.orchestrator = RitmoOrchestrator(self.db_manager)
+        self.checkin_system: CheckinSystem = None
         self.usuarios_en_memoria: Dict[int, UsuarioTelegram] = {}
         
-    async def inicializar(self):
+    def inicializar(self):
         """Inicializa el bot y sus componentes"""
         
         # Validar configuración
@@ -55,27 +57,23 @@ class RitmoTelegramBot:
             logger.error(f"❌ Error en configuración: {e}")
             sys.exit(1)
         
-        # Verificar conexión con backend
-        if await backend_client.health_check():
-            logger.info("✅ Backend RITMO disponible")
-        else:
-            logger.warning("⚠️ Backend RITMO no disponible, continuando...")
-        
         # Inicializar aplicación de Telegram
         builder = Application.builder().token(config.TELEGRAM_BOT_TOKEN)
         self.app = builder.build()
         self.bot = self.app.bot
         
+        # Inicializar sistema de check-in
+        self.checkin_system = CheckinSystem(self.bot, self.db_manager)
+        logger.info("✅ Sistema de check-in inicializado")
+        
         # Configurar handlers
         self._configurar_handlers()
         
-        # Verificar conexión con Telegram
-        try:
-            bot_info = await self.bot.get_me()
-            logger.info(f"✅ Bot conectado: @{bot_info.username}")
-        except Exception as e:
-            logger.error(f"❌ Error al conectar con Telegram: {e}")
-            sys.exit(1)
+        # Pasar datos compartidos a handlers
+        self.app.bot_data["db_manager"] = self.db_manager
+        self.app.bot_data["checkin_system"] = self.checkin_system
+        
+        logger.info("✅ Bot inicializado correctamente")
     
     def _configurar_handlers(self):
         """Configura todos los handlers del bot"""
@@ -85,7 +83,13 @@ class RitmoTelegramBot:
         self.app.add_handler(CommandHandler("help", comando_help))
         self.app.add_handler(CommandHandler("perfil", comando_perfil))
         self.app.add_handler(CommandHandler("estado", comando_estado))
-
+        self.app.add_handler(CommandHandler("checkin_test", comando_checkin_test))        
+        self.app.add_handler(CommandHandler("debug_usuarios", comando_debug_usuarios))
+        
+        # Comandos de análisis contextual
+        self.app.add_handler(CommandHandler("analisis", comando_analisis_personal))
+        self.app.add_handler(CommandHandler("analisis_14d", comando_analisis_semanal))
+        self.app.add_handler(CommandHandler("reporte_admin", comando_reporte_admin))
         # Mensajes de texto libre
         self.app.add_handler(MessageHandler(
             filters.TEXT & ~filters.COMMAND,
@@ -102,6 +106,12 @@ class RitmoTelegramBot:
         self.app.add_handler(MessageHandler(
             filters.PHOTO | filters.Sticker.ALL | filters.Document.ALL,
             procesar_mensaje_multimedia
+        ))
+
+        # Callback queries (respuestas de botones inline)
+        self.app.add_handler(CallbackQueryHandler(
+            procesar_callback_checkin,
+            pattern=r'^checkin_'
         ))
 
         # Error handler
@@ -168,86 +178,72 @@ class RitmoTelegramBot:
         self.usuarios_en_memoria[telegram_user.id] = usuario
         logger.info(f"👤 Usuario nuevo en Telegram, pendiente de identificación: {telegram_user.id}")
         return usuario
-    
-    async def ejecutar_polling(self):
-        """Ejecuta el bot en modo polling"""
-        
-        logger.info("🚀 Iniciando RITMO Telegram Bot en modo polling...")
-        logger.info(f"📡 Conectando a: {config.RITMO_BACKEND_URL}")
-        
+
+
+    async def ejecutar(self):
+        """Ejecuta el bot con scheduler de check-ins"""
         try:
-            # Ejecutar polling
-            await self.app.run_polling(
+            # Inicializar aplicación
+            await self.app.initialize()
+            
+            # Iniciar scheduler en background
+            if self.checkin_system:
+                scheduler_task = asyncio.create_task(self.checkin_system.iniciar_scheduler())
+                logger.info("🔔 Scheduler de check-ins iniciado")
+            
+            # Iniciar polling
+            await self.app.start()
+            await self.app.updater.start_polling(
                 poll_interval=1.0,
                 drop_pending_updates=True,
-                allowed_updates=['message', 'callback_query'],
-                close_loop=False
+                allowed_updates=['message', 'callback_query']
             )
-        except Exception as e:
-            logger.error(f"Error en polling: {e}")
+            
+            logger.info("✅ Bot ejecutándose ... (Ctrl+C para detener)")
+            
+            # Mantener el bot corriendo
+            while True:
+                await asyncio.sleep(1)
+                
+        except KeyboardInterrupt:
+            logger.info("👋 Deteniendo bot...")
         finally:
-            # Cleanup manual
-            try:
-                await self.app.stop()
-            except:
-                pass
-    
-    async def ejecutar_webhook(self, webhook_url: str, port: int = 8443):
-        """Ejecuta el bot en modo webhook"""
-        
-        logger.info(f"🚀 Iniciando RITMO Telegram Bot en modo webhook...")
-        logger.info(f"🌐 URL: {webhook_url}")
-        
-        # Configurar webhook
-        await self.app.run_webhook(
-            listen="0.0.0.0",
-            port=port,
-            webhook_url=webhook_url,
-            drop_pending_updates=True
-        )
+            # Detener componentes
+            if hasattr(self, 'checkin_system') and self.checkin_system:
+                self.checkin_system.detener_scheduler()
+            
+            if self.app.updater.running:
+                await self.app.updater.stop()
+            await self.app.stop()
+            await self.app.shutdown()
 
 
 # Instancia global del bot
 ritmo_bot = RitmoTelegramBot()
 
 
-async def main():
+def main():
     """Función principal"""
+    
+    logger.info("🚀 Iniciando RITMO Telegram Bot")
     
     try:
         # Inicializar bot
-        await ritmo_bot.inicializar()
+        ritmo_bot.inicializar()
         
-        # Ejecutar según configuración
-        if config.WEBHOOK_URL:
-            await ritmo_bot.ejecutar_webhook(
-                config.WEBHOOK_URL, 
-                config.WEBHOOK_PORT
-            )
-        else:
-            await ritmo_bot.ejecutar_polling()
-            
+        logger.info("🟢 Bot iniciado correctamente")
+        
+        # Ejecutar bot con scheduler
+        asyncio.run(ritmo_bot.ejecutar())
+        
     except KeyboardInterrupt:
-        logger.info("👋 Deteniendo RITMO Telegram Bot...")
+        logger.info("👋 Bot detenido por usuario")
     except Exception as e:
-        logger.error(f"❌ Error fatal: {e}")
+        logger.error(f"❌ Error ejecutando bot: {e}")
         raise
     finally:
-        # Cleanup asíncrono
-        try:
-            if ritmo_bot.app:
-                if not ritmo_bot.app.running:
-                    await ritmo_bot.app.initialize()
-                await ritmo_bot.app.stop()
-                await ritmo_bot.app.shutdown()
-        except:
-            pass
+        logger.info("🔴 Bot detenido completamente")
 
 
 if __name__ == "__main__":
-    # Manejar loop de eventos en Windows
-    if sys.platform.startswith('win'):
-        asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
-    
-    # Ejecutar bot
-    asyncio.run(main())
+    main()

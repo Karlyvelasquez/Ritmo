@@ -51,6 +51,23 @@ class RitmoOrchestrator:
 
         # ── Usuario activo (ya vinculado) → modo compañero ──────────────
         if usuario.estado == EstadoUsuario.ACTIVO:
+            # Verificar si necesita check-in reactivo  
+            user_db = await self.db.buscar_usuario_por_telegram_id(usuario.telegram_id)
+            if user_db:
+                user_id = user_db.get("id")
+                
+                # Importar y verificar check-in (evitar import circular)
+                from bot import ritmo_bot
+                if hasattr(ritmo_bot, 'checkin_system') and ritmo_bot.checkin_system is not None:
+                    # Ofrecer check-in reactivo si no lo ha hecho hoy
+                    checkin_msg = await ritmo_bot.checkin_system.ofrecer_checkin_reactivo(
+                        usuario.telegram_id, user_id
+                    )
+                    # Si se ofreció check-in, no continuar con respuesta normal
+                    if checkin_msg:
+                        return None  # El check-in ya se envió por separado
+            
+            # Respuesta normal del compañero
             perfil_dict = usuario.perfil.dict() if usuario.perfil else None
             ritmo_ctx = await self._fetch_ritmo_context(usuario)
 
@@ -94,6 +111,14 @@ class RitmoOrchestrator:
             )
             usuario.estado = EstadoUsuario.ACTIVO
             usuario.configuracion_completada = True
+
+            # Registrar usuario en sistema de check-ins
+            try:
+                from bot import ritmo_bot
+                if hasattr(ritmo_bot, 'checkin_system'):
+                    ritmo_bot.checkin_system.registrar_usuario_activo(usuario)
+            except Exception as e:
+                logger.warning(f"No se pudo registrar usuario en check-ins: {e}")
 
             logger.info(f"✅ Usuario identificado: {nombre_real} (TG: {usuario.telegram_id})")
 

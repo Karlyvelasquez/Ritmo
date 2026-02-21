@@ -45,8 +45,8 @@ def verificar_configuracion():
             missing_vars.append(var)
     
     if missing_vars:
-        print(f"❌ Variables de entorno faltantes: {', '.join(missing_vars)}")
-        print("💡 Completa estas variables en tu archivo .env")
+        print(f"Variables de entorno faltantes: {', '.join(missing_vars)}")
+        print("Completa estas variables en tu archivo .env")
         return False
     
     print("✅ Configuración válida")
@@ -80,58 +80,10 @@ def main_launcher():
     print("🚀 Iniciando bot...\n")
     
     try:
-        # Crear aplicación directamente
-        from telegram.ext import Application, CommandHandler, MessageHandler, filters
+        from bot import main
         
-        application = Application.builder().token(config.TELEGRAM_BOT_TOKEN).build()
-        
-        # Importar handlers uno por uno para evitar dependencias complejas
-        try:
-            from handlers import comando_start, comando_help, comando_perfil, comando_estado
-            print("✅ Comandos básicos importados")
-        except ImportError as e:
-            print(f"⚠️ Error importando comandos: {e}")
-            # Funciones básicas fallback
-            async def comando_start(update, context):
-                await update.message.reply_text("🤖 ¡Hola! Soy RITMO Bot.")
-            
-            async def comando_help(update, context):
-                await update.message.reply_text("ℹ️ Bot RITMO - IA de Acompañamiento")
-        
-        # Configurar handlers básicos
-        application.add_handler(CommandHandler("start", comando_start))
-        application.add_handler(CommandHandler("help", comando_help))
-        
-        try:
-            application.add_handler(CommandHandler("perfil", comando_perfil)) 
-            application.add_handler(CommandHandler("estado", comando_estado))
-        except:
-            pass
-        
-        # Agregar handlers opcionales si existen
-        try:
-            from handlers import (
-                procesar_mensaje_texto, procesar_mensaje_audio, 
-                procesar_mensaje_multimedia, error_handler
-            )
-            application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, procesar_mensaje_texto))
-            application.add_handler(MessageHandler(filters.VOICE | filters.AUDIO, procesar_mensaje_audio))
-            application.add_handler(MessageHandler(filters.PHOTO | filters.Sticker.ALL | filters.Document.ALL, procesar_mensaje_multimedia))
-            application.add_error_handler(error_handler)
-            print("✅ Handlers avanzados configurados")
-        except ImportError as e:
-            print(f"⚠️ Handlers avanzados no disponibles: {e}")
-            print("✅ Bot funcionará con comandos básicos")
-        
-        print("🚀 Iniciando RITMO Telegram Bot...")
-        print(f"📡 Backend: {config.RITMO_BACKEND_URL}")
-        print("✅ Bot ejecutándose ... (Ctrl+C para detener)")
-        
-        # Ejecutar polling (patrón que funciona)
-        application.run_polling(
-            poll_interval=1.0,
-            allowed_updates=['message', 'callback_query']
-        )
+        # Ejecutar bot completo con scheduler
+        main()
         
     except KeyboardInterrupt:
         print("\n👋 Bot detenido por el usuario")

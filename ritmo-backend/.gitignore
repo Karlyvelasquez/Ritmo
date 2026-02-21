@@ -56,3 +56,40 @@ htmlcov/
 
 # FastAPI
 .pytest_cache
+
+# === RITMO Specific Security ===
+# Archivos de configuración sensibles
+config_local.py
+local_config.py
+
+# Modelos ML entrenados (pueden ser grandes y contener datos sensibles)
+*.pkl
+*.joblib
+*.model
+
+# Datos de entrenamiento (CSV con información de usuarios)
+features_riesgo.csv
+datos_entrenamiento.csv
+
+# Certificados y llaves
+*.pem
+*.key
+*.crt
+
+# Backups
+*.bak
+*.backup
+
+# Base de datos local/cache
+*.sqlite
+*.sqlite3
+*.db
+
+# Archivos temporales del sistema
+*.tmp
+*.temp
+
+# === Protección extra variables de entorno ===
+.env.development
+.env.test
+.env.backup
