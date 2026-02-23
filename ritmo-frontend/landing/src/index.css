@@ -1,0 +1,101 @@
+:root,
+[data-theme="light"] {
+  --color-cream: #FFF8F8;
+  --color-sage: #8AAF8B;
+  --color-warm: #EEE2D7;
+  --color-navy: #1E3751;
+  --color-sage-light: #a8c8a9;
+  --color-sage-dark: #6d9a6e;
+  --color-navy-light: #2a4d6e;
+  --color-bg: #FFF8F8;
+  --color-surface: #ffffff;
+  --color-text: #1E3751;
+  --color-text-secondary: #6b7f8f;
+  --color-border: rgba(238, 226, 215, 0.5);
+  --color-card: #FFF8F8;
+  --color-card-hover: rgba(30, 55, 81, 0.08);
+  --navbar-bg: rgba(255, 248, 248, 0.92);
+  --mobile-menu-bg: rgba(255, 248, 248, 0.98);
+}
+
+[data-theme="dark"] {
+  --color-cream: #FFF8F8;
+  --color-sage: #8AAF8B;
+  --color-warm: #EEE2D7;
+  --color-navy: #1E3751;
+  --color-sage-light: #a8c8a9;
+  --color-sage-dark: #6d9a6e;
+  --color-navy-light: #2a4d6e;
+  --color-bg: #0f1923;
+  --color-surface: #162230;
+  --color-text: #e8edf2;
+  --color-text-secondary: #8a9bab;
+  --color-border: rgba(138, 175, 139, 0.12);
+  --color-card: #1a2d3f;
+  --color-card-hover: rgba(138, 175, 139, 0.08);
+  --navbar-bg: rgba(15, 25, 35, 0.92);
+  --mobile-menu-bg: rgba(15, 25, 35, 0.98);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  border: none;
+  outline: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-sage);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-sage-dark);
+}
+
+::selection {
+  background-color: var(--color-sage);
+  color: white;
+}
