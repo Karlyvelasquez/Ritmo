@@ -8,17 +8,38 @@ from typing import Literal, Optional, List, Dict
 from datetime import datetime
 
 
-class PerfilUsuario(BaseModel):
-    """Perfil del usuario con su etapa de vida y preferencias"""
-    etapa: Literal["mayor_70", "adulto_activo", "joven", "migrante", "discapacidad_visual"] = Field(
-        ..., description="Etapa de vida del usuario"
-    )
+# === MODELO USUARIO COMPLETO ===
+
+class Usuario(BaseModel):
+    """Modelo completo del usuario en base de datos"""
+    id: Optional[str] = Field(None, description="UUID del usuario")
     nombre: str = Field(..., description="Nombre del usuario")
-    modo_comunicacion: Literal["audio", "texto", "mixto"] = Field(
+    etapa_vida: Literal["joven", "adulto_activo", "inmigrante", "persona_mayor"] = Field(
+        ..., description="Etapa de vida detectada automáticamente"
+    )
+    modo_comunicacion: Literal["texto", "voz"] = Field(
         ..., description="Modo preferido de comunicación"
     )
     zona_horaria: str = Field(
-        default="Europe/Madrid", description="Zona horaria del usuario"
+        default="America/Bogota", description="Zona horaria del usuario"
+    )
+    telegram_id: str = Field(..., description="ID de Telegram del usuario")
+    onboarding_completado: bool = Field(default=False, description="Si completó el onboarding")
+    codigo_secreto: Optional[str] = Field(None, description="Código secreto único de 4 dígitos")
+    created_at: Optional[datetime] = Field(None, description="Fecha de creación")
+
+
+class PerfilUsuario(BaseModel):
+    """Perfil del usuario con su etapa de vida y preferencias (para compatibilidad)"""
+    etapa: Literal["joven", "adulto_activo", "inmigrante", "persona_mayor"] = Field(
+        ..., description="Etapa de vida del usuario"
+    )
+    nombre: str = Field(..., description="Nombre del usuario")
+    modo_comunicacion: Literal["texto", "voz"] = Field(
+        ..., description="Modo preferido de comunicación"
+    )
+    zona_horaria: str = Field(
+        default="America/Bogota", description="Zona horaria del usuario"
     )
 
 
@@ -175,3 +196,64 @@ class EstadisticasAdmin(BaseModel):
     fecha_generacion: datetime = Field(
         default_factory=datetime.utcnow, description="Fecha de generación del reporte"
     )
+
+
+# === SCHEMAS PARA ONBOARDING CONVERSACIONAL ===
+
+class OnboardingInicio(BaseModel):
+    """Request para iniciar onboarding"""
+    telegram_id: str = Field(..., description="ID de Telegram del usuario")
+    nombre: str = Field(..., description="Nombre del usuario")
+
+
+class OnboardingRespuesta(BaseModel):
+    """Request con respuesta del usuario durante onboarding"""
+    telegram_id: str = Field(..., description="ID de Telegram del usuario")
+    respuesta: str = Field(..., description="Respuesta del usuario")
+    sesion_id: str = Field(..., description="ID de sesión del onboarding")
+
+
+class OnboardingEstado(BaseModel):
+    """Estado actual del onboarding"""
+    sesion_id: str = Field(..., description="ID de sesión")
+    telegram_id: str = Field(..., description="ID de Telegram")
+    nombre: str = Field(..., description="Nombre del usuario")
+    pregunta_actual: int = Field(..., description="Número de pregunta actual")
+    preguntas_hechas: List[Dict[str, str]] = Field(default_factory=list, description="Preguntas ya realizadas")
+    respuestas: List[str] = Field(default_factory=list, description="Respuestas del usuario")
+    scores: Dict[str, float] = Field(default_factory=dict, description="Puntuaciones por etapa")
+    completado: bool = Field(default=False, description="Si el onboarding está completado")
+    etapa_detectada: Optional[str] = Field(None, description="Etapa detectada")
+    confianza: float = Field(default=0.0, description="Confianza en la detección")
+
+
+class OnboardingResponse(BaseModel):
+    """Respuesta del sistema durante onboarding"""
+    mensaje: str = Field(..., description="Mensaje/pregunta para el usuario")
+    completado: bool = Field(default=False, description="Si el onboarding está completado")
+    etapa_detectada: Optional[str] = Field(None, description="Etapa de vida detectada")
+    codigo_secreto: Optional[str] = Field(None, description="Código secreto generado")
+    pregunta_numero: int = Field(..., description="Número de pregunta actual")
+    sesion_id: str = Field(..., description="ID de sesión")
+
+
+class PreguntaOnboarding(BaseModel):
+    """Estructura de una pregunta del onboarding"""
+    id: str = Field(..., description="ID único de la pregunta")
+    categoria: Literal["edad_contexto", "tecnologia", "familia", "trabajo", "tiempo_libre"] = Field(
+        ..., description="Categoría de la pregunta"
+    )
+    pregunta: str = Field(..., description="Texto de la pregunta")
+    palabras_clave: Dict[str, List[str]] = Field(
+        ..., description="Palabras clave por etapa que se buscan en la respuesta"
+    )
+    peso: float = Field(default=1.0, description="Peso de la pregunta en la puntuación")
+
+
+class ClasificacionResult(BaseModel):
+    """Resultado de la clasificación automática"""
+    etapa_detectada: str = Field(..., description="Etapa de vida detectada")
+    confianza: float = Field(..., description="Confianza en la detección (0-1)")
+    scores: Dict[str, float] = Field(..., description="Puntuaciones por cada etapa")
+    puede_clasificar: bool = Field(..., description="Si tiene suficiente confianza para clasificar")
+    razon: str = Field(..., description="Razón de la decisión")

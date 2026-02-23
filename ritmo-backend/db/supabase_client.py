@@ -47,17 +47,27 @@ class SupabaseClient:
         if self._client is None:
             self._initialize_client()
         return self._client
+
+
+def get_supabase_client() -> Client:
+    """
+    Función de conveniencia para obtener el cliente Supabase
     
-    def test_connection(self) -> bool:
-        """Prueba la conexión con Supabase"""
-        try:
-            # Intentar obtener información de la tabla usuarios
-            response = self.client.table('usuarios').select('id').limit(1).execute()
-            logger.info("Supabase connection test successful")
-            return True
-        except Exception as e:
-            logger.error(f"Supabase connection test failed: {e}")
-            return False
+    Returns:
+        Client: Cliente inicializado de Supabase
+    """
+    return SupabaseClient().client
+    
+def test_connection(self) -> bool:
+    """Prueba la conexión con Supabase"""
+    try:
+        # Intentar obtener información de la tabla usuarios
+        response = self.client.table('usuarios').select('id').limit(1).execute()
+        logger.info("Supabase connection test successful")
+        return True
+    except Exception as e:
+        logger.error(f"Supabase connection test failed: {e}")
+        return False
 
 
 # Instancia global del cliente

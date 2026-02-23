@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RITMO — Registro & Login</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3352;
+      --accent: #6c63ff;
+      --accent2: #a78bfa;
+      --success: #22c55e;
+      --error: #ef4444;
+      --warn: #f59e0b;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --radius: 14px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 460px;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .logo {
+      font-size: 2.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -1px;
+    }
+
+    .tagline {
+      color: var(--muted);
+      font-size: .9rem;
+      margin-top: 4px;
+    }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex;
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 4px;
+      margin-bottom: 24px;
+      border: 1px solid var(--border);
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all .2s;
+      user-select: none;
+    }
+
+    .tab.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(108, 99, 255, .4);
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon {
+      font-size: 1.2rem;
+    }
+
+    /* ── Form ── */
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 11px 14px;
+      color: var(--text);
+      font-size: .95rem;
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(108, 99, 255, .2);
+    }
+
+    input::placeholder {
+      color: var(--muted);
+      opacity: .7;
+    }
+
+    /* ── Button ── */
+    .btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: opacity .2s, transform .1s;
+      margin-top: 4px;
+    }
+
+    .btn:hover {
+      opacity: .9;
+    }
+
+    .btn:active {
+      transform: scale(.98);
+    }
+
+    .btn:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── Chat area ── */
+    #chat-area {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chat-bubble {
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: .92rem;
+      line-height: 1.55;
+      max-width: 92%;
+      animation: fadeIn .3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .bubble-bot {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      align-self: flex-start;
+    }
+
+    .bubble-user {
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      align-self: flex-end;
+      color: #fff;
+    }
+
+    .bubble-system {
+      background: transparent;
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      font-size: .8rem;
+      text-align: center;
+      align-self: center;
+      max-width: 100%;
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .chat-input-row input {
+      flex: 1;
+    }
+
+    .btn-send {
+      padding: 11px 18px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 700;
+      transition: background .2s;
+      white-space: nowrap;
+    }
+
+    .btn-send:hover {
+      background: #5a50e0;
+    }
+
+    .btn-send:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    /* ── Alert ── */
+    .alert {
+      padding: 12px 16px;
+      border-radius: 9px;
+      font-size: .88rem;
+      margin-top: 14px;
+      display: none;
+      line-height: 1.45;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .alert-success {
+      background: rgba(34, 197, 94, .12);
+      border: 1px solid rgba(34, 197, 94, .35);
+      color: #86efac;
+    }
+
+    .alert-error {
+      background: rgba(239, 68, 68, .12);
+      border: 1px solid rgba(239, 68, 68, .35);
+      color: #fca5a5;
+    }
+
+    .alert-info {
+      background: rgba(108, 99, 255, .12);
+      border: 1px solid rgba(108, 99, 255, .35);
+      color: var(--accent2);
+    }
+
+    /* ── User card after login ── */
+    .user-card {
+      display: none;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-top: 16px;
+    }
+
+    .user-card.show {
+      display: block;
+    }
+
+    .user-card h3 {
+      font-size: 1rem;
+      margin-bottom: 12px;
+      color: var(--accent2);
+    }
+
+    .user-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: .88rem;
+    }
+
+    .user-row:last-child {
+      border-bottom: none;
+    }
+
+    .user-row .key {
+      color: var(--muted);
+    }
+
+    .user-row .val {
+      font-weight: 600;
+      max-width: 60%;
+      text-align: right;
+      word-break: break-all;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 99px;
+      font-size: .75rem;
+      font-weight: 700;
+      background: rgba(108, 99, 255, .25);
+      color: var(--accent2);
+    }
+
+    .secret-code {
+      font-size: 1.4rem;
+      letter-spacing: 6px;
+      font-weight: 800;
+      color: var(--warning, var(--warn));
+      font-family: monospace;
+      background: rgba(245, 158, 11, .1);
+      border: 1px solid rgba(245, 158, 11, .3);
+      border-radius: 8px;
+      padding: 6px 12px;
+    }
+
+    /* ── Spinner ── */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, .3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── Misc ── */
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 18px 0;
+    }
+
+    .hint {
+      font-size: .8rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* ── API Status ── */
+    #api-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .78rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+      padding: 8px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--warn);
+    }
+
+    .dot.ok {
+      background: var(--success);
+    }
+
+    .dot.err {
+      background: var(--error);
+    }
+
+    /* ── Server input ── */
+    .server-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .server-row input {
+      font-size: .83rem;
+    }
+
+    .btn-sm {
+      padding: 11px 14px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: .83rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">RITMO</div>
+      <div class="tagline">IA de Acompañamiento para Colectivos Vulnerables</div>
+    </div>
+
+    <!-- API Status bar -->
+    <div id="api-status">
+      <div class="dot" id="status-dot"></div>
+      <span id="status-text">Conectando con el backend...</span>
+      <div style="flex:1"></div>
+      <span id="status-url" style="font-family:monospace"></span>
+    </div>
+
+    <!-- Server URL config -->
+    <div class="server-row">
+      <input id="server-url" type="url" placeholder="http://localhost:8000" value="http://localhost:8000" />
+      <button class="btn-sm" onclick="checkHealth()">Verificar</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" id="tab-registro" onclick="switchTab('registro')">✨ Registro</div>
+      <div class="tab" id="tab-login" onclick="switchTab('login')">🔐 Login</div>
+    </div>
+
+    <!-- ═══════════════ REGISTRO ═══════════════ -->
+    <div id="panel-registro" class="card step active">
+
+      <!-- Step 1: datos iniciales -->
+      <div id="reg-step1" class="step active">
+        <div class="card-title"><span class="icon">👋</span> Crear cuenta nueva</div>
+        <div class="field">
+          <label>Tu nombre</label>
+          <input id="reg-nombre" type="text" placeholder="Ej: María García" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label>Tu ID de Telegram <span style="color:var(--muted);font-weight:400">(numérico o @usuario)</span></label>
+          <input id="reg-tid" type="text" placeholder="Ej: 123456789" autocomplete="off" />
+          <p class="hint">Puedes obtenerlo enviando /getid al bot @userinfobot en Telegram</p>
+        </div>
+        <button class="btn" id="btn-iniciar" onclick="iniciarRegistro()">Comenzar Onboarding</button>
+        <div class="alert alert-error" id="reg-error"></div>
+      </div>
+
+      <!-- Step 2: Onboarding conversacional -->
+      <div id="reg-step2" class="step">
+        <div class="card-title"><span class="icon">💬</span> Cuéntame sobre ti</div>
+        <div id="chat-area"
+          style="display:flex; flex-direction:column; gap:12px; min-height:120px; max-height:380px; overflow-y:auto; padding-right:4px;">
+        </div>
+        <div class="divider"></div>
+        <div class="chat-input-row">
+          <input id="chat-input" type="text" placeholder="Escribe tu respuesta..."
+            onkeydown="if(event.key==='Enter') enviarRespuesta()" />
+          <button class="btn-send" id="btn-enviar" onclick="enviarRespuesta()">➤</button>
+        </div>
+        <div class="alert alert-error" id="chat-error"></div>
+      </div>
+
+      <!-- Step 3: Éxito -->
+      <div id="reg-step3" class="step">
+        <div class="card-title"><span class="icon">🎉</span> ¡Registro completado!</div>
+        <div class="alert alert-success show" id="reg-success-msg"></div>
+        <div class="user-card show" id="reg-result-card" style="margin-top:16px;"></div>
+        <button class="btn" style="margin-top:18px;" onclick="resetRegistro()">Registrar otro usuario</button>
+      </div>
+
+    </div>
+
+    <!-- ═══════════════ LOGIN ═══════════════ -->
+    <div id="panel-login" class="card step">
+      <div class="card-title"><span class="icon">🔑</span> Acceder a tu cuenta</div>
+      <div class="field">
+        <label>ID de Telegram</label>
+        <input id="login-tid" type="text" placeholder="Ej: 123456789" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label>Código secreto (4 dígitos)</label>
+        <input id="login-code" type="text" placeholder="0000" maxlength="4" autocomplete="off"
+          oninput="this.value=this.value.replace(/\D/g,'')" />
+      </div>
+      <button class="btn" id="btn-login" onclick="hacerLogin()">Entrar</button>
+      <div class="alert" id="login-alert"></div>
+      <div class="user-card" id="login-result-card"></div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════ SCRIPT ══════════════ -->
+  <script>
+    /* ── State ─────────────────────────────── */
+    let API = 'http://localhost:8000';
+    let sesionId = null;
+    let telegramId = null;
+    let esperandoRespuesta = false;
+
+    /* ── API health ─────────────────────────── */
+    async function checkHealth() {
+      API = (document.getElementById('server-url').value || 'http://localhost:8000').replace(/\/$/, '');
+      document.getElementById('status-url').textContent = API;
+      const dot = document.getElementById('status-dot');
+      const text = document.getElementById('status-text');
+      dot.className = 'dot';
+      text.textContent = 'Verificando...';
+      try {
+        const r = await fetch(`${API}/health`);
+        const d = await r.json();
+        if (r.ok) {
+          dot.className = 'dot ok';
+          text.textContent = `Backend activo · Supabase: ${d.supabase_configured ? '✅' : '⚠️ no conf.'}`;
+        } else throw new Error();
+      } catch {
+        dot.className = 'dot err';
+        text.textContent = 'Backend no disponible — ¿está corriendo docker compose up?';
+      }
+    }
+
+    checkHealth();
+
+    /* ── Tab switch ─────────────────────────── */
+    function switchTab(t) {
+      document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('[id^="panel-"]').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + t).classList.add('active');
+      document.getElementById('panel-' + t).classList.add('active');
+    }
+
+    /* ── Helpers ────────────────────────────── */
+    function showAlert(id, msg, type) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.className = `alert alert-${type} show`;
+    }
+    function hideAlert(id) {
+      const el = document.getElementById(id);
+      el.className = 'alert';
+      el.textContent = '';
+    }
+    function setLoading(btnId, loading, text = '') {
+      const btn = document.getElementById(btnId);
+      btn.disabled = loading;
+      btn.innerHTML = loading ? `<span class="spinner"></span>${text}` : btn._label || btn.innerHTML;
+      if (!loading && text) btn.innerHTML = text;
+    }
+    function addBubble(text, type = 'bot') {
+      const area = document.getElementById('chat-area');
+      const b = document.createElement('div');
+      b.className = `chat-bubble bubble-${type}`;
+      b.textContent = text;
+      area.appendChild(b);
+      area.scrollTop = area.scrollHeight;
+    }
+    function etapaLabel(e) {
+      return { joven: '🧑 Joven', adulto_activo: '💼 Adulto Activo', inmigrante: '🌍 Inmigrante', persona_mayor: '🧓 Persona Mayor' }[e] || e;
+    }
+
+    /* ═══════ REGISTRO ═════════════════════════ */
+    async function iniciarRegistro() {
+      const nombre = document.getElementById('reg-nombre').value.trim();
+      const tid = document.getElementById('reg-tid').value.trim();
+      hideAlert('reg-error');
+
+      if (!nombre || !tid) { showAlert('reg-error', 'Por favor rellena tu nombre y tu ID de Telegram.', 'error'); return; }
+
+      document.getElementById('btn-iniciar')._label = 'Comenzar Onboarding';
+      setLoading('btn-iniciar', true, 'Iniciando...');
+
+      try {
+        const res = await fetch(`${API}/onboarding/iniciar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nombre, telegram_id: tid })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          const msg = data.detail || 'Error al iniciar el onboarding.';
+          showAlert('reg-error', msg.includes('ya existe') ? '⚠️ Este ID de Telegram ya tiene cuenta. Usa el Login.' : msg, 'error');
+          setLoading('btn-iniciar', false, 'Comenzar Onboarding');
+          return;
+        }
+
+        sesionId = data.sesion_id;
+        telegramId = tid;
+
+        // Ir a step2
+        document.getElementById('reg-step1').classList.remove('active');
+        document.getElementById('reg-step2').classList.add('active');
+
+        // Limpiar chat
+        document.getElementById('chat-area').innerHTML = '';
+        addBubble(data.mensaje, 'bot');
+
+      } catch (e) {
+        showAlert('reg-error', 'No se pudo conectar con el backend. ¿Está corriendo?', 'error');
+        setLoading('btn-iniciar', false, 'Comenzar Onboarding');
+      }
+    }
+
+    async function enviarRespuesta() {
+      const input = document.getElementById('chat-input');
+      const respuesta = input.value.trim();
+      if (!respuesta || esperandoRespuesta) return;
+
+      addBubble(respuesta, 'user');
+      input.value = '';
+      esperandoRespuesta = true;
+      document.getElementById('btn-enviar').disabled = true;
+      hideAlert('chat-error');
+
+      // Typing indicator
+      const area = document.getElementById('chat-area');
+      const typing = document.createElement('div');
+      typing.className = 'chat-bubble bubble-bot';
+      typing.id = 'typing';
+      typing.innerHTML = '<span class="spinner"></span>Escribiendo...';
+      area.appendChild(typing);
+      area.scrollTop = area.scrollHeight;
+
+      try {
+        const res = await fetch(`${API}/onboarding/responder`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sesion_id: sesionId, respuesta, telegram_id: telegramId })
+        });
+        const data = await res.json();
+
+        // Quitar typing
+        document.getElementById('typing')?.remove();
+
+        if (!res.ok) {
+          showAlert('chat-error', data.detail || 'Error procesando la respuesta.', 'error');
+          esperandoRespuesta = false;
+          document.getElementById('btn-enviar').disabled = false;
+          return;
+        }
+
+        addBubble(data.mensaje, 'bot');
+
+        if (data.completado) {
+          addBubble('✅ Onboarding completado. ¡Bienvenido/a a RITMO!', 'system');
+          setTimeout(() => mostrarExitoRegistro(data), 800);
+        }
+
+      } catch {
+        document.getElementById('typing')?.remove();
+        showAlert('chat-error', 'Error de conexión al enviar la respuesta.', 'error');
+      }
+
+      esperandoRespuesta = false;
+      document.getElementById('btn-enviar').disabled = false;
+    }
+
+    function mostrarExitoRegistro(data) {
+      document.getElementById('reg-step2').classList.remove('active');
+      document.getElementById('reg-step3').classList.add('active');
+
+      document.getElementById('reg-success-msg').textContent =
+        `¡Registro exitoso! Tu etapa detectada: ${etapaLabel(data.etapa_detectada)}.`;
+
+      // Obtener el código: primero del campo, luego extraerlo del mensaje
+      let codigo = data.codigo_secreto;
+      if (!codigo || codigo === 'null') {
+        const match = data.mensaje && data.mensaje.match(/código secreto es[:\s]+([0-9]{4})/i);
+        codigo = match ? match[1] : null;
+      }
+
+      const card = document.getElementById('reg-result-card');
+      card.innerHTML = `
+      <h3>Tu perfil</h3>
+      <div class="user-row"><span class="key">Etapa detectada</span><span class="val"><span class="badge">${etapaLabel(data.etapa_detectada)}</span></span></div>
+      <div class="user-row"><span class="key">Código secreto</span><span class="val">${codigo ? `<span class="secret-code">${codigo}</span>` : '<span style="color:var(--error)">No generado — verifica Supabase</span>'}</span></div>
+      <div class="user-row"><span class="key">Sesión ID</span><span class="val" style="font-size:.75rem;color:var(--muted)">${data.sesion_id}</span></div>
+      <p style="margin-top:14px;font-size:.8rem;color:var(--warn);">⚠️ Guarda tu código secreto. Lo necesitas para hacer Login.</p>
+    `;
+    }
+
+    function resetRegistro() {
+      ['reg-nombre', 'reg-tid'].forEach(id => document.getElementById(id).value = '');
+      hideAlert('reg-error');
+      document.getElementById('chat-area').innerHTML = '';
+      sesionId = null;
+      telegramId = null;
+      document.getElementById('reg-step3').classList.remove('active');
+      document.getElementById('reg-step2').classList.remove('active');
+      document.getElementById('reg-step1').classList.add('active');
+      document.getElementById('btn-iniciar').disabled = false;
+      document.getElementById('btn-iniciar').textContent = 'Comenzar Onboarding';
+    }
+
+    /* ═══════ LOGIN ═════════════════════════ */
+    async function hacerLogin() {
+      const tid = document.getElementById('login-tid').value.trim();
+      const codigo = document.getElementById('login-code').value.trim();
+      const alertEl = document.getElementById('login-alert');
+      const cardEl = document.getElementById('login-result-card');
+      alertEl.className = 'alert'; alertEl.textContent = '';
+      cardEl.className = 'user-card';
+
+      if (!tid || !codigo) {
+        showAlert('login-alert', 'Rellena el ID de Telegram y el código secreto.', 'error');
+        return;
+      }
+      if (codigo.length !== 4) {
+        showAlert('login-alert', 'El código secreto debe tener exactamente 4 dígitos.', 'error');
+        return;
+      }
+
+      document.getElementById('btn-login')._label = 'Entrar';
+      setLoading('btn-login', true, 'Verificando...');
+
+      try {
+        const res = await fetch(`${API}/onboarding/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ telegram_id: tid, codigo_secreto: codigo })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          showAlert('login-alert', data.detail || 'Error del servidor.', 'error');
+          setLoading('btn-login', false, 'Entrar');
+          return;
+        }
+
+        if (data.autenticado) {
+          showAlert('login-alert', data.mensaje, 'success');
+          const u = data.usuario;
+          cardEl.innerHTML = `
+          <h3>Perfil del usuario</h3>
+          <div class="user-row"><span class="key">Nombre</span><span class="val">${u.nombre}</span></div>
+          <div class="user-row"><span class="key">Etapa de vida</span><span class="val"><span class="badge">${etapaLabel(u.etapa_vida)}</span></span></div>
+          <div class="user-row"><span class="key">Telegram ID</span><span class="val" style="font-family:monospace">${u.telegram_id}</span></div>
+          <div class="user-row"><span class="key">Onboarding</span><span class="val">${u.onboarding_completado ? '✅ Completado' : '⏳ Pendiente'}</span></div>
+          <div class="user-row"><span class="key">Código secreto</span><span class="val"><span class="secret-code">${u.codigo_secreto}</span></span></div>
+          <div class="user-row"><span class="key">User ID</span><span class="val" style="font-size:.72rem;color:var(--muted)">${u.id}</span></div>
+        `;
+          cardEl.className = 'user-card show';
+        } else {
+          showAlert('login-alert', `❌ ${data.mensaje}`, 'error');
+        }
+
+      } catch {
+        showAlert('login-alert', 'No se pudo conectar con el backend. ¿Está corriendo?', 'error');
+      }
+
+      setLoading('btn-login', false, 'Entrar');
+    }
+  </script>
+</body>
+
+</html>

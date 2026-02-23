@@ -1,11 +1,15 @@
 
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
+import pathlib
 
 from routers.contexto import router as contexto_router
 from routers.chat import router as chat_router
 from routers.admin import router as admin_router
+from routers.onboarding import router as onboarding_router
 
 # Cargar variables de entorno
 load_dotenv()
@@ -21,14 +25,23 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 # Inicializar FastAPI
 app = FastAPI(
     title="RITMO Backend",
-    description="API para Agente de Contexto de Vida y Patrones y Señales Web",
+    description="API para Agente de Contexto de Vida y Patrones y Señales Web con Onboarding Inteligente",
     version="1.0.0"
+)
+
+# CORS para el frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Registrar routers
 app.include_router(contexto_router)
 app.include_router(chat_router)
 app.include_router(admin_router)
+app.include_router(onboarding_router)
 
 @app.get("/")
 async def root():
@@ -43,6 +56,8 @@ async def root():
             "/chat/proactivo",
             "/admin/stats",
             "/admin/system-info",
+            "/onboarding/iniciar",
+            "/onboarding/responder",
             "/health"
         ]
     }
@@ -56,10 +71,20 @@ async def health_check():
         "supabase_configured": bool(SUPABASE_URL and SUPABASE_KEY)
     }
 
+
+@app.get("/app", response_class=FileResponse)
+async def frontend():
+    """Sirve el frontend de registro y login"""
+    frontend_path = pathlib.Path(__file__).parent / "frontend" / "index.html"
+    if not frontend_path.exists():
+        from fastapi.responses import JSONResponse
+        return JSONResponse({"error": "Frontend no encontrado"}, status_code=404)
+    return FileResponse(str(frontend_path), media_type="text/html")
+
 if __name__ == "__main__":
     import uvicorn
-    print("🚀 Iniciando servidor RITMO Backend...")
-    print("📍 Endpoints disponibles:")
+    print(" Iniciando servidor RITMO Backend...")
+    print(" Endpoints disponibles:")
     print("   - Documentación API: http://localhost:8001/docs")
     print("   - Health check: http://localhost:8001/health")
     print("   - Análisis de contexto: POST http://localhost:8001/contexto")
