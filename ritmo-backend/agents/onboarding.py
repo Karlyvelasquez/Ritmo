@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 # Configuración de OpenAI
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 openai.api_key = OPENAI_API_KEY
 
 @dataclass
@@ -25,7 +25,7 @@ class ClasificacionResult:
 class OnboardingAgent:
     """Agente inteligente para manejo del onboarding conversacional"""
     
-    def __init__(self, min_preguntas: int = 3, max_preguntas: int = 6, umbral_confianza: float = 0.35):
+    def __init__(self, min_preguntas: int = 3, max_preguntas: int = 6, umbral_confianza: float = 0.25):
         self.min_preguntas = min_preguntas
         self.max_preguntas = max_preguntas
         self.umbral_confianza = umbral_confianza
@@ -41,15 +41,31 @@ class OnboardingAgent:
                     id="edad_01",
                     categoria="edad_contexto",
                     pregunta="¿En qué momento de tu vida te encuentras ahora? Cuéntame un poco sobre tu situación actual.",
-                    palabras_clave={},  # GPT-4 analizará sin palabras clave predefinidas
+                    palabras_clave={},
                     peso=1.5
                 ),
                 PreguntaOnboarding(
                     id="edad_02",
                     categoria="edad_contexto",
                     pregunta="¿Qué planes o metas tienes para los próximos años?",
-                    palabras_clave={},  # GPT-4 analizará sin palabras clave predefinidas
+                    palabras_clave={},
                     peso=1.0
+                )
+            ],
+            "inmigracion": [
+                PreguntaOnboarding(
+                    id="migra_01",
+                    categoria="inmigracion",
+                    pregunta="¿Vives en tu país de origen o estás adaptándote a un nuevo lugar?",
+                    palabras_clave={},
+                    peso=2.0
+                ),
+                PreguntaOnboarding(
+                    id="migra_02",
+                    categoria="inmigracion",
+                    pregunta="Si estás fuera de casa, ¿cuál ha sido el mayor reto al adaptarte a esta nueva cultura?",
+                    palabras_clave={},
+                    peso=1.8
                 )
             ],
             "tecnologia": [
@@ -57,46 +73,30 @@ class OnboardingAgent:
                     id="tech_01",
                     categoria="tecnologia",
                     pregunta="¿Cómo te adaptas a las nuevas tecnologías? ¿Te resulta fácil o complicado?",
-                    palabras_clave={},  # GPT-4 analizará sin palabras clave predefinidas
+                    palabras_clave={},
                     peso=1.2
                 ),
                 PreguntaOnboarding(
                     id="tech_02",
                     categoria="tecnologia",
                     pregunta="¿Prefieres hacer las cosas de forma digital o tradicional? ¿Por qué?",
-                    palabras_clave={},  # GPT-4 analizará sin palabras clave predefinidas
+                    palabras_clave={},
                     peso=1.0
-                )
-            ],
-            "familia": [
-                PreguntaOnboarding(
-                    id="fam_01",
-                    categoria="familia",
-                    pregunta="¿Cómo es tu situación familiar actual? ¿Vives solo, con familia, pareja?",
-                    palabras_clave={},  # GPT-4 analizará sin palabras clave predefinidas
-                    peso=1.4
-                ),
-                PreguntaOnboarding(
-                    id="fam_02",
-                    categoria="familia",
-                    pregunta="¿Qué papel juegas en tu familia o círculo cercano?",
-                    palabras_clave={},  # GPT-4 analizará sin palabras clave predefinidas
-                    peso=1.3
                 )
             ],
             "trabajo": [
                 PreguntaOnboarding(
                     id="work_01",
                     categoria="trabajo",
-                    pregunta="¿A qué te dedicas actualmente? Cuéntame sobre tu trabajo o actividades diarias.",
-                    palabras_clave={},  # GPT-4 analizará sin palabras clave predefinidas
+                    pregunta="¿A qué te dedicas actualmente? Cuéntame si estudias, trabajas o ya estás disfrutando de tu jubilación.",
+                    palabras_clave={},
                     peso=1.6
                 ),
                 PreguntaOnboarding(
                     id="work_02",
                     categoria="trabajo",
-                    pregunta="¿Cómo ves tu futuro profesional o laboral?",
-                    palabras_clave={},  # GPT-4 analizará sin palabras clave predefinidas
+                    pregunta="¿Sientes que tu rutina diaria es muy exigente o más bien tranquila?",
+                    palabras_clave={},
                     peso=1.2
                 )
             ],
@@ -105,14 +105,14 @@ class OnboardingAgent:
                     id="free_01",
                     categoria="tiempo_libre",
                     pregunta="¿Qué haces en tu tiempo libre? ¿Cuáles son tus actividades favoritas?",
-                    palabras_clave={},  # GPT-4 analizará sin palabras clave predefinidas
+                    palabras_clave={},
                     peso=1.1
                 ),
                 PreguntaOnboarding(
                     id="free_02",
                     categoria="tiempo_libre",
-                    pregunta="¿Prefieres actividades tranquilas en casa o salir y socializar?",
-                    palabras_clave={},  # GPT-4 analizará sin palabras clave predefinidas
+                    pregunta="¿Te gusta aprender cosas nuevas por internet o prefieres actividades más físicas/sociales?",
+                    palabras_clave={},
                     peso=1.0
                 )
             ],
@@ -120,15 +120,15 @@ class OnboardingAgent:
                 PreguntaOnboarding(
                     id="visual_01",
                     categoria="discapacidad_visual",
-                    pregunta="¿Tienes alguna dificultad para leer textos pequeños o distinguir colores en pantallas?",
-                    palabras_clave={},  # GPT-4 analizará sin palabras clave predefinidas
+                    pregunta="¿Tienes alguna dificultad para leer textos pequeños o prefieres que la interfaz sea muy clara y con voz?",
+                    palabras_clave={},
                     peso=1.5
                 ),
                 PreguntaOnboarding(
                     id="visual_02",
                     categoria="discapacidad_visual",
-                    pregunta="¿Prefieres usar herramientas como lectores de pantalla o ampliadores de texto?",
-                    palabras_clave={},  # GPT-4 analizará sin palabras clave predefinidas
+                    pregunta="¿Usas habitualmente herramientas de accesibilidad en tu móvil u ordenador?",
+                    palabras_clave={},
                     peso=1.3
                 )
             ]
@@ -155,7 +155,7 @@ class OnboardingAgent:
                 "joven": 0.0,
                 "adulto_activo": 0.0,
                 "inmigrante": 0.0,
-                "persona_mayor": 0.0,
+                "adulto_mayor": 0.0,
                 "discapacidad_visual": 0.0
             },
             completado=False
@@ -268,7 +268,7 @@ class OnboardingAgent:
         """Analiza una respuesta utilizando GPT-4 y devuelve scores por etapa"""
         
         # Etapas válidas para clasificación
-        etapas_validas = ["joven", "adulto_activo", "inmigrante", "persona_mayor", "discapacidad_visual"]
+        etapas_validas = ["joven", "adulto_activo", "inmigrante", "adulto_mayor", "discapacidad_visual"]
 
         if pregunta.categoria == "discapacidad_visual":
             respuesta_lower = respuesta.lower()
@@ -278,32 +278,36 @@ class OnboardingAgent:
 
 
         try:
-            prompt = f"""Analiza esta respuesta y clasifica en qué etapa de vida se encuentra la persona. 
+            prompt = f"""Analiza esta respuesta del usuario para clasificarlo en un perfil.
             
-Pregunta: {pregunta.pregunta}
-Respuesta: {respuesta}
-            
-Etapas posibles:
-            - joven: Personas en estudios, universidad, primer trabajo, comenzando la vida adulta
-            - adulto_activo: Personas con trabajo estable, familia, responsabilidades, carrera establecida
-            - inmigrante: Personas adaptándose a un nuevo país, cultura diferente, proceso migratorio
-            - persona_mayor: Personas jubiladas, con experiencia, enfoque en familia/salud
-            - discapacidad_visual: Personas con dificultades visuales, necesidades de accesibilidad
-            
-            Responde SOLO con un JSON válido con scores de 0.0 a 1.0 para cada etapa:
-            {{"joven": 0.0, "adulto_activo": 0.0, "inmigrante": 0.0, "persona_mayor": 0.0, "discapacidad_visual": 0.0}}"""
+Pregunta realizada: {pregunta.pregunta}
+Respuesta del usuario: {respuesta}
+
+Criterios de clasificación (Prioriza los rasgos específicos):
+1. 'inmigrante': Menciona mudanza, vivir en otro país, nostalgia, retos de adaptación cultural, trámites migratorios o acento/jerga de otro lugar.
+2. 'adulto_mayor': Menciona jubilación, nietos, medicación, salud de la edad, tiempo libre post-trabajo o dificultad técnica por edad (>65 años).
+3. 'discapacidad_visual': Menciona dificultad significativa para ver, uso de lectores de pantalla, ceguera o fatiga visual extrema.
+4. 'joven': Estudiante, primer empleo, vive con padres, lenguaje informal, soltero sin hijos (<25 años).
+5. 'adulto_activo': Etapa intermedia (30-60 años), carrera profesional estable, hijos a cargo, hipoteca, vida laboral activa. 
+   REGLA DE ORO: Solo asigna score alto aquí si NO hay rasgos claros de los perfiles anteriores.
+
+Responde SOLO un JSON con scores de 0.0 a 1.0 para cada categoría:
+{{"joven": 0.0, "adulto_activo": 0.0, "inmigrante": 0.0, "adulto_mayor": 0.0, "discapacidad_visual": 0.0}}"""
             
             completion = openai.ChatCompletion.create(
                 model=OPENAI_MODEL,
                 messages=[
-                    {"role": "system", "content": "Eres un experto psicólogo que clasifica etapas de vida a partir de respuestas. Siempre respondes con JSON válido."},
+                    {"role": "system", "content": "Eres un experto psicólogo y analista de perfiles. Tu misión es detectar rasgos específicos que diferencien a los usuarios. Siempre respondes con JSON sólido."},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.3  
+                temperature=0.2
             )
-            
+
             # Procesar la respuesta de GPT-4
-            gpt_response = completion.choices[0].message['content'].strip()
+            gpt_response = completion['choices'][0]['message']['content'].strip()
+            if "```json" in gpt_response:
+                gpt_response = gpt_response.split("```json")[1].split("```")[0].strip()
+            
             logger.debug(f"Respuesta GPT-4: {gpt_response}")
             
             # Intentar parsear como JSON
@@ -322,9 +326,6 @@ Etapas posibles:
                 logger.warning(f"GPT-4 no devolvió JSON válido: {gpt_response}")
                 # Fallback: buscar etapas mencionadas en el texto
                 scores = {etapa: 0.0 for etapa in etapas_validas}
-                for etapa in etapas_validas:
-                    if etapa.replace("_", " ") in gpt_response.lower():
-                        scores[etapa] = 0.7
                 return scores
             
         except Exception as e:
@@ -352,16 +353,13 @@ Etapas posibles:
             confianza = 0.0
         
         # Determinar si puede clasificar
+        # Bajamos el umbral para permitir clasificaciones más rápidas si hay señales claras
         puede_clasificar = (
-            score_max > 0.3 and  # Score mínimo absoluto
-            confianza >= self.umbral_confianza  # Confianza suficiente
+            score_max > 0.4 and  # Score mínimo acumulado
+            confianza >= self.umbral_confianza
         )
         
-        razon = ""
-        if puede_clasificar:
-            razon = f"Confianza suficiente: {confianza:.2f} (umbral: {self.umbral_confianza})"
-        else:
-            razon = f"Confianza insuficiente: {confianza:.2f} (umbral: {self.umbral_confianza})"
+        razon = f"Max: {etapa_ganadora}({score_max:.2f}), Confianza: {confianza:.2f}"
         
         resultado = ClasificacionResult(
             etapa_detectada=etapa_ganadora,
@@ -371,7 +369,7 @@ Etapas posibles:
             razon=razon
         )
         
-        logger.info(f"Clasificación: {etapa_ganadora} (confianza: {confianza:.2f})")
+        logger.info(f"Clasificación actual: {etapa_ganadora} (conf: {confianza:.2f})")
         return resultado
     
     def _finalizar_onboarding(self, estado: OnboardingEstado) -> Tuple[str, OnboardingEstado]:
@@ -386,25 +384,25 @@ Etapas posibles:
         
         # Generar mensaje de finalización
         if resultado.puede_clasificar:
-            mensaje = f"¡Perfecto! He podido conocerte mejor. Basándome en nuestras respuestas, veo que te encuentras en la etapa de {self._humanizar_etapa(resultado.etapa_detectada)}.\n\nAhora voy a generar tu código secreto único..."
+            mensaje = f"¡Perfecto! He podido conocerte mejor. Basándome en lo que me has contado, te he asignado el perfil de {self._humanizar_etapa(resultado.etapa_detectada)}.\n\nEste perfil está diseñado especialmente para personas en tu situación actual."
         else:
-            # En caso de empate o poca confianza, usar heurística
-            estado.etapa_detectada = "adulto_activo"  # Valor por defecto
-            mensaje = "¡Gracias por responder! He recopilado suficiente información para configurar tu perfil.\n\nAhora voy a generar tu código secreto único..."
+            # En caso de duda, el perfil activo es el más polivalente
+            estado.etapa_detectada = "adulto_activo"
+            mensaje = "¡Gracias por compartir conmigo! He configurado un perfil estándar de Adulto Activo para ti, que podremos ajustar más adelante si lo necesitas."
         
-        logger.info(f"Onboarding finalizado: {estado.etapa_detectada} (confianza: {estado.confianza:.2f})")
+        logger.info(f"Onboarding finalizado como: {estado.etapa_detectada}")
         return mensaje, estado
     
     def _humanizar_etapa(self, etapa: str) -> str:
         """Convierte el nombre técnico de etapa a algo más humano"""
         humanizado = {
-            "joven": "una etapa joven y de crecimiento",
-            "adulto_activo": "una etapa activa de la vida con responsabilidades",
-            "inmigrante": "un proceso de adaptación a un nuevo lugar",
-            "persona_mayor": "una etapa de experiencia y sabiduría",
-            "discapacidad_visual": "una etapa con enfoque en accesibilidad visual"
+            "joven": "Joven",
+            "adulto_activo": "Adulto Activo",
+            "inmigrante": "Inmigrante",
+            "adulto_mayor": "Adulto Mayor",
+            "discapacidad_visual": "Baja Visión"
         }
-        return humanizado.get(etapa, "una etapa interesante de la vida")
+        return humanizado.get(etapa, "Perfil General")
     
     def _obtener_pregunta_por_id(self, pregunta_id: str) -> Optional[PreguntaOnboarding]:
         """Encuentra una pregunta por su ID"""
