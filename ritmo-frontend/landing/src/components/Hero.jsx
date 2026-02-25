@@ -1,7 +1,10 @@
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 import { FiHeart, FiCpu, FiShield } from 'react-icons/fi'
 
 export default function Hero() {
+  const navigate = useNavigate()
+  
   return (
     <section className="hero" id="hero">
 
@@ -41,7 +44,7 @@ export default function Hero() {
               className="btn-primary"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => window.location.href = '/login'}
+              onClick={() => navigate('/login')}
             >
               Comenzar ahora
               <span>→</span>

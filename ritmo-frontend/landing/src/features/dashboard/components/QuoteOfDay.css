@@ -1,0 +1,99 @@
+.quote-card {
+  background: linear-gradient(135deg, #8AAF8B 0%, #a8c8a9 100%);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 24px rgba(138, 175, 139, 0.3);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+  min-height: 180px;
+  justify-content: center;
+}
+
+.quote-card::before {
+  content: '"';
+  position: absolute;
+  top: -20px;
+  left: 20px;
+  font-size: 10rem;
+  font-family: Georgia, serif;
+  color: rgba(255, 255, 255, 0.1);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.quote-icon {
+  color: white;
+  animation: heartbeat 2s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  10%, 30% { transform: scale(1.1); }
+  20% { transform: scale(1.05); }
+}
+
+.quote-content {
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.quote-content.refreshing {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.quote-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+  line-height: 1.6;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.quote-refresh {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.quote-refresh:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.quote-refresh:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.quote-refresh:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.quote-refresh .spinning {
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

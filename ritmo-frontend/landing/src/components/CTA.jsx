@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 export default function CTA() {
+  const navigate = useNavigate()
+  
   return (
     <section className="section cta" id="cta">
       <motion.div
@@ -26,7 +29,7 @@ export default function CTA() {
             className="btn-primary"
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
-            onClick={() => window.location.href = '/login'}
+            onClick={() => navigate('/login')}
           >
             Iniciar sesión
             <span>→</span>

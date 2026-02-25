@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { FiSun, FiMoon } from 'react-icons/fi'
 import { ThemeContext } from '../App'
@@ -7,6 +8,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const { darkMode, toggleDark } = useContext(ThemeContext)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -39,7 +41,7 @@ export default function Navbar() {
           <button className="dark-toggle" onClick={toggleDark} aria-label="Cambiar tema">
             {darkMode ? <FiSun /> : <FiMoon />}
           </button>
-          <button className="btn-login" onClick={() => window.location.href = '/login'}>
+          <button className="btn-login" onClick={() => navigate('/login')}>
             Iniciar sesión
           </button>
         </div>

@@ -1,0 +1,210 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--color-bg);
+  transition: background 0.3s ease;
+}
+
+.dashboard-content {
+  flex: 1;
+  margin-left: 220px;
+  background: var(--dashboard-bg);
+  padding: 3rem 2.5rem;
+  min-height: 100vh;
+  transition: background 0.3s ease, margin-left 0.3s ease;
+}
+
+.dashboard-header {
+  margin-bottom: 2.5rem;
+}
+
+.greeting h1 {
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin: 0 0 0.75rem;
+  line-height: 1.2;
+  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-sage) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+[data-theme="dark"] .greeting h1 {
+  background: linear-gradient(135deg, #8AAF8B 0%, #a8c8a9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.wave {
+  display: inline-block;
+  animation: wave 2s ease-in-out infinite;
+  transform-origin: 70% 70%;
+}
+
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  10%, 30% { transform: rotate(14deg); }
+  20% { transform: rotate(-8deg); }
+  40% { transform: rotate(-4deg); }
+  50% { transform: rotate(10deg); }
+  60% { transform: rotate(0deg); }
+}
+
+.greeting p {
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 1.75rem;
+  font-weight: 500;
+}
+
+.streak-badges {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="dark"] .streak-badge {
+  background: var(--color-card);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.streak-badge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(138, 175, 139, 0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.streak-badge:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.streak-badge:hover::before {
+  opacity: 1;
+}
+
+.streak-badge.fire {
+  border-left: 4px solid #F59E0B;
+}
+
+.streak-badge.fire svg {
+  color: #F59E0B;
+}
+
+.streak-badge.heart {
+  border-left: 4px solid #EC4899;
+}
+
+.streak-badge.heart svg {
+  color: #EC4899;
+}
+
+.streak-badge strong {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.75rem;
+  align-items: start;
+}
+
+/* Asymmetric layout for youthful feel */
+.grid-left > :nth-child(1) {
+  transform: rotate(-0.5deg);
+}
+
+.grid-left > :nth-child(2) {
+  transform: rotate(0.5deg);
+}
+
+.grid-left > :nth-child(3) {
+  transform: rotate(-0.3deg);
+}
+
+.grid-right > :nth-child(1) {
+  transform: rotate(0.5deg);
+}
+
+.grid-right > :nth-child(2) {
+  transform: rotate(-0.5deg);
+}
+
+.grid-right > :nth-child(3) {
+  transform: rotate(0.3deg);
+}
+
+.grid-right > :nth-child(2) {
+  transform: rotate(-0.5deg);
+}
+
+.grid-left > :hover,
+.grid-right > :hover {
+  transform: rotate(0deg) translateY(-4px) !important;
+}
+
+.grid-left,
+.grid-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* Dashboard-specific color variables */
+:root,
+[data-theme="light"] {
+  --dashboard-bg: #FFF8F0;
+}
+
+[data-theme="dark"] {
+  --dashboard-bg: #0f1923;
+}
+
+/* Responsive */
+@media (max-width: 1280px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-content {
+    margin-left: 80px;
+    padding: 2rem 1.5rem;
+  }
+
+  .greeting h1 {
+    font-size: 2.25rem;
+  }
+
+  .streak-badges {
+    flex-direction: column;
+  }
+}
