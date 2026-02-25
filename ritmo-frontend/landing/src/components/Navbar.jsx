@@ -42,7 +42,7 @@ export default function Navbar() {
             {darkMode ? <FiSun /> : <FiMoon />}
           </button>
           <button className="btn-login" onClick={() => navigate('/login')}>
-            Iniciar sesión
+            Acceso
           </button>
         </div>
 

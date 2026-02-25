@@ -20,15 +20,25 @@
   width: 200%;
   height: 200%;
   background: radial-gradient(circle at 30% 50%, rgba(138, 175, 139, 0.08) 0%, transparent 50%),
-              radial-gradient(circle at 70% 50%, rgba(236, 72, 153, 0.08) 0%, transparent 50%);
+    radial-gradient(circle at 70% 50%, rgba(236, 72, 153, 0.08) 0%, transparent 50%);
   animation: float 20s ease-in-out infinite;
   pointer-events: none;
 }
 
 @keyframes float {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  33% { transform: translate(-2%, 2%) rotate(1deg); }
-  66% { transform: translate(2%, -2%) rotate(-1deg); }
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  33% {
+    transform: translate(-2%, 2%) rotate(1deg);
+  }
+
+  66% {
+    transform: translate(2%, -2%) rotate(-1deg);
+  }
 }
 
 .profile-selection-container {
@@ -74,8 +84,15 @@
 }
 
 @keyframes float-logo {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 .selection-header h1 {
@@ -190,8 +207,15 @@
 }
 
 @keyframes pulse-emoji {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 .profile-card:hover .profile-emoji {
@@ -292,4 +316,31 @@
   .profile-card {
     transform: rotate(0deg) !important;
   }
+}
+
+.profile-card.recommended {
+  z-index: 10;
+  transform: scale(1.02) !important;
+}
+
+.recommended-badge {
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 20;
+}
+
+.ritmo-logo-selection {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.1));
 }

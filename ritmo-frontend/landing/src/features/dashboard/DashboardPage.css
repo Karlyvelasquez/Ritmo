@@ -47,12 +47,32 @@
 }
 
 @keyframes wave {
-  0%, 100% { transform: rotate(0deg); }
-  10%, 30% { transform: rotate(14deg); }
-  20% { transform: rotate(-8deg); }
-  40% { transform: rotate(-4deg); }
-  50% { transform: rotate(10deg); }
-  60% { transform: rotate(0deg); }
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  10%,
+  30% {
+    transform: rotate(14deg);
+  }
+
+  20% {
+    transform: rotate(-8deg);
+  }
+
+  40% {
+    transform: rotate(-4deg);
+  }
+
+  50% {
+    transform: rotate(10deg);
+  }
+
+  60% {
+    transform: rotate(0deg);
+  }
 }
 
 .greeting p {
@@ -137,36 +157,36 @@
 }
 
 /* Asymmetric layout for youthful feel */
-.grid-left > :nth-child(1) {
+.grid-left> :nth-child(1) {
   transform: rotate(-0.5deg);
 }
 
-.grid-left > :nth-child(2) {
+.grid-left> :nth-child(2) {
   transform: rotate(0.5deg);
 }
 
-.grid-left > :nth-child(3) {
+.grid-left> :nth-child(3) {
   transform: rotate(-0.3deg);
 }
 
-.grid-right > :nth-child(1) {
+.grid-right> :nth-child(1) {
   transform: rotate(0.5deg);
 }
 
-.grid-right > :nth-child(2) {
+.grid-right> :nth-child(2) {
   transform: rotate(-0.5deg);
 }
 
-.grid-right > :nth-child(3) {
+.grid-right> :nth-child(3) {
   transform: rotate(0.3deg);
 }
 
-.grid-right > :nth-child(2) {
+.grid-right> :nth-child(2) {
   transform: rotate(-0.5deg);
 }
 
-.grid-left > :hover,
-.grid-right > :hover {
+.grid-left> :hover,
+.grid-right> :hover {
   transform: rotate(0deg) translateY(-4px) !important;
 }
 
@@ -206,5 +226,52 @@
 
   .streak-badges {
     flex-direction: column;
+  }
+}
+
+/* =========================================
+   PROFILE BANNER (inmigrante / adulto_mayor / visual)
+   ========================================= */
+.profile-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.35rem;
+  border-radius: 16px;
+  margin-bottom: 1.75rem;
+  color: white;
+}
+
+.profile-banner-emoji {
+  font-size: 2rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.profile-banner>div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.profile-banner strong {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: white;
+}
+
+.profile-banner p {
+  font-size: 0.87rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .profile-banner {
+    padding: 0.85rem 1rem;
+  }
+
+  .profile-banner-emoji {
+    font-size: 1.6rem;
   }
 }

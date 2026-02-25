@@ -4,7 +4,7 @@ import { FiHeart, FiCpu, FiShield } from 'react-icons/fi'
 
 export default function Hero() {
   const navigate = useNavigate()
-  
+
   return (
     <section className="hero" id="hero">
 

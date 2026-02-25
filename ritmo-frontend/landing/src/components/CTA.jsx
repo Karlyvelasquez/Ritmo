@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 export default function CTA() {
   const navigate = useNavigate()
-  
+
   return (
     <section className="section cta" id="cta">
       <motion.div

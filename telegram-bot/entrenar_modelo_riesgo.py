@@ -129,3 +129,29 @@ print("AUC ROC:", roc_auc_score(y_test, y_proba))
 # 7. Guardar modelo
 joblib.dump(modelo, "modelo_riesgo.pkl")
 print("\nModelo guardado como 'modelo_riesgo.pkl'")
+
+# Función para cargar el modelo entrenado
+def CargarModeloRiesgo():
+    """Carga el modelo de riesgo desde el archivo modelo_riesgo.pkl."""
+    import joblib
+    try:
+        modelo = joblib.load("modelo_riesgo.pkl")
+        print("Modelo cargado exitosamente.")
+        return modelo
+    except FileNotFoundError:
+        print("Error: El archivo modelo_riesgo.pkl no existe.")
+        return None
+
+# Función para extraer características de un usuario
+def extraer_caracteristicas_riesgo(usuario):
+    """Extrae las características necesarias para el modelo de riesgo de un usuario."""
+    return [
+        usuario.get("cumplimiento_porcentaje", 0),
+        usuario.get("dias_bien", 0),
+        usuario.get("dias_normal", 0),
+        usuario.get("dias_dificil", 0),
+        usuario.get("racha_actual_negativa", 0),
+        usuario.get("alertas_criticas", 0),
+        usuario.get("alertas_preocupantes", 0),
+        usuario.get("alertas_atencion", 0),
+    ]

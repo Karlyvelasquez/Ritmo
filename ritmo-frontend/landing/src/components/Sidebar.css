@@ -1,3 +1,45 @@
+/* Telegram button styles */
+
+/* Telegram button: default (light/dark) = dark text for contrast, visual mode = white */
+.telegram-link {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(90deg, #229ED9 0%, #0ea5e9 100%);
+  color: #1E3751 !important;
+  font-size: 0.97rem;
+  font-weight: 700;
+  border-radius: 12px;
+  margin: 0.5rem 0 0.5rem 0;
+  box-shadow: 0 2px 8px rgba(34, 158, 217, 0.10);
+  border: none;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+/* Telegram button in visual mode: force white text */
+.dashboard-visual-mode .telegram-link {
+  color: #fff !important;
+}
+
+.telegram-link:hover,
+.telegram-link:focus {
+  background: linear-gradient(90deg, #0ea5e9 0%, #229ED9 100%);
+  color: #fff;
+  transform: translateX(4px) scale(1.04);
+  text-decoration: none;
+  outline: 2px solid #229ED9;
+}
+
+.sidebar.collapsed .telegram-link span {
+  display: none;
+}
+
+.sidebar.collapsed .telegram-link {
+  justify-content: center;
+  padding: 0.85rem;
+}
+
 .sidebar {
   position: fixed;
   left: 0;

@@ -1,0 +1,150 @@
+/* =========================================
+   MODO ACCESIBILIDAD VISUAL
+   Alto contraste, tipografía grande, botones amplios
+   ========================================= */
+
+.dashboard-visual-mode {
+    /* Tamaño de fuente base aumentado */
+    font-size: 18px !important;
+}
+
+/* Greeting más grande */
+.dashboard-visual-mode .greeting h1 {
+    font-size: 2.2rem !important;
+    color: #0C1A2E !important;
+    font-weight: 800 !important;
+}
+
+[data-theme="dark"] .dashboard-visual-mode .greeting h1 {
+    color: #F0F9FF !important;
+}
+
+.dashboard-visual-mode .greeting p {
+    font-size: 1.1rem !important;
+    color: #1E3A5F !important;
+    font-weight: 500 !important;
+}
+
+[data-theme="dark"] .dashboard-visual-mode .greeting p {
+    color: #BAE6FD !important;
+}
+
+/* Streak badges más grandes */
+.dashboard-visual-mode .streak-badge {
+    padding: 0.85rem 1.35rem !important;
+    font-size: 1rem !important;
+    border-radius: 14px !important;
+    font-weight: 700 !important;
+}
+
+.dashboard-visual-mode .streak-badge.fire {
+    background: #FEF3C7 !important;
+    color: #92400E !important;
+    border: 2px solid #F59E0B !important;
+}
+
+.dashboard-visual-mode .streak-badge.heart {
+    background: #EDE9FE !important;
+    color: #4C1D95 !important;
+    border: 2px solid #8B5CF6 !important;
+}
+
+/* Cards con borde más visible */
+.dashboard-visual-mode .card,
+.dashboard-visual-mode [class*="-card"],
+.dashboard-visual-mode [class*="card-"] {
+    border: 2px solid #0EA5E9 !important;
+    box-shadow: 0 4px 20px rgba(14, 165, 233, 0.15) !important;
+}
+
+/* Textos más oscuros para mayor contraste */
+.dashboard-visual-mode h3,
+.dashboard-visual-mode h4,
+.dashboard-visual-mode strong,
+.dashboard-visual-mode b {
+    color: #0C1A2E !important;
+    font-size: 1.1em !important;
+}
+
+[data-theme="dark"] .dashboard-visual-mode h3,
+[data-theme="dark"] .dashboard-visual-mode h4,
+[data-theme="dark"] .dashboard-visual-mode strong {
+    color: #F0F9FF !important;
+}
+
+/* Textos secundarios con mejor contraste */
+.dashboard-visual-mode p,
+.dashboard-visual-mode span:not([class*="badge"]):not([class*="emoji"]) {
+    font-size: 1em !important;
+    color: #1E3A5F !important;
+    line-height: 1.75 !important;
+}
+
+[data-theme="dark"] .dashboard-visual-mode p,
+[data-theme="dark"] .dashboard-visual-mode span:not([class*="badge"]):not([class*="emoji"]) {
+    color: #BAE6FD !important;
+}
+
+/* Botones más grandes y visibles */
+.dashboard-visual-mode button {
+    padding: 0.85rem 1.5rem !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    border-radius: 14px !important;
+    min-height: 52px !important;
+    border-width: 2px !important;
+}
+
+/* Checkboxes y elementos interactivos más grandes */
+.dashboard-visual-mode input[type="checkbox"] {
+    width: 24px !important;
+    height: 24px !important;
+}
+
+/* Iconos de hábitos más grandes */
+.dashboard-visual-mode .habit-item {
+    padding: 0.9rem 1.1rem !important;
+    font-size: 1rem !important;
+    min-height: 54px !important;
+}
+
+/* Chat input más grande */
+.dashboard-visual-mode .chat-input,
+.dashboard-visual-mode input[type="text"],
+.dashboard-visual-mode textarea {
+    font-size: 1rem !important;
+    padding: 0.9rem 1.1rem !important;
+    min-height: 52px !important;
+    border: 2px solid #0EA5E9 !important;
+    border-radius: 14px !important;
+}
+
+/* Profile banner destacado */
+.dashboard-visual-mode .profile-banner {
+    font-size: 1.05rem !important;
+    padding: 1.25rem 1.5rem !important;
+    border: 2px solid rgba(255, 255, 255, 0.4) !important;
+}
+
+.dashboard-visual-mode .profile-banner strong {
+    color: white !important;
+    font-size: 1.15rem !important;
+}
+
+.dashboard-visual-mode .profile-banner p {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: 0.95rem !important;
+}
+
+/* Cursor más grande en elementos clicables */
+.dashboard-visual-mode button,
+.dashboard-visual-mode [role="button"],
+.dashboard-visual-mode a {
+    cursor: pointer;
+}
+
+.dashboard-visual-mode button:focus,
+.dashboard-visual-mode a:focus {
+    outline: 3px solid #0EA5E9 !important;
+    outline-offset: 3px !important;
+}

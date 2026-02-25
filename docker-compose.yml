@@ -1,0 +1,15 @@
+services:
+  ritmo-backend:
+    build:
+      context: ./ritmo-backend
+    container_name: ritmo-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=gpt-4
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+    volumes:
+      - ./ritmo-backend:/app
+    restart: unless-stopped

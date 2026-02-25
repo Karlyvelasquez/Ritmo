@@ -15,6 +15,11 @@ import './DashboardPage.css'
 export const ThemeContext = createContext()
 
 export default function DashboardPage() {
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem('ritmo_user')
+    return saved ? JSON.parse(saved) : null
+  })
+
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('ritmo-dark-mode')
     return saved ? JSON.parse(saved) : false
@@ -24,11 +29,13 @@ export default function DashboardPage() {
   const getGreeting = () => {
     const hour = new Date().getHours()
     if (hour < 6) return "¿Aún despierto/a?"
-    if (hour < 12) return "Hooolaaa"
-    if (hour < 18) return "Hey"
-    if (hour < 22) return "Buenas noches"
+    if (hour < 12) return `¡Buenos días, ${userName}! ☀️`
+    if (hour < 18) return `¡Buenas tardes, ${userName}! 👋`
+    if (hour < 22) return `¡Buenas noches, ${userName}! 🌙`
     return "¿No puedes dormir?"
   }
+
+  const userName = user?.nombre?.split(' ')[0] || 'Amigo'
 
   const getGreetingEmoji = () => {
     const hour = new Date().getHours()
@@ -62,14 +69,14 @@ export default function DashboardPage() {
     <ThemeContext.Provider value={{ darkMode, toggleDark }}>
       <div className="dashboard-layout">
         <Sidebar darkMode={darkMode} toggleDark={toggleDark} />
-      
+
         <main className="dashboard-content">
           <div className="dashboard-header">
             <div className="greeting">
-              <h1>{getGreeting()}, {userData.name} <span className="wave">{getGreetingEmoji()}</span></h1>
+              <h1>{getGreeting()} <span className="wave">{getGreetingEmoji()}</span></h1>
               <p>{getWelcomeMessage()}</p>
             </div>
-            
+
             <div className="streak-badges">
               <div className="streak-badge fire">
                 <Flame size={20} />
@@ -82,21 +89,21 @@ export default function DashboardPage() {
             </div>
           </div>
 
-        <div className="dashboard-grid">
-          <div className="grid-left">
-            <QuoteOfDay />
-            <WeekMoodChart />
-            <DailyChallenge />
-            <MusicPlaylists />
+          <div className="dashboard-grid">
+            <div className="grid-left">
+              <QuoteOfDay />
+              <WeekMoodChart />
+              <DailyChallenge />
+              <MusicPlaylists />
+            </div>
+
+            <div className="grid-right">
+              <HabitsToday />
+              <QuickTip />
+              <Recommendations />
+              <ChatPreview />
+            </div>
           </div>
-          
-          <div className="grid-right">
-            <HabitsToday />
-            <QuickTip />
-            <Recommendations />
-            <ChatPreview />
-          </div>
-        </div>
         </main>
       </div>
     </ThemeContext.Provider>
