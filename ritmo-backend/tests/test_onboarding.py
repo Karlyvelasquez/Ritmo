@@ -20,12 +20,13 @@ class TestOnboardingAgent:
     
     def test_inicializar_banco_preguntas(self):
         """Test que el banco de preguntas se inicializa correctamente"""
-        assert len(onboarding_agent.banco_preguntas) == 5
+        assert len(onboarding_agent.banco_preguntas) == 6  # Se añadió discapacidad_visual
         assert "edad_contexto" in onboarding_agent.banco_preguntas
         assert "tecnologia" in onboarding_agent.banco_preguntas
         assert "familia" in onboarding_agent.banco_preguntas
         assert "trabajo" in onboarding_agent.banco_preguntas
         assert "tiempo_libre" in onboarding_agent.banco_preguntas
+        assert "discapacidad_visual" in onboarding_agent.banco_preguntas
     
     def test_iniciar_onboarding(self):
         """Test inicialización de onboarding"""
@@ -38,7 +39,7 @@ class TestOnboardingAgent:
         assert len(estado.preguntas_hechas) == 0
         assert len(estado.respuestas) == 0
         assert not estado.completado
-        assert len(estado.scores) == 4  # joven, adulto_activo, inmigrante, persona_mayor
+        assert len(estado.scores) == 4  # joven, adulto_activo, inmigrante, mayor_70
     
     def test_obtener_primera_pregunta(self):
         """Test obtención de primera pregunta"""
@@ -68,26 +69,43 @@ class TestOnboardingAgent:
         assert estado_actualizado.respuestas[0] == respuesta
         assert estado_actualizado.scores["joven"] > 0
     
-    def test_clasificacion_con_confianza_alta(self):
-        """Test clasificación cuando hay confianza alta"""
+    def test_procesar_respuesta_discapacidad_visual(self):
+        """Test procesamiento de respuesta que indica discapacidad visual"""
+        estado = onboarding_agent.iniciar_onboarding("test_123", "Usuario Test", "sesion_123")
+
+        # Simular primera pregunta
+        _, estado = onboarding_agent.obtener_siguiente_pregunta(estado)
+
+        # Respuesta típica de discapacidad visual
+        respuesta = "Prefiero usar lectores de pantalla y tengo dificultad para leer textos pequeños."
+        mensaje, estado_actualizado = onboarding_agent.procesar_respuesta(respuesta, estado)
+
+        assert len(estado_actualizado.respuestas) == 1
+        assert estado_actualizado.respuestas[0] == respuesta
+        # Simulación: Verificar que la categoría discapacidad_visual se detecta
+        assert "discapacidad_visual" in estado_actualizado.scores
+
+    @patch("agents.onboarding.OnboardingAgent._analizar_respuesta_gpt", return_value="discapacidad_visual")
+    def test_clasificacion_gpt(self, mock_gpt):
+        """Test clasificación usando GPT-4"""
         estado = OnboardingEstado(
             sesion_id="test_sesion",
             telegram_id="test_123",
             nombre="Test User",
             pregunta_actual=4,
-            scores={
-                "joven": 3.0,
-                "adulto_activo": 0.5,
-                "inmigrante": 0.2,
-                "persona_mayor": 0.1
-            }
+            respuestas=[
+                "Tengo dificultad para leer textos pequeños.",
+                "Prefiero usar herramientas de accesibilidad."
+            ],
+            scores={}
         )
-        
+
         resultado = onboarding_agent._clasificar_usuario(estado)
-        
-        assert resultado.etapa_detectada == "joven"
+
+        assert resultado.etapa_detectada == "discapacidad_visual"
         assert resultado.puede_clasificar
-        assert resultado.confianza > onboarding_agent.umbral_confianza
+        assert resultado.confianza == 1.0  # Simulación de confianza alta
+        mock_gpt.assert_called_once()
 
 
 class TestOnboardingSessionManager:

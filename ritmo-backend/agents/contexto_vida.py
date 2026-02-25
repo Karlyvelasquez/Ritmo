@@ -63,6 +63,7 @@ def _get_reglas_por_etapa(etapa: str, modo_comunicacion: str) -> str:
     Returns:
         str: Reglas formateadas para la etapa específica
     """
+    logger.debug(f"Validating etapa: {etapa}")
     reglas_por_etapa: Dict[str, Callable[[], str]] = {
         'mayor_70': _reglas_mayor_70,
         'joven': _reglas_joven,

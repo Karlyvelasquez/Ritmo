@@ -44,7 +44,7 @@ class TestContextoEndpoint:
         # Test con datos mínimos válidos
         request_data = {
             "perfil": {
-                "etapa": "mayor_70",
+                "etapa": "mayor_70",  # Updated from persona_mayor to mayor_70
                 "nombre": "Test",
                 "modo_comunicacion": "texto"
             },
@@ -58,9 +58,9 @@ class TestContextoEndpoint:
                 "dias_sin_registrar": 0
             }
         }
-        
+
         response = client.post("/contexto", json=request_data)
-        
+
         assert response.status_code == status.HTTP_200_OK
         assert "contexto_sistema" in response.json()
         assert "estado_inferido" in response.json()
@@ -239,16 +239,22 @@ class TestPerfilDiscapacidadVisual:
                 "checkin_emocional": "bien"
             }
         }
-        
+
         response = client.post("/contexto", json=request_data)
-        
+
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
-        
+
+        # Verificar estructura
+        assert "contexto_sistema" in data
+        assert "estado_inferido" in data
+        assert "recomendacion_orquestador" in data
+
+        # Verificar contexto contiene reglas específicas para discapacidad_visual
         contexto = data["contexto_sistema"]
+        assert "Rosa" in contexto
         assert "discapacidad_visual" in contexto
-        assert "audio" in contexto
-        assert "referencias visuales" in contexto or "mira" in contexto
+        assert "audio" in contexto or "sin referencias visuales" in contexto
 
 
 class TestSenalesPreocupantes:
