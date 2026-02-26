@@ -2,17 +2,10 @@ from typing import Dict, List, Optional, Tuple
 import random
 import logging
 from dataclasses import dataclass
-import openai
-import os
 
 from models.schemas import OnboardingEstado, PreguntaOnboarding
 
 logger = logging.getLogger(__name__)
-
-# Configuración de OpenAI
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-openai.api_key = OPENAI_API_KEY
 
 @dataclass
 class ClasificacionResult:
@@ -41,14 +34,26 @@ class OnboardingAgent:
                     id="edad_01",
                     categoria="edad_contexto",
                     pregunta="¿En qué momento de tu vida te encuentras ahora? Cuéntame un poco sobre tu situación actual.",
-                    palabras_clave={},
+                    palabras_clave={
+                        "joven": ["estudiante", "universidad", "carrera", "primer empleo", "vivo con mis padres", "soltero", "sin hijos", "estudiando", "20 años", "21 años", "22 años", "23 años", "24 años", "recién graduado", "busco trabajo"],
+                        "adulto_activo": ["trabajo estable", "casa propia", "hipoteca", "carrera consolidada", "ascenso profesional", "experiencia laboral", "años trabajando", "equipo a cargo", "responsabilidades laborales"],
+                        "inmigrante": ["mudé", "país", "extranjero", "adaptando", "nueva cultura", "diferente país", "migré", "emigré", "inmigré", "visa", "residencia", "papeles", "otro lugar", "vine de", "llegué de"],
+                        "adulto_mayor": ["jubilado", "jubilación", "pensión", "nietos", "medicinas", "salud", "tercera edad", "60 años", "65 años", "70 años", "retirado", "abuelo", "abuela", "ya no trabajo", "tiempo libre"],
+                        "discapacidad_visual": ["vista", "ojos", "leer", "dificultad visual", "gafas gruesas", "ceguera", "baja visión", "no veo bien"]
+                    },
                     peso=1.5
                 ),
                 PreguntaOnboarding(
                     id="edad_02",
                     categoria="edad_contexto",
                     pregunta="¿Qué planes o metas tienes para los próximos años?",
-                    palabras_clave={},
+                    palabras_clave={
+                        "joven": ["terminar carrera", "conseguir trabajo", "independizarme", "viajar", "conocer gente", "empezar a trabajar", "graduarme", "primer empleo", "salir de casa"],
+                        "adulto_activo": ["ascenso", "crecimiento profesional", "estabilidad económica", "plan de pensiones", "inversiones"],
+                        "inmigrante": ["establecerme", "traer familia", "regularizar situación", "aprender idioma", "conseguir trabajo mejor", "papeles en regla", "residencia permanente"],
+                        "adulto_mayor": ["disfrutar", "tranquilidad", "salud", "tiempo con familia", "hobbies", "viajar sin prisa", "cuidar salud", "nietos", "pasar tiempo"],
+                        "discapacidad_visual": ["accesibilidad", "tecnología adaptada", "mantener independencia", "herramientas visuales"]
+                    },
                     peso=1.0
                 )
             ],
@@ -57,14 +62,26 @@ class OnboardingAgent:
                     id="migra_01",
                     categoria="inmigracion",
                     pregunta="¿Vives en tu país de origen o estás adaptándote a un nuevo lugar?",
-                    palabras_clave={},
+                    palabras_clave={
+                        "inmigrante": ["nuevo lugar", "adaptándome", "otro país", "extranjero", "fuera de casa", "emigré", "mudé", "visa", "residencia", "distinto país", "nueva cultura", "llegué aquí", "vine de", "mi país", "acento"],
+                        "joven": ["país de origen", "mismo lugar", "aquí nací", "toda la vida aquí", "local"],
+                        "adulto_activo": ["mismo país", "siempre aquí", "de aquí", "ciudadano"],
+                        "adulto_mayor": ["toda la vida aquí", "mismo lugar siempre", "nacido aquí", "nunca me fui"],
+                        "discapacidad_visual": ["conocido", "familiar el lugar", "me oriento bien"]
+                    },
                     peso=2.0
                 ),
                 PreguntaOnboarding(
                     id="migra_02",
                     categoria="inmigracion",
                     pregunta="Si estás fuera de casa, ¿cuál ha sido el mayor reto al adaptarte a esta nueva cultura?",
-                    palabras_clave={},
+                    palabras_clave={
+                        "inmigrante": ["idioma", "costumbres", "documentos", "nostalgia", "familia lejos", "diferencias culturales", "adaptación", "burocracia", "trámites", "extraño mi país", "cultura diferente", "no entiendo", "acostumbrarme"],
+                        "joven": ["no aplica", "no me fui", "siempre aquí"],
+                        "adulto_activo": ["no he emigrado", "siempre local", "no aplica"],
+                        "adulto_mayor": ["nunca me fui", "local", "no aplica"],
+                        "discapacidad_visual": ["accesibilidad", "movilidad", "orientación"]
+                    },
                     peso=1.8
                 )
             ],
@@ -73,14 +90,26 @@ class OnboardingAgent:
                     id="tech_01",
                     categoria="tecnologia",
                     pregunta="¿Cómo te adaptas a las nuevas tecnologías? ¿Te resulta fácil o complicado?",
-                    palabras_clave={},
+                    palabras_clave={
+                        "joven": ["fácil", "rápido", "intuitivo", "sin problemas", "nativo digital", "me encanta", "siempre uso", "redes sociales", "apps"],
+                        "adulto_activo": ["me esfuerzo", "gradualmente", "con práctica", "cuando necesito"],
+                        "adulto_mayor": ["complicado", "difícil", "lento", "confuso", "prefiero lo tradicional", "me cuesta", "necesito ayuda", "no entiendo", "me pierdo"],
+                        "inmigrante": ["diferente", "distinto a mi país", "adaptándome", "aquí es diferente"],
+                        "discapacidad_visual": ["accesible", "lector de pantalla", "ayudas técnicas", "adaptaciones", "voz"]
+                    },
                     peso=1.2
                 ),
                 PreguntaOnboarding(
                     id="tech_02",
                     categoria="tecnologia",
                     pregunta="¿Prefieres hacer las cosas de forma digital o tradicional? ¿Por qué?",
-                    palabras_clave={},
+                    palabras_clave={
+                        "joven": ["digital", "app", "móvil", "online", "internet", "rápido", "cómodo"],
+                        "adulto_activo": ["combinación", "depende", "ambos", "híbrido"],
+                        "adulto_mayor": ["tradicional", "papel", "presencial", "persona a persona", "como siempre"],
+                        "inmigrante": ["como en mi país", "diferente aquí"],
+                        "discapacidad_visual": ["accesible", "que funcione", "compatible"]
+                    },
                     peso=1.0
                 )
             ],
@@ -89,14 +118,26 @@ class OnboardingAgent:
                     id="work_01",
                     categoria="trabajo",
                     pregunta="¿A qué te dedicas actualmente? Cuéntame si estudias, trabajas o ya estás disfrutando de tu jubilación.",
-                    palabras_clave={},
+                    palabras_clave={
+                        "joven": ["estudio", "estudiante", "universidad", "carrera", "primer empleo", "prácticas", "becario"],
+                        "adulto_activo": ["trabajo", "empleado", "profesional", "empresa", "oficina", "jefe", "equipo", "proyecto"],
+                        "adulto_mayor": ["jubilado", "jubilación", "pensión", "retirado", "ya no trabajo"],
+                        "inmigrante": ["buscando trabajo", "trabajos temporales", "validar título", "empleo básico"],
+                        "discapacidad_visual": ["trabajo adaptado", "tecnología asistiva"]
+                    },
                     peso=1.6
                 ),
                 PreguntaOnboarding(
                     id="work_02",
                     categoria="trabajo",
                     pregunta="¿Sientes que tu rutina diaria es muy exigente o más bien tranquila?",
-                    palabras_clave={},
+                    palabras_clave={
+                        "joven": ["exigente", "estresante", "mucho que estudiar", "presión"],
+                        "adulto_activo": ["muy exigente", "mucha presión", "responsabilidades", "ocupado", "horarios apretados"],
+                        "adulto_mayor": ["tranquila", "relajada", "sin prisa", "a mi ritmo", "peaceful"],
+                        "inmigrante": ["incierta", "adaptándome", "cambiante"],
+                        "discapacidad_visual": ["adaptada", "organizada", "rutinaria"]
+                    },
                     peso=1.2
                 )
             ],
@@ -105,14 +146,26 @@ class OnboardingAgent:
                     id="free_01",
                     categoria="tiempo_libre",
                     pregunta="¿Qué haces en tu tiempo libre? ¿Cuáles son tus actividades favoritas?",
-                    palabras_clave={},
+                    palabras_clave={
+                        "joven": ["videojuegos", "redes sociales", "fiesta", "amigos", "deportes", "música", "netflix"],
+                        "adulto_activo": ["familia", "ejercicio", "leer", "cocinar", "series", "hobbies", "tiempo con hijos"],
+                        "adulto_mayor": ["jardín", "nietos", "pasear", "leer", "televisión", "radio", "visitas"],
+                        "inmigrante": ["contactar familia", "videollamadas", "buscar comunidad"],
+                        "discapacidad_visual": ["audiolibros", "radio", "música", "actividades auditivas"]
+                    },
                     peso=1.1
                 ),
                 PreguntaOnboarding(
                     id="free_02",
                     categoria="tiempo_libre",
                     pregunta="¿Te gusta aprender cosas nuevas por internet o prefieres actividades más físicas/sociales?",
-                    palabras_clave={},
+                    palabras_clave={
+                        "joven": ["internet", "online", "cursos", "youtube", "tutorials"],
+                        "adulto_activo": ["combinación", "ambos", "depende del tema"],
+                        "adulto_mayor": ["físicas", "sociales", "presencial", "grupo", "persona a persona"],
+                        "inmigrante": ["aprender idioma", "conocer gente"],
+                        "discapacidad_visual": ["audio", "podcasts", "contenido accesible"]
+                    },
                     peso=1.0
                 )
             ],
@@ -121,14 +174,26 @@ class OnboardingAgent:
                     id="visual_01",
                     categoria="discapacidad_visual",
                     pregunta="¿Tienes alguna dificultad para leer textos pequeños o prefieres que la interfaz sea muy clara y con voz?",
-                    palabras_clave={},
+                    palabras_clave={
+                        "discapacidad_visual": ["sí", "si", "dificultad", "problema", "textos pequeños", "interfaz clara", "voz", "lector", "pantalla", "ampliador", "gafas gruesas", "baja visión"],
+                        "joven": ["no", "bien", "normal", "sin problemas"],
+                        "adulto_activo": ["no", "normal", "bien"],
+                        "adulto_mayor": ["algo", "gafas", "letra grande", "presbycia"],
+                        "inmigrante": ["normal", "bien"]
+                    },
                     peso=1.5
                 ),
                 PreguntaOnboarding(
                     id="visual_02",
                     categoria="discapacidad_visual",
                     pregunta="¿Usas habitualmente herramientas de accesibilidad en tu móvil u ordenador?",
-                    palabras_clave={},
+                    palabras_clave={
+                        "discapacidad_visual": ["sí", "si", "lector de pantalla", "ampliador", "contraste", "voz", "talkback", "voiceover", "jaws", "nvda"],
+                        "joven": ["no", "no necesito"],
+                        "adulto_activo": ["no", "no uso"],
+                        "adulto_mayor": ["no", "no sé qué es"],
+                        "inmigrante": ["no", "no conozco"]
+                    },
                     peso=1.3
                 )
             ]
@@ -265,72 +330,55 @@ class OnboardingAgent:
         return random.choice(candidatas)
     
     def _analizar_respuesta(self, respuesta: str, pregunta: PreguntaOnboarding) -> Dict[str, float]:
-        """Analiza una respuesta utilizando GPT-4 y devuelve scores por etapa"""
+        """Analiza una respuesta usando coincidencias de palabras clave y devuelve scores por etapa"""
         
         # Etapas válidas para clasificación
         etapas_validas = ["joven", "adulto_activo", "inmigrante", "adulto_mayor", "discapacidad_visual"]
-
-        if pregunta.categoria == "discapacidad_visual":
-            respuesta_lower = respuesta.lower()
-            afirmativas = ["sí", "si", "claro", "por supuesto", "afirmativo", "tengo", "uso", "prefiero", "dificultad", "problema", "lector", "pantalla", "ampliador", "accesibilidad", "baja visión", "ceguera"]
-            if any(palabra in respuesta_lower for palabra in afirmativas):
-                return {etapa: (1.0 if etapa == "discapacidad_visual" else 0.0) for etapa in etapas_validas}        
-
-
-        try:
-            prompt = f"""Analiza esta respuesta del usuario para clasificarlo en un perfil.
-            
-Pregunta realizada: {pregunta.pregunta}
-Respuesta del usuario: {respuesta}
-
-Criterios de clasificación (Prioriza los rasgos específicos):
-1. 'inmigrante': Menciona mudanza, vivir en otro país, nostalgia, retos de adaptación cultural, trámites migratorios o acento/jerga de otro lugar.
-2. 'adulto_mayor': Menciona jubilación, nietos, medicación, salud de la edad, tiempo libre post-trabajo o dificultad técnica por edad (>65 años).
-3. 'discapacidad_visual': Menciona dificultad significativa para ver, uso de lectores de pantalla, ceguera o fatiga visual extrema.
-4. 'joven': Estudiante, primer empleo, vive con padres, lenguaje informal, soltero sin hijos (<25 años).
-5. 'adulto_activo': Etapa intermedia (30-60 años), carrera profesional estable, hijos a cargo, hipoteca, vida laboral activa. 
-   REGLA DE ORO: Solo asigna score alto aquí si NO hay rasgos claros de los perfiles anteriores.
-
-Responde SOLO un JSON con scores de 0.0 a 1.0 para cada categoría:
-{{"joven": 0.0, "adulto_activo": 0.0, "inmigrante": 0.0, "adulto_mayor": 0.0, "discapacidad_visual": 0.0}}"""
-            
-            completion = openai.ChatCompletion.create(
-                model=OPENAI_MODEL,
-                messages=[
-                    {"role": "system", "content": "Eres un experto psicólogo y analista de perfiles. Tu misión es detectar rasgos específicos que diferencien a los usuarios. Siempre respondes con JSON sólido."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.2
-            )
-
-            # Procesar la respuesta de GPT-4
-            gpt_response = completion['choices'][0]['message']['content'].strip()
-            if "```json" in gpt_response:
-                gpt_response = gpt_response.split("```json")[1].split("```")[0].strip()
-            
-            logger.debug(f"Respuesta GPT-4: {gpt_response}")
-            
-            # Intentar parsear como JSON
-            import json
-            try:
-                scores = json.loads(gpt_response)
-                # Validar que tenga todas las etapas y valores válidos
-                valid_scores = {}
-                for etapa in etapas_validas:
-                    if etapa in scores and isinstance(scores[etapa], (int, float)):
-                        valid_scores[etapa] = max(0.0, min(1.0, float(scores[etapa])))
-                    else:
-                        valid_scores[etapa] = 0.0
-                return valid_scores
-            except json.JSONDecodeError:
-                logger.warning(f"GPT-4 no devolvió JSON válido: {gpt_response}")
-                # Fallback: buscar etapas mencionadas en el texto
-                scores = {etapa: 0.0 for etapa in etapas_validas}
-                return scores
-            
-        except Exception as e:
-            logger.error(f"Error al analizar respuesta con GPT-4: {e}")
-            return {etapa: 0.0 for etapa in etapas_validas}
+        
+        # Inicializar scores en 0
+        scores = {etapa: 0.0 for etapa in etapas_validas}
+        
+        # Convertir respuesta a minúsculas para comparación
+        respuesta_lower = respuesta.lower()
+        
+        # Analizar coincidencias con palabras clave de la pregunta
+        for etapa, palabras_clave in pregunta.palabras_clave.items():
+            if etapa in etapas_validas:
+                coincidencias = 0
+                palabras_encontradas = []
+                
+                for palabra_clave in palabras_clave:
+                    if palabra_clave.lower() in respuesta_lower:
+                        coincidencias += 1
+                        palabras_encontradas.append(palabra_clave)
+                
+                # Calcular score basado en coincidencias
+                if len(palabras_clave) > 0:
+                    score_base = coincidencias / len(palabras_clave)
+                    
+                    # Bonus por coincidencias múltiples (más específico)
+                    if coincidencias > 1:
+                        score_base += 0.3 * (coincidencias - 1)
+                    
+                    # Bonus extra para perfiles específicos (inmigrante, adulto_mayor, discapacidad_visual)
+                    if etapa in ["inmigrante", "adulto_mayor", "discapacidad_visual"] and coincidencias > 0:
+                        score_base += 0.2  # Boost para perfiles específicos
+                    
+                    scores[etapa] += score_base
+                    
+                    if palabras_encontradas:
+                        logger.debug(f"Etapa {etapa}: {len(palabras_encontradas)} coincidencias: {palabras_encontradas}")
+        
+        # Normalizar scores para que estén entre 0 y 1
+        max_score = max(scores.values()) if scores.values() else 0
+        if max_score > 1.0:
+            for etapa in scores:
+                scores[etapa] = min(1.0, scores[etapa])
+        
+        # Logging para debug
+        logger.debug(f"Análisis de respuesta '{respuesta[:50]}...': {scores}")
+        
+        return scores
     
     def _clasificar_usuario(self, estado: OnboardingEstado) -> ClasificacionResult:
         """Clasifica al usuario basado en las respuestas actuales"""
@@ -348,18 +396,26 @@ Responde SOLO un JSON con scores de 0.0 a 1.0 para cada categoría:
         
         # Calcular confianza (diferencia entre primero y segundo lugar)
         if score_max > 0:
-            confianza = (score_max - score_segundo) / score_max
+            confianza = (score_max - score_segundo) / score_max if score_max > 0 else 0
         else:
             confianza = 0.0
         
-        # Determinar si puede clasificar
-        # Bajamos el umbral para permitir clasificaciones más rápidas si hay señales claras
+        # Determinar si puede clasificar - umbrales más estrictos para adulto_activo
+        umbral_minimo = 0.3 if etapa_ganadora == "adulto_activo" else 0.2
+        umbral_confianza = 0.4 if etapa_ganadora == "adulto_activo" else self.umbral_confianza
+        
         puede_clasificar = (
-            score_max > 0.4 and  # Score mínimo acumulado
-            confianza >= self.umbral_confianza
+            score_max >= umbral_minimo and
+            confianza >= umbral_confianza
         )
         
-        razon = f"Max: {etapa_ganadora}({score_max:.2f}), Confianza: {confianza:.2f}"
+        # Si no hay suficiente información específica, 'joven' es más neutral que 'adulto_activo'
+        if not puede_clasificar and score_max < 0.1:
+            etapa_ganadora = "joven"  # Más neutral que adulto_activo
+            score_max = 0.1
+            confianza = 0.1
+        
+        razon = f"Max: {etapa_ganadora}({score_max:.2f}), Confianza: {confianza:.2f}, Umbral: {umbral_minimo}"
         
         resultado = ClasificacionResult(
             etapa_detectada=etapa_ganadora,
@@ -369,7 +425,7 @@ Responde SOLO un JSON con scores de 0.0 a 1.0 para cada categoría:
             razon=razon
         )
         
-        logger.info(f"Clasificación actual: {etapa_ganadora} (conf: {confianza:.2f})")
+        logger.info(f"Clasificación actual: {etapa_ganadora} (conf: {confianza:.2f}, score: {score_max:.2f})")
         return resultado
     
     def _finalizar_onboarding(self, estado: OnboardingEstado) -> Tuple[str, OnboardingEstado]:
@@ -386,9 +442,9 @@ Responde SOLO un JSON con scores de 0.0 a 1.0 para cada categoría:
         if resultado.puede_clasificar:
             mensaje = f"¡Perfecto! He podido conocerte mejor. Basándome en lo que me has contado, te he asignado el perfil de {self._humanizar_etapa(resultado.etapa_detectada)}.\n\nEste perfil está diseñado especialmente para personas en tu situación actual."
         else:
-            # En caso de duda, el perfil activo es el más polivalente
-            estado.etapa_detectada = "adulto_activo"
-            mensaje = "¡Gracias por compartir conmigo! He configurado un perfil estándar de Adulto Activo para ti, que podremos ajustar más adelante si lo necesitas."
+            # Si no hay confianza suficiente, usar el perfil con mayor score pero avisar
+            # Ya no usar automáticamente "adulto_activo"
+            mensaje = f"Gracias por compartir conmigo. He configurado el perfil de {self._humanizar_etapa(resultado.etapa_detectada)} basándome en tus respuestas.\n\nSi sientes que no es el adecuado, podrás ajustarlo más adelante."
         
         logger.info(f"Onboarding finalizado como: {estado.etapa_detectada}")
         return mensaje, estado

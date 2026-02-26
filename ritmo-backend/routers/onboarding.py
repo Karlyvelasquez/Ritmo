@@ -162,16 +162,12 @@ async def procesar_respuesta(request: OnboardingRespuesta) -> OnboardingResponse
         # 4. Guardar estado actualizado
         session_manager.guardar_estado(request.sesion_id, estado_actualizado)
         
-        # 5. Si completó el onboarding, crear usuario
+        # 5. Si completó el onboarding, crear usuario OBLIGATORIAMENTE
         codigo_secreto = None
         if estado_actualizado.completado:
-            # Generar código siempre, incluso si Supabase falla
-            import random
-            codigo_fallback = f"{random.randint(1000, 9999):04d}"  # Evitar 0000
-            usuario_creado = False
-            
             try:
-                # Crear usuario en la base de datos
+                # Crear usuario en la base de datos (OBLIGATORIO)
+                logger.info(f"Intentando crear usuario: {estado_actualizado.telegram_id}")
                 usuario = await crear_usuario(
                     nombre=estado_actualizado.nombre,
                     etapa_vida=estado_actualizado.etapa_detectada,
@@ -181,34 +177,29 @@ async def procesar_respuesta(request: OnboardingRespuesta) -> OnboardingResponse
                 
                 if usuario and usuario.codigo_secreto:
                     codigo_secreto = usuario.codigo_secreto
-                    usuario_creado = True
-                    logger.info(f"Usuario creado exitosamente en Supabase: {usuario.id}")
+                    logger.info(f"Usuario creado exitosamente: {usuario.id} con código: {codigo_secreto}")
+                    
+                    # Mensaje de éxito
+                    mensaje_final = f"{mensaje_respuesta}\n\n🎉 ¡Perfecto! Tu perfil ha sido creado exitosamente.\n\n🔐 Tu código secreto es: {codigo_secreto}\n\nEste código es muy importante. Guárdalo bien porque lo necesitarás para identificarte en Telegram y acceder a todas las funciones de RITMO.\n\n¡Bienvenido/a a RITMO! Estoy aquí para acompañarte. 🚀"
+                    
+                    # Limpiar sesión completada SOLO si se guardó exitosamente
+                    session_manager.eliminar_sesion(request.sesion_id)
                 else:
-                    # Supabase devolvió vacío o sin código: usar fallback
-                    codigo_secreto = codigo_fallback
-                    logger.warning("Supabase no devolvió usuario válido, usando código local")
+                    logger.error(f"Error: crear_usuario devolvió usuario inválido para {estado_actualizado.telegram_id}")
+                    raise Exception("No se pudo crear el usuario correctamente")
                     
             except Exception as e:
-                logger.error(f"Error creando usuario en Supabase: {e}")
-                # Detectar tipos específicos de error
-                error_msg = str(e).lower()
-                if "constraint" in error_msg or "foreign key" in error_msg:
-                    logger.error("Error de constraint en base de datos - revisar estructura de tabla")
-                elif "null" in error_msg:
-                    logger.error("Error de valor NULL - revisar campos obligatorios")
+                logger.error(f"ERROR CRÍTICO creando usuario {estado_actualizado.telegram_id}: {e}")
                 
-                # Usar código local como fallback
-                codigo_secreto = codigo_fallback
-                usuario_creado = False
-            
-            # Mensaje final basado en si se guardó o no
-            if usuario_creado:
-                mensaje_final = f"{mensaje_respuesta}\n\n🎉 ¡Perfecto! Tu perfil ha sido creado exitosamente.\n\n🔐 Tu código secreto es: {codigo_secreto}\n\nEste código es muy importante. Guárdalo bien porque lo necesitarás para identificarte en Telegram y acceder a todas las funciones de RITMO.\n\n¡Bienvenido/a a RITMO! Estoy aquí para acompañarte. 🚀"
-            else:
-                mensaje_final = f"{mensaje_respuesta}\n\n🎉 Onboarding completado.\n\n🔐 Tu código secreto es: {codigo_secreto}\n\n⚠️ Guardado pendiente: Hay un problema técnico con la base de datos. Tu código es válido, pero el perfil se guardará cuando se solucione. Anota este código ahora."
-            
-            # Limpiar sesión completada
-            session_manager.eliminar_sesion(request.sesion_id)
+                # NO usar fallback - el onboarding debe fallar si no puede guardar
+                # Marcar como NO completado para que pueda reintentarse
+                estado_actualizado.completado = False
+                session_manager.guardar_estado(request.sesion_id, estado_actualizado)
+                
+                # Mensaje de error claro
+                mensaje_final = f"{mensaje_respuesta}\n\n❌ Error técnico: No se pudo crear tu perfil en este momento.\n\n🔄 Por favor, contacta con soporte o inténtalo más tarde.\n\nDetalles del error: Problema de conectividad con la base de datos."
+                
+                # NO limpiar la sesión para permitir reintento
         else:
             mensaje_final = mensaje_respuesta
         
@@ -386,3 +377,108 @@ async def login_usuario(request: LoginRequest) -> LoginResponse:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error interno del servidor"
         )
+
+
+@router.get("/debug/db-status")
+async def verificar_estado_base_datos():
+    """
+    Endpoint de debug para verificar la conexión a la base de datos
+    """
+    try:
+        from db.usuarios import get_database_status
+        status_db = await get_database_status()
+        return status_db
+    except Exception as e:
+        logger.error(f"Error verificando estado de BD: {e}")
+        return {
+            "status": "error", 
+            "error": str(e),
+            "timestamp": "unknown"
+        }
+
+
+@router.post("/debug/test-user-creation")
+async def probar_creacion_usuario():
+    """
+    Endpoint de debug para probar la creación de usuarios
+    """
+    try:
+        import random
+        test_telegram_id = f"test_{random.randint(10000, 99999)}"
+        
+        usuario = await crear_usuario(
+            nombre="Usuario Test",
+            etapa_vida="joven",
+            modo_comunicacion="texto",
+            telegram_id=test_telegram_id
+        )
+        
+        if usuario:
+            return {
+                "status": "success",
+                "message": "Usuario de prueba creado exitosamente",
+                "usuario_id": usuario.id,
+                "codigo_secreto": usuario.codigo_secreto,
+                "telegram_id": usuario.telegram_id
+            }
+        else:
+            return {
+                "status": "error",
+                "message": "crear_usuario devolvió None"
+            }
+            
+    except Exception as e:
+        logger.error(f"Error en test de creación: {e}")
+        return {
+            "status": "error",
+            "message": str(e),
+            "error_type": type(e).__name__
+        }
+
+
+@router.post("/debug/test-all-etapas")
+async def probar_todas_las_etapas():
+    """
+    Endpoint de debug para probar todos los valores de etapa_vida
+    """
+    etapas_a_probar = ["joven", "adulto_activo", "inmigrante", "adulto_mayor", "discapacidad_visual"]
+    resultados = []
+    
+    for etapa in etapas_a_probar:
+        try:
+            import random
+            test_telegram_id = f"test_{etapa}_{random.randint(1000, 9999)}"
+            
+            usuario = await crear_usuario(
+                nombre=f"Test {etapa}",
+                etapa_vida=etapa,
+                modo_comunicacion="texto",
+                telegram_id=test_telegram_id
+            )
+            
+            if usuario:
+                resultados.append({
+                    "etapa": etapa,
+                    "status": "SUCCESS",
+                    "usuario_id": usuario.id,
+                    "etapa_guardada": usuario.etapa_vida
+                })
+            else:
+                resultados.append({
+                    "etapa": etapa,
+                    "status": "FAILED",
+                    "error": "crear_usuario devolvió None"
+                })
+                
+        except Exception as e:
+            resultados.append({
+                "etapa": etapa,
+                "status": "ERROR",
+                "error": str(e),
+                "error_type": type(e).__name__
+            })
+    
+    return {
+        "message": "Prueba de todas las etapas completada",
+        "resultados": resultados
+    }

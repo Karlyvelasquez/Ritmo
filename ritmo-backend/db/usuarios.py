@@ -16,6 +16,54 @@ from models.schemas import Usuario
 logger = logging.getLogger(__name__)
 
 
+# Mapeo de etapas internas a valores de BD
+def mapear_etapa_a_bd(etapa_interna: str) -> str:
+    """
+    Mapea las etapas internas del onboarding a los valores aceptados por la BD
+    
+    Args:
+        etapa_interna: Etapa detectada por el onboarding
+        
+    Returns:
+        str: Valor válido para la base de datos
+    """
+    mapeo = {
+        "joven": "joven",
+        "adulto_activo": "adulto_activo", 
+        "inmigrante": "inmigrante",
+        "adulto_mayor": "senior",  # Cambio principal
+        "discapacidad_visual": "discapacidad_visual"
+    }
+    
+    etapa_bd = mapeo.get(etapa_interna, "adulto_activo")  # Fallback seguro
+    
+    if etapa_bd != etapa_interna:
+        logger.info(f"Mapeando etapa '{etapa_interna}' -> '{etapa_bd}' para BD")
+    
+    return etapa_bd
+
+
+def mapear_etapa_desde_bd(etapa_bd: str) -> str:
+    """
+    Mapea los valores de BD de vuelta a etapas internas
+    
+    Args:
+        etapa_bd: Valor de la base de datos
+        
+    Returns:
+        str: Etapa interna del sistema
+    """
+    mapeo_inverso = {
+        "joven": "joven",
+        "adulto_activo": "adulto_activo",
+        "inmigrante": "inmigrante", 
+        "senior": "adulto_mayor",  # Mapeo inverso
+        "discapacidad_visual": "discapacidad_visual"
+    }
+    
+    return mapeo_inverso.get(etapa_bd, etapa_bd)
+
+
 def get_supabase_client():
     """Obtener cliente Supabase"""
     return SupabaseClient().client
@@ -59,7 +107,7 @@ async def crear_usuario(
     etapa_vida: str,
     modo_comunicacion: str,
     telegram_id: str,
-    zona_horaria: str = "Europe/Usuarios"
+    zona_horaria: str = "Europe/Madrid"
 ) -> Optional[Usuario]:
     """
     Crea un nuevo usuario en la base de datos
@@ -78,16 +126,25 @@ async def crear_usuario(
         Exception: Si hay error en la creación
     """
     try:
+        logger.info(f"Iniciando creación de usuario: {telegram_id}")
+        
+        # Verificar conexión a Supabase
         client = get_supabase_client()
+        logger.info("Cliente Supabase obtenido exitosamente")
+        
+        # Mapear etapa interna a valor de BD
+        etapa_bd = mapear_etapa_a_bd(etapa_vida)
+        logger.info(f"Etapa de vida mapeada: '{etapa_vida}' -> '{etapa_bd}'")
         
         # Generar código secreto único
         codigo_secreto = await generar_codigo_secreto_unico()
+        logger.info(f"Código secreto generado: {codigo_secreto}")
         
         # Preparar datos para inserción
         user_data = {
             'id': str(uuid.uuid4()),
             'nombre': nombre,
-            'etapa_vida': etapa_vida,
+            'etapa_vida': etapa_bd,  # Usar valor mapeado
             'modo_comunicacion': modo_comunicacion,
             'zona_horaria': zona_horaria,
             'telegram_id': telegram_id,
@@ -96,19 +153,28 @@ async def crear_usuario(
             'created_at': datetime.utcnow().isoformat()
         }
         
+        logger.info(f"Datos preparados para insertar: {user_data['id']}")
+        
         # Insertar en Supabase
         response = client.table('usuarios').insert(user_data).execute()
         
-        if response.data:
-            logger.info(f"Usuario creado exitosamente: {telegram_id}")
-            return Usuario(**response.data[0])
+        if response.data and len(response.data) > 0:
+            logger.info(f"Usuario creado exitosamente en BD: {telegram_id} con ID {user_data['id']}")
+            # Mapear etapa de vuelta para el objeto Usuario
+            usuario_data = response.data[0].copy()
+            usuario_data['etapa_vida'] = mapear_etapa_desde_bd(usuario_data['etapa_vida'])
+            usuario_creado = Usuario(**usuario_data)
+            logger.info(f"Usuario convertido a objeto: {usuario_creado.codigo_secreto}")
+            return usuario_creado
         else:
-            logger.error(f"Error creando usuario {telegram_id}: No data returned")
-            return None
+            logger.error(f"Error: Supabase no devolvió datos para usuario {telegram_id}")
+            logger.error(f"Response recibida: {response}")
+            raise Exception("Supabase no devolvió datos después de la inserción")
             
     except Exception as e:
-        logger.error(f"Error creando usuario {telegram_id}: {e}")
-        raise
+        logger.error(f"ERROR CRÍTICO creando usuario {telegram_id}: {str(e)}")
+        logger.error(f"Tipo de error: {type(e).__name__}")
+        raise  # Re-lanzar la excepción para que falle correctamente
 
 
 async def obtener_usuario_por_telegram(telegram_id: str) -> Optional[Usuario]:
@@ -127,7 +193,10 @@ async def obtener_usuario_por_telegram(telegram_id: str) -> Optional[Usuario]:
         response = client.table('usuarios').select('*').eq('telegram_id', telegram_id).execute()
         
         if response.data:
-            return Usuario(**response.data[0])
+            # Mapear etapa de BD a etapa interna
+            usuario_data = response.data[0].copy()
+            usuario_data['etapa_vida'] = mapear_etapa_desde_bd(usuario_data['etapa_vida'])
+            return Usuario(**usuario_data)
         else:
             return None
             
@@ -152,7 +221,10 @@ async def obtener_usuario_por_id(user_id: str) -> Optional[Usuario]:
         response = client.table('usuarios').select('*').eq('id', user_id).execute()
         
         if response.data:
-            return Usuario(**response.data[0])
+            # Mapear etapa de BD a etapa interna
+            usuario_data = response.data[0].copy()
+            usuario_data['etapa_vida'] = mapear_etapa_desde_bd(usuario_data['etapa_vida'])
+            return Usuario(**usuario_data)
         else:
             return None
             
@@ -228,7 +300,13 @@ async def listar_usuarios_activos(limite: int = 100) -> List[Usuario]:
         response = client.table('usuarios').select('*').eq('onboarding_completado', True).limit(limite).execute()
         
         if response.data:
-            return [Usuario(**user_data) for user_data in response.data]
+            usuarios = []
+            for user_data in response.data:
+                # Mapear etapa de BD a etapa interna para cada usuario
+                user_data_mapped = user_data.copy()
+                user_data_mapped['etapa_vida'] = mapear_etapa_desde_bd(user_data['etapa_vida'])
+                usuarios.append(Usuario(**user_data_mapped))
+            return usuarios
         else:
             return []
             
@@ -283,7 +361,10 @@ async def obtener_usuario_por_codigo(telegram_id: str, codigo_secreto: str) -> O
         
         if response.data:
             logger.info(f"Login exitoso para usuario {telegram_id}")
-            return Usuario(**response.data[0])
+            # Mapear etapa de BD a etapa interna
+            usuario_data = response.data[0].copy()
+            usuario_data['etapa_vida'] = mapear_etapa_desde_bd(usuario_data['etapa_vida'])
+            return Usuario(**usuario_data)
         
         logger.warning(f"Login fallido para usuario {telegram_id}: credenciales incorrectas")
         return None
