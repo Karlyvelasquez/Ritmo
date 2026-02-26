@@ -2,8 +2,7 @@ import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Shield, ArrowRight } from 'lucide-react'
-import { FiStar, FiBriefcase, FiGlobe, FiHeart, FiEye } from 'react-icons/fi'
-import Navbar from '../components/Navbar'
+import { FiStar, FiBriefcase, FiGlobe, FiHeart, FiEye, FiLogOut } from 'react-icons/fi'
 import { ThemeContext } from '../RootRouter'
 import './ProfileSelection.css'
 
@@ -88,6 +87,11 @@ export default function ProfileSelection() {
     }
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem('ritmo_user')
+    navigate('/login')
+  }
+
   const userName = user?.nombre?.split(' ')[0] || 'Amigo'
   const userEtapa = user?.etapa_vida || ''
 
@@ -113,7 +117,18 @@ export default function ProfileSelection() {
 
   return (
     <>
-      <Navbar />
+      <div className="simple-header">
+        <motion.button
+          className="logout-btn"
+          onClick={handleLogout}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <FiLogOut />
+          Cerrar sesión
+        </motion.button>
+      </div>
+      
       <div className="profile-selection-page">
         <div className="profile-background">
           <div className="blob blob-1"></div>
