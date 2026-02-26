@@ -10,6 +10,7 @@ from routers.contexto import router as contexto_router
 from routers.chat import router as chat_router
 from routers.admin import router as admin_router
 from routers.onboarding import router as onboarding_router
+from routers.checkins import router as checkins_router
 
 # Cargar variables de entorno
 load_dotenv()
@@ -42,6 +43,7 @@ app.include_router(contexto_router)
 app.include_router(chat_router)
 app.include_router(admin_router)
 app.include_router(onboarding_router)
+app.include_router(checkins_router)
 
 @app.get("/")
 async def root():
@@ -58,6 +60,10 @@ async def root():
             "/admin/system-info",
             "/onboarding/iniciar",
             "/onboarding/responder",
+            "/checkins/emocional",
+            "/checkins/usuario/{user_id}/historial",
+            "/checkins/usuario/{user_id}/ultimo",
+            "/checkins/estados-disponibles",
             "/health"
         ]
     }

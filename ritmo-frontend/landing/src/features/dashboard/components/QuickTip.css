@@ -20,12 +20,13 @@
 }
 
 .quick-tip-card::before {
-  content: '💡';
+  content: '';
   position: absolute;
   bottom: -10px;
   right: -10px;
-  font-size: 4rem;
-  opacity: 0.2;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
   pointer-events: none;
 }
 

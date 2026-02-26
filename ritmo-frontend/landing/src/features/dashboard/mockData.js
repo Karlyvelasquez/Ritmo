@@ -33,7 +33,7 @@ export const habitsData = {
 export const playlistsData = [
   { 
     id: 1, 
-    title: "Chill vibes 🌙", 
+    title: "Chill vibes", 
     image: "https://i.scdn.co/image/ab67706f00000002d073e656e546e43bc387ad68",
     mood: "calma",
     featured: true,
@@ -41,7 +41,7 @@ export const playlistsData = [
   },
   { 
     id: 2, 
-    title: "Brilla tu día ✨", 
+    title: "Brilla tu día", 
     image: "https://i.scdn.co/image/ab67706f00000002d5c6a019c628429ff00a1f3c",
     mood: "bien",
     featured: false,
@@ -49,7 +49,7 @@ export const playlistsData = [
   },
   { 
     id: 3, 
-    title: "Feels 💭", 
+    title: "Feels", 
     image: "https://i.scdn.co/image/ab67706f00000002dbfab2a75e5e297e4dcb1c19",
     mood: "normal",
     featured: false,
@@ -57,7 +57,7 @@ export const playlistsData = [
   },
   { 
     id: 4, 
-    title: "Energía bonita 🔥", 
+    title: "Energía bonita", 
     image: "https://i.scdn.co/image/ab67706f000000027e1eeb0d7cc374a168369c80",
     mood: "bien",
     featured: false,
@@ -69,88 +69,184 @@ export const chatMessages = [
   {
     id: 1,
     sender: "ritmo",
-    message: "Buenos días, Lucía 🌞 Ayer fue un día difícil. ¿Cómo has dormido?",
+    message: "Buenos días, Lucía. Ayer fue un día difícil. ¿Cómo has dormido?",
     time: "08:00"
   },
   {
     id: 2,
     sender: "user",
-    message: "Más o menos… me costó dormir 😴",
+    message: "Más o menos… me costó dormir",
     time: "09:25"
   },
   {
     id: 3,
     sender: "ritmo",
-    message: "Es normal después de un día así. No tienes que hacer nada especial hoy. Solo cuídate 💚",
+    message: "Es normal después de un día así. No tienes que hacer nada especial hoy. Solo cuídate",
     time: "09:26"
   }
 ]
 
-// Retos diarios - se selecciona uno aleatorio cada día
+// Retos diarios - lista ampliada y más creativa para jóvenes
 export const dailyChallenges = [
   {
     id: 1,
-    title: "5 minutos sin pantalla",
-    description: "Deja el celular y haz algo que te guste por 5 minutos",
+    title: "Desconexión digital de 15 min",
+    description: "Deja todos los dispositivos y haz algo analógico",
     icon: "📵",
-    points: 10,
+    points: 15,
     category: "digital"
   },
   {
     id: 2,
-    title: "Foto de algo bonito",
-    description: "Captura algo que te haga sonreír hoy",
+    title: "Captura un momento inesperado",
+    description: "Fotografía algo que te sorprenda hoy",
     icon: "📸",
-    points: 15,
+    points: 20,
     category: "creative"
   },
   {
     id: 3,
-    title: "3 respiraciones profundas",
-    description: "Inhala 4 seg, mantén 4 seg, exhala 6 seg. x3",
+    title: "Micromeditación: 3 respiraciones",
+    description: "Inhala 4 seg, mantén 4 seg, exhala 6 seg. Repite x3",
     icon: "🫁",
     points: 10,
     category: "wellness"
   },
   {
     id: 4,
-    title: "Playlist nueva",
-    description: "Descubre 3 canciones que nunca hayas escuchado",
+    title: "Descubre tu próxima canción favorita",
+    description: "Explora un género musical que nunca escuches",
     icon: "🎵",
-    points: 20,
+    points: 25,
     category: "music"
   },
   {
     id: 5,
-    title: "Mensaje a alguien",
-    description: "Escribe a alguien que no has hablado en días",
+    title: "Mensaje random de cariño",
+    description: "Escribele algo bonito a alguien inesperado",
     icon: "💬",
-    points: 15,
+    points: 20,
     category: "social"
   },
   {
     id: 6,
-    title: "Estiramiento express",
-    description: "Estira cuello, hombros y espalda por 2 minutos",
+    title: "Estiramiento de oficina",
+    description: "Cuello, hombros y muñecas. Tu cuerpo lo agradecerá",
     icon: "🧘",
-    points: 10,
+    points: 15,
     category: "wellness"
   },
   {
     id: 7,
-    title: "Dibuja tu día",
-    description: "Haz un doodle simple de cómo te sientes hoy",
+    title: "Sketch de tu estado de ánimo",
+    description: "Dibuja cómo te sientes usando solo líneas y colores",
     icon: "✏️",
-    points: 20,
+    points: 25,
     category: "creative"
   },
   {
     id: 8,
-    title: "Camina 10 min",
-    description: "Sal a caminar sin destino, solo observa",
+    title: "Caminata consciente",
+    description: "15 min sin música, solo observando lo que te rodea",
     icon: "🚶",
-    points: 15,
+    points: 20,
     category: "movement"
+  },
+  {
+    id: 9,
+    title: "Complimenta a un extraño",
+    description: "Hazle el día mejor a alguien que no conoces",
+    icon: "😊",
+    points: 30,
+    category: "social"
+  },
+  {
+    id: 10,
+    title: "Aprende una palabra nueva",
+    description: "Encuentra una palabra genial y úsala en conversación",
+    icon: "📚",
+    points: 15,
+    category: "learning"
+  },
+  {
+    id: 11,
+    title: "Baila una canción completa",
+    description: "Que nadie te vea, solo muévete como quieras",
+    icon: "💃",
+    points: 20,
+    category: "movement"
+  },
+  {
+    id: 12,
+    title: "Escribe 3 cosas por las que estás agradecido",
+    description: "Pueden ser súper simples, como el café de la mañana",
+    icon: "🙏",
+    points: 15,
+    category: "mindfulness"
+  },
+  {
+    id: 13,
+    title: "Reorganiza un espacio pequeño",
+    description: "Tu escritorio, un cajón, solo algo que uses a diario",
+    icon: "📦",
+    points: 25,
+    category: "productivity"
+  },
+  {
+    id: 14,
+    title: "Llama (no textes) a alguien querido",
+    description: "5 minutos de conversación real, no mensajes",
+    icon: "📞",
+    points: 25,
+    category: "social"
+  },
+  {
+    id: 15,
+    title: "Sesión de memes terapia",
+    description: "5 min viendo memes que te hagan reír de verdad",
+    icon: "😂",
+    points: 10,
+    category: "fun"
+  },
+  {
+    id: 16,
+    title: "Crear una playlist para tu 'yo' del futuro",
+    description: "Música para la persona que quieres ser",
+    icon: "🎧",
+    points: 30,
+    category: "music"
+  },
+  {
+    id: 17,
+    title: "Experimento culinario de 5 min",
+    description: "Mezcla algo en la cocina sin usar receta",
+    icon: "🍳",
+    points: 20,
+    category: "creative"
+  },
+  {
+    id: 18,
+    title: "Selfie con tu planta/mascota/objeto favorito",
+    description: "Documenta un momento random de tu día",
+    icon: "🤳",
+    points: 15,
+    category: "fun"
+  },
+  {
+    id: 19,
+    title: "Lee algo que no sea una pantalla",
+    description: "Libro, revista, even the cereal box cuenta",
+    icon: "📖",
+    points: 20,
+    category: "learning"
+  },
+  {
+    id: 20,
+    title: "Haz algo lindo por tu yo del futuro",
+    description: "Prepara algo para mañana que te haga sonreír",
+    icon: "🎁",
+    points: 25,
+    category: "selfcare"
   }
 ]
 
@@ -232,21 +328,21 @@ export const recommendations = [
 
 // Quotes motivacionales - aleatorios
 export const motivationalQuotes = [
-  "No todos los días van a ser increíbles, y está bien 💚",
-  "Tu ritmo es perfecto, no importa cuál sea ✨",
-  "Sentir no es debilidad, es ser humano 🌟",
-  "Hoy solo tienes que ser tú, nada más 💜",
-  "Está bien tomarse las cosas con calma 🌙",
-  "Tu bienestar no es negociable 🔥",
-  "Pequeños pasos también cuentan 👣",
-  "No estás solo en esto, nunca 🤝",
-  "Respira. Estás haciendo lo mejor que puedes 🫁",
-  "Tus sentimientos son válidos, todos ellos 💭",
-  "No hay prisa por estar bien 🌱",
-  "Eres más fuerte de lo que crees 💪",
-  "Está bien pedir ayuda cuando la necesitas 🆘",
-  "Tu historia importa, y también tu presente 📖",
-  "Date permiso para descansar 😴"
+  "No todos los días van a ser increíbles, y está bien",
+  "Tu ritmo es perfecto, no importa cuál sea",
+  "Sentir no es debilidad, es ser humano",
+  "Hoy solo tienes que ser tú, nada más",
+  "Está bien tomarse las cosas con calma",
+  "Tu bienestar no es negociable",
+  "Pequeños pasos también cuentan",
+  "No estás solo en esto, nunca",
+  "Respira. Estás haciendo lo mejor que puedes",
+  "Tus sentimientos son válidos, todos ellos",
+  "No hay prisa por estar bien",
+  "Eres más fuerte de lo que crees",
+  "Está bien pedir ayuda cuando la necesitas",
+  "Tu historia importa, y también tu presente",
+  "Date permiso para descansar"
 ]
 
 // Tips rápidos - aparecen aleatoriamente
@@ -264,7 +360,7 @@ export const quickTips = [
     category: "boundaries"
   },
   { 
-    text: "Dormir bien no es un lujo, es una necesidad. Priorízalo 💤",
+    text: "Dormir bien no es un lujo, es una necesidad. Priórízalo",
     category: "sleep"
   },
   { 
@@ -272,7 +368,7 @@ export const quickTips = [
     category: "perspective"
   },
   { 
-    text: "Beber agua es autocuidado. Hidrátate 💧",
+    text: "Beber agua es autocuidado. Hidrátate",
     category: "health"
   },
   { 

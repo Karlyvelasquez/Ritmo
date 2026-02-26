@@ -30,7 +30,7 @@ export default function MotivationMessage() {
     return (
         <div className="motivation-card">
             <div className="motivation-top">
-                <span className="motivation-badge">💜 Mensaje del día</span>
+                <span className="motivation-badge">Mensaje del día</span>
                 <button className="motivation-refresh" onClick={next} title="Siguiente mensaje">
                     <RefreshCw size={16} />
                 </button>

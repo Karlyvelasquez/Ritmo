@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import './Sidebar.css'
 
 const menuItems = [
-  { id: 'inicio', label: 'Inicio', icon: Home, active: true },
+  { id: 'inicio', label: 'Inicio', icon: Home },
   { id: 'animo', label: 'Mi ánimo', icon: Heart },
   { id: 'habitos', label: 'Mis hábitos', icon: Activity },
   { id: 'chat', label: 'Chat con RITMO', icon: MessageCircle },
@@ -13,7 +13,7 @@ const menuItems = [
   { id: 'ajustes', label: 'Ajustes', icon: Settings },
 ]
 
-export default function Sidebar({ darkMode, toggleDark }) {
+export default function Sidebar({ darkMode, toggleDark, activeSection, onSectionChange }) {
   const [collapsed, setCollapsed] = useState(false)
   const navigate = useNavigate()
 
@@ -30,7 +30,8 @@ export default function Sidebar({ darkMode, toggleDark }) {
           return (
             <button
               key={item.id}
-              className={`sidebar-item ${item.active ? 'active' : ''}`}
+              className={`sidebar-item ${activeSection === item.id ? 'active' : ''}`}
+              onClick={() => onSectionChange(item.id)}
             >
               <Icon size={20} />
               {!collapsed && <span>{item.label}</span>}

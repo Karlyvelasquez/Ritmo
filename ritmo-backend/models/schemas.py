@@ -257,3 +257,51 @@ class ClasificacionResult(BaseModel):
     scores: Dict[str, float] = Field(..., description="Puntuaciones por cada etapa")
     puede_clasificar: bool = Field(..., description="Si tiene suficiente confianza para clasificar")
     razon: str = Field(..., description="Razón de la decisión")
+
+
+# === SCHEMAS PARA CHECKINS EMOCIONALES - MI ÁNIMO ===
+
+class CheckinEmocionalRequest(BaseModel):
+    """Request para guardar checkin emocional desde 'Mi ánimo'"""
+    user_id: str = Field(..., description="ID del usuario")
+    estado_emocional: Literal[
+        "sereno", "radiante", "esperanzado", "creativo", "conectado",
+        "reflexivo", "nostalgico", "ansioso", "confundido", "abrumado"
+    ] = Field(..., description="Estado emocional seleccionado en la galaxia")
+    telegram_id: Optional[str] = Field(None, description="ID de Telegram (opcional)")
+    metodo: Optional[str] = Field(
+        default="web_galaxia", description="Método de captura del checkin (se mapea internamente)"
+    )
+    mensaje_contexto: Optional[str] = Field(
+        None, description="Contexto o mensaje adicional del usuario"
+    )
+
+
+class CheckinEmocionalResponse(BaseModel):
+    """Response del checkin emocional guardado"""
+    id: str = Field(..., description="ID del checkin guardado")
+    estado_emocional: str = Field(..., description="Estado emocional confirmado")
+    fecha: str = Field(..., description="Fecha del checkin")
+    hora_respuesta: str = Field(..., description="Hora del checkin")
+    mensaje: str = Field(
+        default="¡Gracias por compartir tu estado! Tu galaxia emocional se actualiza.",
+        description="Mensaje de confirmación"
+    )
+    created_at: datetime = Field(..., description="Timestamp de creación")
+
+
+class CheckinDiario(BaseModel):
+    """Modelo completo para checkin diario en base de datos"""
+    id: Optional[str] = Field(None, description="UUID del checkin")
+    user_id: str = Field(..., description="ID del usuario")
+    telegram_id: Optional[str] = Field(None, description="ID de Telegram")
+    fecha: str = Field(..., description="Fecha del checkin (YYYY-MM-DD)")
+    estado_emocional: str = Field(..., description="Estado emocional registrado")
+    hora_respuesta: str = Field(..., description="Hora del checkin (HH:MM:SS)")
+    metodo: Literal["telegram", "web_galaxia"] = Field(
+        ..., description="Método de captura del checkin"
+    )
+    mensaje_contexto: Optional[str] = Field(
+        None, description="Contexto o mensaje adicional"
+    )
+    created_at: Optional[datetime] = Field(None, description="Timestamp de creación")

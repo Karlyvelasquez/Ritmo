@@ -1,0 +1,836 @@
+﻿/* ===============================================
+   PROFESSIONAL HABITS TRACKER - MODERN DESIGN
+   No emojis, only icons, glassmorphism, premium feel
+   =============================================== */
+
+/* Variables profesionales */
+:root {
+  --habit-primary: #6366f1;
+  --habit-secondary: #8b5cf6;
+  --habit-success: #10b981;
+  --habit-warning: #f59e0b;
+  --habit-danger: #ef4444;
+  --habit-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --habit-gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --habit-gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+/* Cont
+
+enedor principal con glassmorphism */
+.habits-interactive-pro {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  min-height: 500px;
+}
+
+[data-theme="dark"] .habits-interactive-pro {
+  background: rgba(15, 23, 42, 0.7);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.habits-interactive-pro::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--habit-gradient);
+  opacity: 0.8;
+}
+
+.habits-interactive-pro:hover {
+  box-shadow: 
+    0 12px 48px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Header profesional */
+.habits-header-pro {
+  margin-bottom: 32px;
+}
+
+.habits-title-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.title-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title-with-icon svg {
+  color: var(--habit-primary);
+}
+
+.title-with-icon h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(135deg, var(--habit-primary) 0%, var(--habit-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-btn {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+}
+
+.icon-btn:hover:not(:disabled) {
+  background: var(--habit-primary);
+  border-color: var(--habit-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.icon-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.view-selector {
+  display: flex;
+  background: var(--color-background);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+  border: 1px solid var(--color-border);
+}
+
+.view-selector button {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.view-selector button:hover {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+.view-selector button.active {
+  background: var(--habit-primary);
+  color: white;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+/* Grid de estadísticas profesional */
+.stats-grid-pro {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stat-card-pro {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  gap: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card-pro::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--stat-gradient);
+  opacity: 0.6;
+}
+
+.stat-card-pro.level-card {
+  --stat-gradient: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.stat-card-pro.points-card {
+  --stat-gradient: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+}
+
+.stat-card-pro.streak-card {
+  --stat-gradient: linear-gradient(90deg, #fa709a 0%, #fee140 100%);
+}
+
+.stat-card-pro.progress-card {
+  --stat-gradient: linear-gradient(90deg, #30cfd0 0%, #330867 100%);
+}
+
+.stat-card-pro:hover {
+  border-color: var(--habit-primary);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
+  transform: translateY(-2px);
+}
+
+[data-theme="dark"] .stat-card-pro:hover {
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--stat-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.stat-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.level-progress-bar {
+  margin-top: 8px;
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.level-progress-fill {
+  height: 100%;
+  background: var(--stat-gradient);
+  border-radius: 2px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Filtros de categoría profesionales */
+.category-filters-pro {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.category-filters-pro::-webkit-scrollbar {
+  height: 4px;
+}
+
+.category-filters-pro::-webkit-scrollbar-track {
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+.category-filters-pro::-webkit-scrollbar-thumb {
+  background: var(--habit-primary);
+  border-radius: 2px;
+}
+
+.category-filters-pro button {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.category-filters-pro button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.category-filters-pro button:hover::before {
+  left: 100%;
+}
+
+.category-filters-pro button:hover {
+  border-color: var(--habit-primary);
+  color: var(--habit-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+
+.category-filters-pro button.active {
+  background: var(--habit-gradient);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+}
+
+.category-filters-pro button[data-category="wellness"].active {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.category-filters-pro button[data-category="productivity"].active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.category-filters-pro button[data-category="social"].active {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+/* Contenedor de hábitos */
+.habits-container-pro {
+  position: relative;
+}
+
+.category-group-pro {
+  margin-bottom: 32px;
+}
+
+.category-header-pro {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: var(--color-background);
+  border-radius: 12px;
+  border-left: 3px solid var(--habit-primary);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.category-badge {
+  margin-left: auto;
+  background: var(--habit-primary);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Grid de hábitos */
+.habits-list-pro.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.habits-list-pro.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Card de hábito profesional */
+.habit-card-pro {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  gap: 16px;
+  align-items: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.habit-card-pro::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--habit-gradient);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.habit-card-pro:hover::after {
+  transform: scaleX(1);
+}
+
+.habit-card-pro:hover {
+  border-color: var(--habit-primary);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
+}
+
+.habit-card-pro.completed {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.02) 100%);
+  border-color: var(--habit-success);
+}
+
+.habit-card-pro.completed .habit-title {
+  opacity: 0.7;
+}
+
+/* Checkbox personalizado */
+.habit-checkbox-area {
+  cursor: pointer;
+}
+
+.checkbox-custom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.checkbox-custom .checked {
+  color: var(--habit-success);
+  filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.4));
+}
+
+.checkbox-custom .unchecked {
+  color: var(--color-text-secondary);
+}
+
+.checkbox-custom:hover .unchecked {
+  color: var(--habit-primary);
+}
+
+/* Icono de hábito */
+.habit-icon-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.habit-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--habit-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+}
+
+/* Contenido del hábito */
+.habit-content-area {
+  min-width: 0;
+}
+
+.habit-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+
+.habit-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.difficulty-indicator {
+  display: flex;
+  gap: 3px;
+}
+
+.difficulty-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-border);
+  transition: all 0.2s;
+}
+
+.difficulty-dot.active {
+  background: var(--habit-warning);
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.4);
+}
+
+.habit-time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+/* Estadísticas del hábito */
+.habit-stats-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.points-badge-pro,
+.streak-badge-pro {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.points-badge-pro {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%);
+  color: var(--habit-warning);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.streak-badge-pro {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
+  color: var(--habit-danger);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.habit-progress-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--habit-gradient);
+  transform-origin: left;
+  border-radius: 0 0 16px 16px;
+}
+
+/* Vista de logros profesional */
+.achievements-view-pro {
+  padding: 24px 0;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  color: var(--color-text-primary);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.achievements-grid-pro {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.achievement-card-pro {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.achievement-card-pro.locked {
+  opacity: 0.5;
+}
+
+.achievement-card-pro.unlocked {
+  border-color: var(--habit-primary);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.02) 100%);
+}
+
+.achievement-card-pro:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.2);
+}
+
+.achievement-icon-pro {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: var(--habit-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+}
+
+.achievement-card-pro.locked .achievement-icon-pro {
+  background: var(--color-border);
+  color: var(--color-text-secondary);
+  box-shadow: none;
+}
+
+.achievement-info-pro h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 12px 0;
+}
+
+.achievement-progress-pro {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progress-track {
+  flex: 1;
+  height: 6px;
+  background: var(--color-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill-pro {
+  height: 100%;
+  background: var(--habit-gradient);
+  border-radius: 3px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  min-width: 35px;
+  text-align: right;
+}
+
+/* Estados de carga y vacío profesionales */
+.loading-state-pro,
+.empty-state-pro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.loading-state-pro svg {
+  color: var(--habit-primary);
+  margin-bottom: 16px;
+}
+
+.empty-state-pro svg {
+  color: var(--color-border);
+  margin-bottom: 24px;
+}
+
+.empty-state-pro h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 8px 0;
+}
+
+.empty-state-pro p {
+  margin: 0 0 24px 0;
+  color: var(--color-text-secondary);
+}
+
+.btn-primary-pro {
+  background: var(--habit-gradient);
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary-pro:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+}
+
+/* Partículas de celebración profesionales */
+.celebration-particle-pro {
+  position: absolute;
+  color: var(--habit-primary);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.celebration-overlay-pro {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.celebration-content-pro {
+  background: white;
+  padding: 32px 48px;
+  border-radius: 24px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+[data-theme="dark"] .celebration-content-pro {
+  background: var(--color-surface);
+}
+
+.celebration-content-pro svg {
+  color: var(--habit-success);
+}
+
+.celebration-content-pro span {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .habits-interactive-pro {
+    padding: 20px;
+  }
+
+  .stats-grid-pro {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .habits-list-pro.grid {
+    grid-template-columns: 1fr;
+  }
+
+  .habit-card-pro {
+    grid-template-columns: auto auto 1fr;
+    grid-template-rows: auto auto;
+    gap: 12px;
+  }
+
+  .habit-stats-area {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  .title-with-icon h2 {
+    font-size: 1.5rem;
+  }
+
+  .category-filters-pro {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .habits-interactive-pro {
+    padding: 16px;
+  }
+
+  .stats-grid-pro {
+    grid-template-columns: 1fr;
+  }
+
+  .achievements-grid-pro {
+    grid-template-columns: 1fr;
+  }
+}

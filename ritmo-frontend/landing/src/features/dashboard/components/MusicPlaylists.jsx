@@ -5,7 +5,7 @@ export default function MusicPlaylists() {
   return (
     <div className="playlists-card">
       <div className="card-header">
-        <h3>Tu música 🎧</h3>
+        <h3>Tu música</h3>
       </div>
       <p className="playlists-subtitle">Para acompañarte en cada mood</p>
 
@@ -22,7 +22,7 @@ export default function MusicPlaylists() {
               <img src={playlist.image} alt={playlist.title} />
               <div className="playlist-overlay" />
               {playlist.featured && (
-                <span className="playlist-badge">Para ti 💚</span>
+                <span className="playlist-badge">Destacado</span>
               )}
             </div>
             <h4>{playlist.title}</h4>

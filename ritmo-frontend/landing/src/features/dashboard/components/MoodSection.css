@@ -1,0 +1,839 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+.mood-section {
+  padding: 2rem;
+  min-height: 100vh;
+  position: relative;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--color-bg);
+  overflow-x: hidden;
+}
+
+.mood-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid rgba(138, 175, 139, 0.1);
+}
+
+.mood-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mood-icon {
+  width: 48px;
+  height: 48px;
+  color: #FF6B6B;
+  filter: drop-shadow(0 4px 12px rgba(255, 107, 107, 0.3));
+}
+
+.mood-title h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--color-text);
+  background: linear-gradient(135deg, #FF6B6B, #4ECDC4, #45B7D1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.mood-title p {
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  margin: 0.5rem 0 0;
+  font-weight: 500;
+}
+
+.voice-analyzer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+}
+
+.voice-analyzer:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 48px rgba(102, 126, 234, 0.4);
+}
+
+.voice-analyzer:disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.mood-main-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.mood-secondary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+/* Estilos base para todas las cards */
+.galaxy-card,
+.emotion-selector-card,
+.garden-card,
+.prediction-card,
+.music-card {
+  background: var(--color-surface);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(138, 175, 139, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.galaxy-card:hover,
+.emotion-selector-card:hover,
+.garden-card:hover,
+.prediction-card:hover,
+.music-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 56px rgba(0, 0, 0, 0.12);
+  border-color: rgba(138, 175, 139, 0.2);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.card-header svg {
+  color: var(--color-primary);
+}
+
+.card-header h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-text);
+}
+
+.toggle-btn {
+  margin-left: auto;
+  padding: 0.5rem 1rem;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background: var(--color-accent);
+  transform: scale(1.05);
+}
+
+/* Galaxia Emocional Realista */
+.galaxy-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.galaxy-canvas {
+  width: 100%;
+  height: 300px;
+  border-radius: 20px;
+  background: radial-gradient(ellipse at center, #0a0a1a 0%, #1a0a2a 30%, #0a0a1a 70%, #000000 100%);
+  box-shadow: 
+    inset 0 0 50px rgba(138, 175, 139, 0.1),
+    0 0 30px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(138, 175, 139, 0.2);
+}
+
+.constellation-tooltip {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(30, 41, 59, 0.95);
+  backdrop-filter: blur(15px);
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  border: 1px solid rgba(138, 175, 139, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  min-width: 250px;
+  z-index: 10;
+}
+
+.constellation-tooltip h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #FFD93D;
+  text-shadow: 0 0 10px rgba(255, 217, 61, 0.5);
+}
+
+.constellation-tooltip p {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.constellation-stats {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.8rem;
+}
+
+.energy-level,
+.valence-level {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 600;
+  color: white;
+}
+
+.energy-level {
+  background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+}
+
+.valence-level {
+  background: linear-gradient(135deg, #4ECDC4, #44A08D);
+}
+
+.galaxy-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.constellation-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(10, 10, 26, 0.8), rgba(26, 10, 42, 0.6));
+  border-radius: 16px;
+  border: 1px solid rgba(138, 175, 139, 0.2);
+}
+
+.constellation-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.constellation-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--constellation-color);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.constellation-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--constellation-color);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+}
+
+.constellation-item:hover::before {
+  opacity: 0.1;
+}
+
+.constellation-star {
+  width: 12px;
+  height: 12px;
+  background: var(--constellation-color);
+  border-radius: 50%;
+  box-shadow: 
+    0 0 10px var(--constellation-color),
+    0 0 20px var(--constellation-color);
+  animation: twinkle 8s ease-in-out infinite alternate; /* Aumentado de 4s a 8s para ser aún más lento */
+}
+
+@keyframes twinkle {
+  0% { 
+    opacity: 0.7;
+    transform: scale(0.9);
+  }
+  100% { 
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+.constellation-item span {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.galaxy-description {
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  line-height: 1.6;
+  margin: 0;
+  background: linear-gradient(135deg, rgba(138, 175, 139, 0.1), rgba(138, 175, 139, 0.05));
+  padding: 1rem;
+  border-radius: 12px;
+  border-left: 4px solid var(--color-primary);
+}
+
+/* Selector de Emociones */
+.emotion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 1rem;
+}
+
+.emotion-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--color-bg);
+  border: 2px solid transparent;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.emotion-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--emotion-color);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.emotion-card:hover::before,
+.emotion-card.selected::before {
+  opacity: 1;
+}
+
+.emotion-card:hover {
+  background: var(--emotion-color);
+  background-opacity: 0.1;
+  border-color: var(--emotion-color);
+}
+
+.emotion-card.selected {
+  background: var(--emotion-color);
+  background-opacity: 0.2;
+  border-color: var(--emotion-color);
+  box-shadow: 0 0 20px var(--emotion-color);
+}
+
+.emotion-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.emotion-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.emotion-energy {
+  width: 100%;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.energy-bar {
+  height: 100%;
+  background: var(--emotion-color);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* Jardín Emocional */
+.emotional-garden {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  min-height: 120px;
+  padding: 1rem;
+  background: linear-gradient(135deg, #c3f0ca 0%, #f0f9c3 100%);
+  border-radius: 16px;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.garden-plant {
+  color: var(--plant-color);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+}
+
+.garden-plant.flower svg {
+  animation: sway 3s ease-in-out infinite;
+}
+
+.garden-plant.tree svg {
+  animation: grow 2s ease-out;
+}
+
+@keyframes sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+@keyframes grow {
+  0% { transform: scale(0) translateY(20px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+.garden-description {
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  margin-top: 1rem;
+}
+
+/* Predictor de Ánimo */
+.prediction-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.predicted-emotion {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--color-bg);
+  border-radius: 16px;
+}
+
+.prediction-icon {
+  font-size: 2.5rem;
+}
+
+.predicted-emotion h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.confidence-bar {
+  width: 200px;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+
+.confidence-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.predicted-emotion p {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.prediction-factors h5 {
+  margin: 0 0 0.75rem;
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.factor-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin: 0 0.5rem 0.5rem 0;
+}
+
+/* Música Adaptativa */
+.music-player {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.now-playing {
+  display: flex;
+  gap: 1rem;
+}
+
+.album-art {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.track-info h4 {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.track-info p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.music-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  padding: 1rem 0;
+}
+
+.music-controls svg {
+  cursor: pointer;
+  color: var(--color-text);
+  transition: all 0.3s ease;
+}
+
+.music-controls svg:hover {
+  color: var(--color-primary);
+  transform: scale(1.2);
+}
+
+/* Guía de Respiración */
+.breathing-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+
+.breathing-guide {
+  background: var(--color-surface);
+  padding: 3rem;
+  border-radius: 32px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.3);
+}
+
+.close-breathing {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-breathing:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.breathing-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ECDC4, #44A08D);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem auto;
+  position: relative;
+}
+
+.breath-indicator {
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.breathing-instruction {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-top: 1rem;
+}
+
+/* Botón flotante de respiración */
+.floating-breath-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ECDC4, #44A08D);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  transition: all 0.3s ease;
+}
+
+.floating-breath-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Dark Mode */
+[data-theme="dark"] .galaxy-card,
+[data-theme="dark"] .emotion-selector-card,
+[data-theme="dark"] .garden-card,
+[data-theme="dark"] .prediction-card,
+[data-theme="dark"] .music-card {
+  background: rgba(30, 41, 59, 0.8);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .galaxy-canvas {
+  background: radial-gradient(ellipse at center, #0f0f2a 0%, #2a0f3a 30%, #0f0f2a 70%, #000000 100%);
+  box-shadow: 
+    inset 0 0 50px rgba(138, 175, 139, 0.05),
+    0 0 30px rgba(0, 0, 0, 0.9);
+}
+
+[data-theme="dark"] .constellation-tooltip {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(138, 175, 139, 0.4);
+}
+
+[data-theme="dark"] .constellation-list {
+  background: linear-gradient(135deg, rgba(15, 15, 42, 0.9), rgba(42, 15, 62, 0.7));
+}
+
+[data-theme="dark"] .constellation-item {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="dark"] .constellation-item:hover {
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .galaxy-description {
+  background: linear-gradient(135deg, rgba(138, 175, 139, 0.08), rgba(138, 175, 139, 0.03));
+}
+
+[data-theme="dark"] .emotional-garden {
+  background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%);
+}
+
+[data-theme="dark"] .emotion-card {
+  background: rgba(30, 41, 59, 0.5);
+}
+
+[data-theme="dark"] .predicted-emotion {
+  background: rgba(30, 41, 59, 0.5);
+}
+
+[data-theme="dark"] .breathing-guide {
+  background: rgba(30, 41, 59, 0.95);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .mood-main-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .mood-secondary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .mood-section {
+    padding: 1rem;
+  }
+  
+  .mood-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .mood-title h1 {
+    font-size: 2rem;
+  }
+  
+  .emotion-grid {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  }
+  
+  .galaxy-card,
+  .emotion-selector-card,
+  .garden-card,
+  .prediction-card,
+  .music-card {
+    padding: 1.5rem;
+  }
+  
+  .breathing-guide {
+    padding: 2rem;
+    margin: 1rem;
+  }
+  
+  .breathing-circle {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .floating-breath-btn {
+    bottom: 1rem;
+    right: 1rem;
+    width: 50px;
+    height: 50px;
+  }
+}
+
+/* === INDICADOR DE GUARDADO === */
+.save-status-indicator {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.saving-spinner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(138, 175, 139, 0.95);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  font-weight: 600;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+}
+
+.save-message {
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  font-weight: 600;
+  text-align: center;
+}
+
+.save-message.success {
+  background: rgba(46, 204, 113, 0.95);
+  color: white;
+}
+
+.save-message.error {
+  background: rgba(231, 76, 60, 0.95);
+  color: white;
+}
+
+/* Estilos para el estado de carga */
+.emotion-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.emotion-button:disabled:hover {
+  transform: none !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Responsive para indicador de guardado */
+@media (max-width: 768px) {
+  .save-status-indicator {
+    top: 1rem;
+    right: 1rem;
+    left: 1rem;
+    min-width: auto;
+    max-width: none;
+  }
+  
+  .saving-spinner,
+  .save-message {
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+  }
+}

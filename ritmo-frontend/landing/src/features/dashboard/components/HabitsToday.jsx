@@ -8,7 +8,7 @@ export default function HabitsToday() {
   return (
     <div className="habits-card">
       <div className="card-header">
-        <h3>Tus hábitos de hoy 🌟</h3>
+        <h3>Tus hábitos de hoy</h3>
         <span className="badge badge-habits">
           {habitsData.completed} de {habitsData.total}
         </span>

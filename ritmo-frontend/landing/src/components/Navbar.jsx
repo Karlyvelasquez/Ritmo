@@ -1,14 +1,15 @@
 import { useState, useEffect, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { FiSun, FiMoon } from 'react-icons/fi'
-import { ThemeContext } from '../App'
+import { ThemeContext } from '../RootRouter'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const { darkMode, toggleDark } = useContext(ThemeContext)
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -18,7 +19,29 @@ export default function Navbar() {
 
   const scrollTo = (id) => {
     setMobileOpen(false)
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    
+    // Si no estamos en la página principal, navegar primero
+    if (location.pathname !== '/') {
+      navigate('/')
+      // Esperar un poco para que se cargue la página y luego hacer scroll
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+      }, 100)
+    } else {
+      // Si ya estamos en la página principal, hacer scroll directamente
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  const handleLogoClick = () => {
+    setMobileOpen(false)
+    if (location.pathname === '/') {
+      // Si ya estamos en la página principal, hacer scroll al top
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      // Si estamos en otra página, navegar a la principal
+      navigate('/')
+    }
   }
 
   return (
@@ -29,7 +52,7 @@ export default function Navbar() {
       transition={{ duration: 0.6, ease: 'easeOut' }}
     >
       <div className="navbar-inner">
-        <div className="navbar-logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        <div className="navbar-logo" onClick={handleLogoClick}>
           <img src="/image/2.png" alt="RITMO" />
           <span>RITMO</span>
         </div>
@@ -38,10 +61,16 @@ export default function Navbar() {
           <a onClick={() => scrollTo('features')}>Características</a>
           <a onClick={() => scrollTo('profiles')}>Perfiles</a>
           <a onClick={() => scrollTo('cta')}>Contacto</a>
-          <button className="dark-toggle" onClick={toggleDark} aria-label="Cambiar tema">
+          <button className="dark-toggle" onClick={() => {
+            setMobileOpen(false)
+            toggleDark()
+          }} aria-label="Cambiar tema">
             {darkMode ? <FiSun /> : <FiMoon />}
           </button>
-          <button className="btn-login" onClick={() => navigate('/login')}>
+          <button className="btn-login" onClick={() => {
+            setMobileOpen(false)
+            navigate('/login')
+          }}>
             Acceso
           </button>
         </div>

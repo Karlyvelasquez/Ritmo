@@ -1,0 +1,375 @@
+.playlists-ritmo-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Hero Section */
+.playlists-hero {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem;
+}
+
+.hero-icon {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 1.5rem;
+  background: linear-gradient(135deg, #EC4899 0%, #F472B6 100%);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 8px 24px rgba(236, 72, 153, 0.3);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.playlists-hero h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin: 0 0 1.5rem;
+  line-height: 1.2;
+}
+
+.hero-message {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.05) 0%, rgba(244, 114, 182, 0.05) 100%);
+  border-left: 4px solid #EC4899;
+  border-radius: 16px;
+}
+
+[data-theme="dark"] .hero-message {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.08) 0%, rgba(244, 114, 182, 0.08) 100%);
+}
+
+.hero-message p {
+  color: var(--color-text);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin: 0 0 1rem;
+}
+
+.hero-message p:last-of-type {
+  margin-bottom: 0;
+}
+
+.hero-signature {
+  font-weight: 700;
+  font-style: italic;
+  color: #EC4899 !important;
+  margin-top: 1.5rem !important;
+  font-size: 1rem !important;
+}
+
+/* Mood Filters */
+.mood-filters {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.filter-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.mood-filter {
+  padding: 0.75rem 1.5rem;
+  background: var(--color-surface);
+  border: 2px solid rgba(138, 175, 139, 0.2);
+  border-radius: 20px;
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mood-filter:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--mood-color);
+}
+
+.mood-filter.active {
+  background: var(--mood-color);
+  color: white;
+  border-color: var(--mood-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .mood-filter {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(138, 175, 139, 0.3);
+}
+
+/* Playlists Grid */
+.playlists-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.playlist-card {
+  background: var(--color-surface);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 1px solid rgba(138, 175, 139, 0.1);
+}
+
+.playlist-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .playlist-card {
+  background: rgba(30, 41, 59, 0.8);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .playlist-card:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Playlist Image */
+.playlist-image-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  overflow: hidden;
+  background: #000;
+}
+
+.playlist-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.playlist-card:hover .playlist-image {
+  transform: scale(1.05);
+}
+
+.playlist-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+.playlist-overlay.visible {
+  opacity: 1;
+}
+
+.overlay-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  color: white;
+  font-weight: 600;
+}
+
+.featured-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(236, 72, 153, 0.95);
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+/* Playlist Info */
+.playlist-info {
+  padding: 1.5rem;
+}
+
+.playlist-info h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 1rem;
+  line-height: 1.3;
+}
+
+.playlist-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #1DB954;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  padding: 0.5rem 0;
+}
+
+.playlist-link:hover {
+  gap: 0.75rem;
+  color: #1ed760;
+}
+
+/* Connection Message */
+.connection-message {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(138, 175, 139, 0.05) 0%, rgba(168, 200, 169, 0.05) 100%);
+  border-left: 4px solid #8AAF8B;
+  border-radius: 16px;
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+[data-theme="dark"] .connection-message {
+  background: linear-gradient(135deg, rgba(138, 175, 139, 0.08) 0%, rgba(168, 200, 169, 0.08) 100%);
+}
+
+.message-icon {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #8AAF8B 0%, #a8c8a9 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 12px rgba(138, 175, 139, 0.3);
+}
+
+.message-text p {
+  color: var(--color-text);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0 0 1rem;
+}
+
+.message-text p:last-child {
+  margin-bottom: 0;
+}
+
+.message-ps {
+  font-style: italic;
+  color: var(--color-text-secondary) !important;
+  font-size: 0.95rem !important;
+  margin-top: 1.25rem !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .playlists-ritmo-container {
+    padding: 1.5rem;
+  }
+
+  .playlists-hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero-message {
+    padding: 1.5rem;
+  }
+
+  .hero-message p {
+    font-size: 1rem;
+  }
+
+  .playlists-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .filter-buttons {
+    width: 100%;
+  }
+
+  .mood-filter {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+  }
+
+  .connection-message {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+
+  .message-icon {
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .playlists-hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .playlists-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-buttons {
+    flex-direction: column;
+  }
+
+  .mood-filter {
+    width: 100%;
+  }
+}

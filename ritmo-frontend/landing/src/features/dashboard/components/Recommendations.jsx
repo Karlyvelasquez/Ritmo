@@ -10,7 +10,7 @@ export default function Recommendations() {
       <div className="card-header">
         <div className="recs-title-row">
           <Lightbulb size={22} strokeWidth={2.5} />
-          <h3>Para ti hoy 💡</h3>
+          <h3>Para ti hoy</h3>
         </div>
       </div>
 

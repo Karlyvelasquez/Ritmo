@@ -43,7 +43,7 @@ export default function DailyChallenge() {
         {completed ? (
           <>
             <CheckCircle2 size={20} />
-            <span>¡Completado! 🎉</span>
+            <span>+{challenge.points} puntos</span>
           </>
         ) : (
           <>
@@ -53,10 +53,8 @@ export default function DailyChallenge() {
       </button>
 
       {completed && (
-        <div className="completion-confetti">
-          <span>✨</span>
-          <span>🎉</span>
-          <span>⭐</span>
+        <div className="points-earned">
+          +{challenge.points}
         </div>
       )}
     </div>

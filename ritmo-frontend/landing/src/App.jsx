@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import './App.css'
 import Navbar from './components/Navbar'
@@ -9,30 +9,18 @@ import Testimonial from './components/Testimonial'
 import Team from './components/Team'
 import CTA from './components/CTA'
 import Footer from './components/Footer'
-
-export const ThemeContext = createContext()
+import { ThemeContext } from './RootRouter'
 
 function App() {
   const [loading, setLoading] = useState(true)
-  const [darkMode, setDarkMode] = useState(() => {
-    const saved = localStorage.getItem('ritmo-dark-mode')
-    return saved ? JSON.parse(saved) : false
-  })
+  const { darkMode, toggleDark } = useContext(ThemeContext)
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 2200)
     return () => clearTimeout(timer)
   }, [])
 
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
-    localStorage.setItem('ritmo-dark-mode', JSON.stringify(darkMode))
-  }, [darkMode])
-
-  const toggleDark = () => setDarkMode(prev => !prev)
-
   return (
-    <ThemeContext.Provider value={{ darkMode, toggleDark }}>
       <AnimatePresence mode="wait">
         {loading ? (
           <motion.div
@@ -87,7 +75,6 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
-    </ThemeContext.Provider>
   )
 }
 

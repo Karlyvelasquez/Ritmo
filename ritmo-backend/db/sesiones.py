@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Any, Optional, List
 from db.supabase_client import get_supabase_client
 from models.schemas import SenalesWeb
@@ -340,3 +340,181 @@ async def obtener_estadisticas_uso(dias_atras: int = 7) -> Dict[str, Any]:
     except Exception as e:
         logger.error(f"Error generating usage statistics: {e}")
         return {'total_sesiones': 0, 'total_mensajes_chat': 0, 'usuarios_unicos': 0, 'periodo_dias': dias_atras}
+
+
+# === FUNCIONES PARA CHECKINS EMOCIONALES - MI ÁNIMO ===
+
+async def guardar_checkin_emocional(
+    user_id: str, 
+    estado_emocional: str,
+    telegram_id: Optional[str] = None,
+    metodo: str = "web_galaxia",
+    mensaje_contexto: Optional[str] = None
+) -> Optional[Dict[str, Any]]:
+    """
+    Guarda un checkin emocional en la tabla checkins_diarios
+    
+    Args:
+        user_id: ID del usuario
+        estado_emocional: Estado emocional seleccionado (ej: "sereno", "radiante")
+        telegram_id: ID de Telegram (opcional)
+        metodo: Método de captura (default: "web_galaxia")
+        mensaje_contexto: Contexto adicional del usuario (opcional)
+        
+    Returns:
+        Dict con los datos guardados o None si hubo error
+        
+    Raises:
+        Exception: Si hay error en la inserción
+    """
+    try:
+        client = get_supabase_client()
+        
+        now = datetime.now(timezone.utc)
+        fecha_hoy = now.date().isoformat()
+        
+        # Mapear estados emocionales de galaxia a valores BD válidos
+        mapeo_estados = {
+            'sereno': 'normal',
+            'radiante': 'bien',
+            'esperanzado': 'bien',
+            'creativo': 'bien',
+            'conectado': 'bien',
+            'reflexivo': 'normal',
+            'nostalgico': 'normal',
+            'ansioso': 'dificil',
+            'confundido': 'dificil',
+            'abrumado': 'dificil'
+        }
+        
+        # Convertir estado emocional a valor válido
+        estado_bd = mapeo_estados.get(estado_emocional, 'normal')
+        
+        # Generar telegram_id temporal si no se proporciona (BD lo requiere como NOT NULL)
+        if not telegram_id:
+            telegram_id = f"web-user-{user_id[-8:]}"  # Usar últimos 8 chars del user_id
+        
+        # Preparar datos para inserción
+        checkin_data = {
+            'user_id': user_id,
+            'telegram_id': telegram_id,
+            'fecha': fecha_hoy,
+            'estado_emocional': estado_bd,  # Usar valor mapeado
+            'hora_respuesta': now.isoformat(),  # Usar timestamp completo
+            'metodo': 'proactivo',  # Siempre usar 'proactivo' para BD independientemente del frontend
+            'mensaje_contexto': mensaje_contexto,
+            'created_at': now.isoformat()
+        }
+        
+        # Verificar si ya existe un checkin para hoy
+        existing_response = client.table('checkins_diarios') \
+            .select('id') \
+            .eq('user_id', user_id) \
+            .eq('fecha', fecha_hoy) \
+            .execute()
+        
+        if existing_response.data and len(existing_response.data) > 0:
+            # Actualizar registro existente
+            record_id = existing_response.data[0]['id']
+            response = client.table('checkins_diarios') \
+                .update(checkin_data) \
+                .eq('id', record_id) \
+                .execute()
+            
+            if response.data:
+                logger.info(f"Emotional checkin updated successfully: {estado_bd} for user {user_id}")
+            else:
+                logger.error(f"Failed to update emotional checkin for user {user_id}: No data returned")
+        else:
+            # Insertar nuevo registro
+            response = client.table('checkins_diarios').insert(checkin_data).execute()
+            
+            if response.data:
+                logger.info(f"Emotional checkin saved successfully: {estado_bd} for user {user_id}")
+            else:
+                logger.error(f"Failed to save emotional checkin for user {user_id}: No data returned")
+        
+        result = response.data[0] if response.data else None
+        return result
+            
+    except Exception as e:
+        error_msg = f"Error saving emotional checkin for user {user_id}: {e}"
+        logger.error(error_msg)
+        raise
+
+
+async def obtener_checkins_usuario(
+    user_id: str, 
+    dias_atras: int = 7
+) -> List[Dict[str, Any]]:
+    """
+    Obtiene los checkins emocionales de un usuario en los últimos días
+    
+    Args:
+        user_id: ID del usuario
+        dias_atras: Número de días hacia atrás (default: 7)
+        
+    Returns:
+        Lista de checkins emocionales
+    """
+    try:
+        client = get_supabase_client()
+        
+        # Calcular fecha límite
+        fecha_limite = datetime.utcnow().date()
+        if dias_atras > 0:
+            from datetime import timedelta
+            fecha_limite = fecha_limite - timedelta(days=dias_atras)
+        
+        # Consultar checkins ordenados por fecha/hora desc
+        response = client.table('checkins_diarios') \
+            .select('*') \
+            .eq('user_id', user_id) \
+            .gte('fecha', fecha_limite.isoformat()) \
+            .order('fecha', desc=True) \
+            .order('hora_respuesta', desc=True) \
+            .execute()
+        
+        if response.data:
+            logger.info(f"Retrieved {len(response.data)} checkins for user {user_id}")
+            return response.data
+        else:
+            logger.info(f"No checkins found for user {user_id}")
+            return []
+            
+    except Exception as e:
+        logger.error(f"Error retrieving checkins for user {user_id}: {e}")
+        return []
+
+
+async def obtener_ultimo_checkin_usuario(user_id: str) -> Optional[Dict[str, Any]]:
+    """
+    Obtiene el último checkin emocional de un usuario
+    
+    Args:
+        user_id: ID del usuario
+        
+    Returns:
+        Último checkin o None si no existe
+    """
+    try:
+        client = get_supabase_client()
+        
+        # Consultar último checkin
+        response = client.table('checkins_diarios') \
+            .select('*') \
+            .eq('user_id', user_id) \
+            .order('created_at', desc=True) \
+            .limit(1) \
+            .execute()
+        
+        if response.data and len(response.data) > 0:
+            logger.info(f"Retrieved last checkin for user {user_id}: {response.data[0]['estado_emocional']}")
+            return response.data[0]
+        else:
+            logger.info(f"No checkins found for user {user_id}")
+            return None
+            
+    except Exception as e:
+        logger.error(f"Error retrieving last checkin for user {user_id}: {e}")
+        return None
