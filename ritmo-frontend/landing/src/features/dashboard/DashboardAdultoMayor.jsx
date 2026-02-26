@@ -10,6 +10,9 @@ import QuickTip from './components/QuickTip'
 import AlertButton from './components/AlertButton'
 import MotivationMessage from './components/MotivationMessage'
 import CognitivePuzzle from './components/CognitivePuzzle'
+import RutinaDiaria from './components/RutinaDiaria'
+import EjerciciosSuaves from './components/EjerciciosSuaves'
+import AgendaSimplificada from './components/AgendaSimplificada'
 import { userData } from './mockData'
 import './DashboardPage.css'
 
@@ -96,12 +99,14 @@ export default function DashboardAdultoMayor() {
                     <div className="dashboard-grid">
                         <div className="grid-left">
                             <AlertButton />
-                            <MotivationMessage />
+                            <RutinaDiaria />
+                            <EjerciciosSuaves />
                             <WeekMoodChart />
                             <DailyChallenge />
                         </div>
 
                         <div className="grid-right">
+                            <AgendaSimplificada />
                             <HabitsToday />
                             <CognitivePuzzle />
                             <QuickTip />

@@ -97,7 +97,8 @@
 
 .profiles-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 340px));
+  justify-content: center;
   gap: 2.5rem;
   margin-bottom: 3rem;
 }
@@ -139,15 +140,19 @@
 }
 
 @keyframes float {
-    0%, 100% {
-        transform: translate(0, 0) scale(1);
-    }
-    33% {
-        transform: translate(50px, -50px) scale(1.1);
-    }
-    66% {
-        transform: translate(-30px, 30px) scale(0.9);
-    }
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(50px, -50px) scale(1.1);
+  }
+
+  66% {
+    transform: translate(-30px, 30px) scale(0.9);
+  }
 }
 
 .profile-card:hover {
@@ -294,11 +299,11 @@
   .profile-card {
     transform: none !important;
   }
-  
+
   .ritmo-logo-selection {
     width: 100px;
   }
-  
+
   .recommended-badge {
     font-size: 0.8rem;
     padding: 6px 16px;
@@ -309,15 +314,15 @@
   .profile-selection-page {
     padding: 90px 10px 20px;
   }
-  
+
   .selection-header h1 {
     font-size: 1.8rem;
   }
-  
+
   .profile-card {
     padding: 2rem 1.5rem;
   }
-  
+
   .profiles-grid {
     gap: 1.5rem;
   }

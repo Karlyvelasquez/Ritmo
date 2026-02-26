@@ -148,3 +148,46 @@
     outline: 3px solid #0EA5E9 !important;
     outline-offset: 3px !important;
 }
+
+/* Estilos específicos para componentes de accesibilidad */
+.dashboard-visual-mode .lectura-automatica .status-indicator {
+    font-size: 1.1rem !important;
+    font-weight: bold !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.dashboard-visual-mode .tutorial-auditivo .step-indicator {
+    font-size: 1.2rem !important;
+    font-weight: 800 !important;
+    color: #0C1A2E !important;
+}
+
+[data-theme="dark"] .dashboard-visual-mode .tutorial-auditivo .step-indicator {
+    color: #F0F9FF !important;
+}
+
+.dashboard-visual-mode .tutorial-auditivo .audio-controls {
+    gap: 1rem !important;
+}
+
+.dashboard-visual-mode .tutorial-auditivo .audio-controls button {
+    min-width: 60px !important;
+    font-size: 1.1rem !important;
+}
+
+/* Mejoras para notificaciones automáticas */
+.dashboard-visual-mode .notification-item {
+    padding: 1rem 1.2rem !important;
+    font-size: 1rem !important;
+    border-left: 4px solid #0EA5E9 !important;
+    margin-bottom: 0.8rem !important;
+}
+
+.dashboard-visual-mode .notification-item.speaking {
+    background-color: #E0F2FE !important;
+    border-left-color: #0284C7 !important;
+}
+
+[data-theme="dark"] .dashboard-visual-mode .notification-item.speaking {
+    background-color: #164E63 !important;
+}

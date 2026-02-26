@@ -9,6 +9,9 @@ import QuoteOfDay from './components/QuoteOfDay'
 import QuickTip from './components/QuickTip'
 import CulturalTips from './components/CulturalTips'
 import CountryGuide from './components/CountryGuide'
+import FrasesUtiles from './components/FrasesUtiles'
+import ChecklistAdaptacion from './components/ChecklistAdaptacion'
+import CalendarioCultural from './components/CalendarioCultural'
 import { userData } from './mockData'
 import './DashboardPage.css'
 
@@ -95,6 +98,8 @@ export default function DashboardInmigrante() {
 
                     <div className="dashboard-grid">
                         <div className="grid-left">
+                            <FrasesUtiles />
+                            <ChecklistAdaptacion />
                             <QuoteOfDay />
                             <WeekMoodChart />
                             <DailyChallenge />
@@ -102,6 +107,7 @@ export default function DashboardInmigrante() {
                         </div>
 
                         <div className="grid-right">
+                            <CalendarioCultural />
                             <HabitsToday />
                             <QuickTip />
                             <CountryGuide />

@@ -8,6 +8,8 @@ import DailyChallenge from './components/DailyChallenge'
 import QuoteOfDay from './components/QuoteOfDay'
 import QuickTip from './components/QuickTip'
 import Recommendations from './components/Recommendations'
+import LecturaAutomatica from './components/LecturaAutomatica'
+import TutorialAuditivo from './components/TutorialAuditivo'
 import { userData } from './mockData'
 import './DashboardPage.css'
 import './DashboardVisual.css'
@@ -94,7 +96,8 @@ export default function DashboardVisual() {
 
                     <div className="dashboard-grid">
                         <div className="grid-left">
-                            <QuoteOfDay />
+                            <LecturaAutomatica />
+                            <TutorialAuditivo />
                             <WeekMoodChart />
                             <DailyChallenge />
                         </div>

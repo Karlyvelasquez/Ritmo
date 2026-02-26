@@ -31,34 +31,34 @@ export const habitsData = {
 }
 
 export const playlistsData = [
-  { 
-    id: 1, 
-    title: "Chill vibes", 
-    image: "https://i.scdn.co/image/ab67706f00000002d073e656e546e43bc387ad68",
+  {
+    id: 1,
+    title: "Chill vibes",
+    image: "/image/portada1.png",
     mood: "calma",
     featured: true,
     spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn"
   },
-  { 
-    id: 2, 
-    title: "Brilla tu día", 
-    image: "https://i.scdn.co/image/ab67706f00000002d5c6a019c628429ff00a1f3c",
+  {
+    id: 2,
+    title: "Brilla tu día",
+    image: "/image/portada2.png",
     mood: "bien",
     featured: false,
     spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DX0XUsuxWHRQd"
   },
-  { 
-    id: 3, 
-    title: "Feels", 
-    image: "https://i.scdn.co/image/ab67706f00000002dbfab2a75e5e297e4dcb1c19",
+  {
+    id: 3,
+    title: "Feels",
+    image: "/image/portada3.png",
     mood: "normal",
     featured: false,
     spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DX1s9knjP51Oa"
   },
-  { 
-    id: 4, 
-    title: "Energía bonita", 
-    image: "https://i.scdn.co/image/ab67706f000000027e1eeb0d7cc374a168369c80",
+  {
+    id: 4,
+    title: "Energía bonita",
+    image: "/image/portada4.png",
     mood: "bien",
     featured: false,
     spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DX4dyzvuaRJ0n"
@@ -347,35 +347,35 @@ export const motivationalQuotes = [
 
 // Tips rápidos - aparecen aleatoriamente
 export const quickTips = [
-  { 
+  {
     text: "Cuando te sientas ansioso, nombra 5 cosas que puedas ver a tu alrededor",
     category: "anxiety"
   },
-  { 
+  {
     text: "La regla 5-4-3-2-1: identifica 5 cosas que ves, 4 que tocas, 3 que oyes, 2 que hueles, 1 que saboreas",
     category: "grounding"
   },
-  { 
+  {
     text: "No tienes que responder mensajes al instante. Tu tiempo es tuyo",
     category: "boundaries"
   },
-  { 
+  {
     text: "Dormir bien no es un lujo, es una necesidad. Priórízalo",
     category: "sleep"
   },
-  { 
+  {
     text: "Si algo te da ansiedad hoy, pregúntate: ¿importará en 5 años?",
     category: "perspective"
   },
-  { 
+  {
     text: "Beber agua es autocuidado. Hidrátate",
     category: "health"
   },
-  { 
+  {
     text: "Está bien decir 'no' sin dar explicaciones largas",
     category: "boundaries"
   },
-  { 
+  {
     text: "Compararte con otros en redes sociales es comparar tu detrás de cámaras con el highlight reel de alguien más",
     category: "social"
   }
@@ -394,7 +394,7 @@ export const getDailyChallenge = () => {
 
 // Función para obtener recomendaciones según mood
 export const getRecommendationsForMood = (currentMood, count = 3) => {
-  const filtered = recommendations.filter(rec => 
+  const filtered = recommendations.filter(rec =>
     rec.mood.includes(currentMood.toLowerCase())
   )
   // Mezclar y tomar las primeras 'count'
