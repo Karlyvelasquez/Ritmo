@@ -277,9 +277,11 @@
   justify-content: space-between;
   align-items: flex-end;
   height: 200px;
-  gap: 1rem;
+  gap: 0.5rem;
   margin-bottom: 1rem;
-  padding: 1rem 0;
+  padding: 1rem;
+  overflow-x: auto;
+  min-width: 0;
 }
 
 .chart-bar-wrapper {
@@ -288,16 +290,21 @@
   flex-direction: column;
   align-items: center;
   height: 100%;
+  min-width: 50px;
+  position: relative;
 }
 
 .chart-bar {
   width: 100%;
-  max-width: 60px;
+  max-width: 45px;
+  min-height: 20px;
   position: relative;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   flex: 1;
+  background: rgba(138, 175, 139, 0.1);
+  border-radius: 8px;
 }
 
 .bar-fill {
@@ -315,10 +322,19 @@
 
 .bar-value {
   position: absolute;
-  top: -24px;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 0.875rem;
   font-weight: 700;
   color: var(--color-text);
+  background: var(--color-surface);
+  padding: 2px 6px;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  min-width: 20px;
+  text-align: center;
+  z-index: 2;
 }
 
 .chart-label {
@@ -503,16 +519,23 @@
 
   .weekly-chart {
     height: 150px;
-    gap: 0.5rem;
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+
+  .chart-bar {
+    max-width: 35px;
   }
 
   .bar-value {
     font-size: 0.75rem;
-    top: -20px;
+    top: -22px;
+    padding: 1px 4px;
   }
 
   .chart-label {
     font-size: 0.75rem;
+    margin-top: 0.5rem;
   }
 
   .emotion-label {
@@ -557,5 +580,26 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
+  }
+
+  .weekly-chart {
+    height: 120px;
+    gap: 0.125rem;
+    padding: 0.25rem;
+  }
+
+  .chart-bar {
+    max-width: 28px;
+  }
+
+  .bar-value {
+    font-size: 0.7rem;
+    top: -18px;
+    padding: 1px 3px;
+  }
+
+  .chart-label {
+    font-size: 0.7rem;
+    margin-top: 0.25rem;
   }
 }

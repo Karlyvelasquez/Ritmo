@@ -464,6 +464,9 @@
   text-align: center;
   max-width: 650px;
   margin: 0 auto 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .section-tag {
@@ -474,6 +477,7 @@
   text-transform: uppercase;
   letter-spacing: 3px;
   margin-bottom: 0.8rem;
+  text-align: center;
 }
 
 .section-title {
@@ -482,6 +486,7 @@
   color: var(--color-text);
   line-height: 1.15;
   margin-bottom: 0.8rem;
+  text-align: center !important;
 }
 
 .section-desc {
@@ -489,6 +494,7 @@
   color: var(--color-text-secondary);
   line-height: 1.7;
   font-weight: 500;
+  text-align: center !important;
 }
 
 /* === FEATURES === */

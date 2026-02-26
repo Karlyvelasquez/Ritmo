@@ -39,7 +39,7 @@ const profiles = [
     gradient: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)',
     available: true,
     icon: FiBriefcase,
-    route: '/dashboard'
+    route: '/dashboard/adulto-activo'
   },
   {
     id: 'adulto_mayor',

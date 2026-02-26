@@ -26,22 +26,22 @@
   position: absolute;
   border-radius: 50%;
   filter: blur(80px);
-  opacity: 0.15;
+  opacity: 0.08;
   animation: float 20s infinite ease-in-out;
 }
 
 .blob-1 {
-  width: 400px;
-  height: 400px;
+  width: 280px;
+  height: 280px;
   background: linear-gradient(135deg, #8AAF8B, #38BDF8);
-  top: -100px;
-  left: -100px;
+  top: -140px;
+  left: -140px;
   animation-delay: 0s;
 }
 
 .blob-2 {
-  width: 500px;
-  height: 500px;
+  width: 300px;
+  height: 300px;
   background: linear-gradient(135deg, #38BDF8, #8AAF8B);
   bottom: -150px;
   right: -150px;
@@ -49,8 +49,8 @@
 }
 
 .blob-3 {
-  width: 350px;
-  height: 350px;
+  width: 250px;
+  height: 250px;
   background: linear-gradient(135deg, #8AAF8B, #FFB74D);
   top: 50%;
   left: 50%;
