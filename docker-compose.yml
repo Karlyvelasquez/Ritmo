@@ -1,14 +1,24 @@
 version: '3.8'
 
 services:
+  # Domain service (required for domain routing)
+  db:
+    build:
+      context: ./ritmo-frontend/landing
+      dockerfile: Dockerfile
+    container_name: db
+    ports:
+      - "80:80"
+    depends_on:
+      - ritmo-backend
+    restart: unless-stopped
+
   # Frontend React/Vite con Nginx
   ritmo-frontend:
     build:
       context: ./ritmo-frontend/landing
       dockerfile: Dockerfile
     container_name: ritmo-frontend
-    ports:
-      - "80:80"
     depends_on:
       - ritmo-backend
     restart: unless-stopped

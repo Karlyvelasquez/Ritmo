@@ -29,14 +29,20 @@ class DatabaseManager:
         return self._client
 
     def _initialize_client(self):
-        """Inicializa cliente Supabase"""
+        """Inicializa cliente Supabase con configuración robusta"""
         try:
-            self._client = create_client(config.SUPABASE_URL, config.SUPABASE_KEY)
+            # Configuración simplificada sin argumentos problemáticos
+            self._client = create_client(
+                supabase_url=config.SUPABASE_URL,
+                supabase_key=config.SUPABASE_KEY
+            )
             self._initialized = True
             logger.info("✅ Cliente Supabase inicializado")
         except Exception as e:
             logger.error(f"❌ Error inicializando Supabase: {e}")
-            raise
+            self._initialized = False
+            self._client = None
+            # No raise para permitir que el bot funcione sin DB
 
     # ------------------------------------------------------------------ #
     #  Búsqueda de usuarios registrados en la app                         #
@@ -48,6 +54,10 @@ class DatabaseManager:
         Devuelve el primer registro que coincida o None.
         """
         try:
+            if not self._initialized or not self._client:
+                logger.warning("Cliente Supabase no inicializado")
+                return None
+                
             result = (
                 self.client.table("usuarios")
                 .select("*")
@@ -72,10 +82,14 @@ class DatabaseManager:
         Sirve para reconocer usuarios que ya se identificaron antes.
         """
         try:
+            if not self._initialized or not self._client:
+                logger.warning("Cliente Supabase no inicializado")
+                return None
+                
             result = (
                 self.client.table("usuarios")
                 .select("*")
-                .eq("telegram_id", telegram_user_id)
+                .eq("telegram_id", str(telegram_id))
                 .execute()
             )
 

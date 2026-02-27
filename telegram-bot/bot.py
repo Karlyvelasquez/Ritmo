@@ -191,12 +191,16 @@ class RitmoTelegramBot:
                 scheduler_task = asyncio.create_task(self.checkin_system.iniciar_scheduler())
                 logger.info("🔔 Scheduler de check-ins iniciado")
             
-            # Iniciar polling
+            # Iniciar polling con configuración robusta
             await self.app.start()
             await self.app.updater.start_polling(
-                poll_interval=1.0,
+                poll_interval=2.0,
+                timeout=20,
                 drop_pending_updates=True,
-                allowed_updates=['message', 'callback_query']
+                allowed_updates=['message', 'callback_query'],
+                read_timeout=30,
+                write_timeout=30,
+                connect_timeout=30
             )
             
             logger.info("✅ Bot ejecutándose ... (Ctrl+C para detener)")

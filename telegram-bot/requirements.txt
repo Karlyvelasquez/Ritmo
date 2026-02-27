@@ -13,8 +13,8 @@ httpx
 aiohttp==3.9.1
 requests==2.31.0
 
-# 🗃️ Database (let pip resolve compatible versions)
-supabase>=2.7.0
+# 🗃️ Database (stable compatible version)
+supabase==2.7.4
 
 # ⚙️ Environment variables
 python-dotenv==1.0.0
