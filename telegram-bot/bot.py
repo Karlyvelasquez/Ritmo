@@ -183,6 +183,9 @@ class RitmoTelegramBot:
 
     async def ejecutar(self):
         """Ejecuta el bot con scheduler de check-ins"""
+        retry_count = 0
+        max_retries = 10
+        
         try:
             # Inicializar aplicación
             await self.app.initialize()
@@ -192,19 +195,30 @@ class RitmoTelegramBot:
                 scheduler_task = asyncio.create_task(self.checkin_system.iniciar_scheduler())
                 logger.info("🔔 Scheduler de check-ins iniciado")
             
-            # Iniciar polling con configuración robusta
-            await self.app.start()
-            await self.app.updater.start_polling(
-                poll_interval=2.0,
-                timeout=20,
-                drop_pending_updates=True,
-                allowed_updates=['message', 'callback_query'],
-                read_timeout=30,
-                write_timeout=30,
-                connect_timeout=30
-            )
-            
-            logger.info("✅ Bot ejecutándose ... (Ctrl+C para detener)")
+            # Iniciar el bot con reintentos para manejar conflictos pos-despliegue
+            while retry_count < max_retries:
+                try:
+                    await self.app.start()
+                    # start_polling es bloqueante en versiones viejas, pero en ptb 20.x es async
+                    await self.app.updater.start_polling(
+                        poll_interval=2.0,
+                        timeout=20,
+                        drop_pending_updates=True,
+                        allowed_updates=['message', 'callback_query'],
+                        read_timeout=30,
+                        write_timeout=30,
+                        connect_timeout=30
+                    )
+                    logger.info("✅ Bot ejecutándose ... (Ctrl+C para detener)")
+                    break
+                except Exception as e:
+                    if "Conflict" in str(e):
+                        retry_count += 1
+                        wait_time = min(5 * retry_count, 30)
+                        logger.warning(f"⚠️ Conflicto detectado (otra instancia activa). Reintento {retry_count}/{max_retries} en {wait_time}s...")
+                        await asyncio.sleep(wait_time)
+                    else:
+                        raise e
             
             # Mantener el bot corriendo
             while True:

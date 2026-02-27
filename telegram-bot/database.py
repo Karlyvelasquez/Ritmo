@@ -92,13 +92,14 @@ class DatabaseManager:
         Devuelve el primer registro que coincida o None.
         """
         try:
-            if not self._initialized or not self._client:
+            client = self.client # Forzar inicialización vía lazy loading
+            if not client:
                 logger.warning("🚨 Cliente Supabase no inicializado - búsqueda por nombre no disponible")
                 logger.info("💡 Verificar credenciales SUPABASE_URL y SUPABASE_KEY en .env")
                 return None
                 
             result = (
-                self.client.table("usuarios")
+                client.table("usuarios")
                 .select("*")
                 .ilike("nombre", nombre.strip())
                 .execute()
@@ -121,13 +122,14 @@ class DatabaseManager:
         Sirve para reconocer usuarios que ya se identificaron antes.
         """
         try:
-            if not self._initialized or not self._client:
+            client = self.client # Forzar inicialización vía lazy loading
+            if not client:
                 logger.warning("🚨 Cliente Supabase no inicializado - búsqueda por telegram_id no disponible")
                 logger.info("💡 El bot funcionará solo con funciones básicas")
                 return None
                 
             result = (
-                self.client.table("usuarios")
+                client.table("usuarios")
                 .select("*")
                 .eq("telegram_id", str(telegram_id))
                 .execute()
