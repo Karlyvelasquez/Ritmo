@@ -1,0 +1,62 @@
+# Docker Compose para desarrollo con hot-reloading
+version: '3.8'
+
+services:
+  # Frontend con hot reload
+  ritmo-frontend-dev:
+    build:
+      context: ./ritmo-frontend/landing
+      target: builder  # Solo hasta la etapa de build
+    container_name: ritmo-frontend-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./ritmo-frontend/landing:/app
+      - /app/node_modules  # Excluir node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true  # Para hot reload en Windows
+    command: npm run dev -- --host 0.0.0.0
+    networks:
+      - ritmo-network
+
+  # Backend con hot reload
+  ritmo-backend-dev:
+    build:
+      context: ./ritmo-backend
+    container_name: ritmo-backend-dev
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=gpt-4
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - ENVIRONMENT=development
+    volumes:
+      - ./ritmo-backend:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - ritmo-network
+
+  # Telegram Bot (desarrollo)
+  telegram-bot-dev:
+    build:
+      context: ./telegram-bot
+    container_name: telegram-bot-dev
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - BACKEND_URL=http://ritmo-backend-dev:8000
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - ENVIRONMENT=development
+    volumes:
+      - ./telegram-bot:/app
+    depends_on:
+      - ritmo-backend-dev
+    networks:
+      - ritmo-network
+
+networks:
+  ritmo-network:
+    driver: bridge

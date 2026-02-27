@@ -2,6 +2,96 @@
 
 RITMO es una plataforma integral de acompañamiento psicosocial diseñada para apoyar a poblaciones vulnerables a través de tecnología conversacional inteligente. La plataforma combina análisis de patrones de vida, inteligencia artificial y comunicación multicanal para ofrecer apoyo personalizado y seguimiento continuo.
 
+## 🚀 Inicio Rápido con Docker
+
+### Prerrequisitos
+- [Docker](https://www.docker.com/get-started) instalado en tu sistema
+- [Docker Compose](https://docs.docker.com/compose/install/) (incluido en Docker Desktop)
+- Git para clonar el repositorio
+
+### Configuración e Inicio
+
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/Karlyvelasquez/Ritmo.git
+   cd Ritmo
+   ```
+
+2. **Configurar variables de entorno:**
+   ```bash
+   # Copiar archivo de ejemplo
+   cp .env.example .env
+   
+   # Editar con tus configuraciones
+   nano .env  # En Linux/Mac
+   notepad .env  # En Windows
+   ```
+
+3. **Iniciar con Docker (opción fácil):**
+   ```bash
+   # Linux/Mac
+   ./start.sh
+   
+   # Windows
+   start.bat
+   ```
+
+4. **O manualmente:**
+   ```bash
+   # Construir imágenes
+   docker-compose build
+   
+   # Iniciar servicios
+   docker-compose up -d
+   ```
+
+### URLs de Acceso
+- **Frontend:** http://localhost:3000
+- **Backend API:** http://localhost:8000
+- **Documentación API:** http://localhost:8000/docs
+- **Nginx (Reverse Proxy):** http://localhost
+
+### Comandos Útiles
+```bash
+# Ver logs en tiempo real
+docker-compose logs -f
+
+# Ver logs de un servicio específico
+docker-compose logs -f ritmo-backend
+
+# Detener servicios
+docker-compose down
+
+# Reconstruir y reiniciar
+docker-compose down && docker-compose build && docker-compose up -d
+
+# Ver estado de contenedores
+docker-compose ps
+
+# Verificar salud de servicios
+./healthcheck.sh
+
+# Usar Makefile (Linux/Mac)
+make help
+make setup
+make up
+```
+
+### Modo Desarrollo (con Hot Reload)
+
+Para desarrollo con recarga automática de cambios:
+
+```bash
+# Linux/Mac
+./start-dev.sh
+
+# Windows
+start-dev.bat
+
+# O manualmente
+docker-compose -f docker-compose.dev.yml up -d
+```
+
 ## Descripción del Producto
 
 RITMO identifica automáticamente la etapa de vida y necesidades específicas de cada usuario mediante conversación natural, proporcionando acompañamiento adaptado a sus circunstancias particulares. La plataforma está especialmente diseñada para trabajar con:
@@ -345,6 +435,58 @@ El sistema utiliza una arquitectura basada en agentes especializados:
 3. **Ejecutar servicios:**
    - Backend: `python main.py` (puerto 8001)
    - Frontend: `npm run dev` (puerto 3000)
+
+## 🐳 Arquitectura Docker
+
+### Servicios Incluidos
+
+| Servicio | Puerto | Descripción |
+|----------|---------|-------------|
+| `ritmo-frontend` | 3000 | Frontend React/Vite con Nginx |
+| `ritmo-backend` | 8000 | API FastAPI con uvicorn |
+| `telegram-bot` | - | Bot de Telegram (sin puerto expuesto) |
+| `nginx` | 80, 443 | Reverse proxy y balanceador |
+
+### Estructura de Contenedores
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│  ritmo-frontend │    │  ritmo-backend  │    │  telegram-bot   │
+│   (React/Vite)  │    │    (FastAPI)    │    │    (Python)     │
+│     Port: 3000  │    │    Port: 8000   │    │   (Internal)    │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         └───────────────────────┼───────────────────────┘
+                                 │
+                    ┌─────────────────┐
+                    │      nginx      │
+                    │ (Reverse Proxy) │
+                    │   Port: 80/443  │
+                    └─────────────────┘
+```
+
+### Configuración Personalizada
+
+- **Frontend**: Multi-stage build con optimización de producción
+- **Backend**: Entorno Python 3.11 con dependencias optimizadas
+- **Bot**: Contenedor seguro con usuario no-root
+- **Nginx**: Configuración con rate limiting y headers de seguridad
+
+### Variables de Entorno Requeridas
+
+Crear archivo `.env` basado en `.env.example`:
+
+```bash
+# OpenAI
+OPENAI_API_KEY=tu_api_key
+
+# Supabase
+SUPABASE_URL=https://tu-proyecto.supabase.co
+SUPABASE_KEY=tu_supabase_key
+
+# Telegram
+TELEGRAM_BOT_TOKEN=tu_bot_token
+```
    - Bot: `python bot.py`
 
 ### Testing
