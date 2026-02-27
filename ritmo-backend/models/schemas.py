@@ -14,7 +14,7 @@ class Usuario(BaseModel):
     """Modelo completo del usuario en base de datos"""
     id: Optional[str] = Field(None, description="UUID del usuario")
     nombre: str = Field(..., description="Nombre del usuario")
-    etapa_vida: Literal["joven", "adulto_activo", "inmigrante", "adulto_mayor", "discapacidad_visual"] = Field(
+    etapa_vida: Literal["joven", "adulto_activo", "migrante", "mayor_70", "discapacidad_visual"] = Field(
         ..., description="Etapa de vida detectada automáticamente"
     )
     modo_comunicacion: Literal["texto", "voz"] = Field(
@@ -31,7 +31,7 @@ class Usuario(BaseModel):
 
 class PerfilUsuario(BaseModel):
     """Perfil del usuario con su etapa de vida y preferencias (para compatibilidad)"""
-    etapa: Literal["joven", "adulto_activo", "inmigrante", "adulto_mayor", "discapacidad_visual"] = Field(
+    etapa: Literal["joven", "adulto_activo", "migrante", "mayor_70", "discapacidad_visual"] = Field(
         ..., description="Etapa de vida del usuario"
     )
     nombre: str = Field(..., description="Nombre del usuario")

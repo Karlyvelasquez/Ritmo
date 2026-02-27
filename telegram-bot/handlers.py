@@ -170,7 +170,7 @@ async def comando_debug_usuarios(update: Update, context: ContextTypes.DEFAULT_T
             await update.message.reply_text("❌ No hay usuarios en la BD")
             return
         
-        mensaje = f"👥 **Usuarios en BD ({len(result.data)})**\\n\\n"
+        mensaje = f"👥 **Usuarios en BD ({len(result.data)})**\n\n"
         
         for i, usuario in enumerate(result.data[:10], 1):  # Máximo 10 usuarios
             user_id = usuario.get("id", "N/A")
@@ -178,13 +178,13 @@ async def comando_debug_usuarios(update: Update, context: ContextTypes.DEFAULT_T
             telegram_id_db = usuario.get("telegram_id", "N/A")
             created = usuario.get("created_at", "N/A")[:10] if usuario.get("created_at") else "N/A"
             
-            mensaje += f"{i}. **{nombre}**\\n"
-            mensaje += f"   • ID: `{user_id}`\\n"
-            mensaje += f"   • Telegram: `{telegram_id_db}`\\n"
-            mensaje += f"   • Creado: {created}\\n\\n"
+            mensaje += f"{i}. **{nombre}**\n"
+            mensaje += f"   • ID: `{user_id}`\n"
+            mensaje += f"   • Telegram: `{telegram_id_db}`\n"
+            mensaje += f"   • Creado: {created}\n\n"
         
         if len(result.data) > 10:
-            mensaje += f"... y {len(result.data) - 10} más\\n"
+            mensaje += f"... y {len(result.data) - 10} más\n"
         
         await update.message.reply_text(mensaje, parse_mode='Markdown')
         

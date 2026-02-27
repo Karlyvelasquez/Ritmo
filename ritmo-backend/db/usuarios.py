@@ -21,21 +21,29 @@ def mapear_etapa_a_bd(etapa_interna: str) -> str:
     """
     Mapea las etapas internas del onboarding a los valores aceptados por la BD
     
+    CRÍTICO: Ahora el onboarding usa directamente los valores correctos:
+    - 'migrante' (no 'inmigrante')  
+    - 'mayor_70' (no 'adulto_mayor')
+    
     Args:
         etapa_interna: Etapa detectada por el onboarding
         
     Returns:
         str: Valor válido para la base de datos
     """
+    # Mapeo directo - los valores del onboarding ya son los correctos para la BD
     mapeo = {
         "joven": "joven",
         "adulto_activo": "adulto_activo", 
-        "inmigrante": "inmigrante",
-        "adulto_mayor": "senior",  # Cambio principal
-        "discapacidad_visual": "discapacidad_visual"
+        "migrante": "migrante",              # CORREGIDO: directo, sin mapeo
+        "mayor_70": "mayor_70",              # CORREGIDO: directo, sin mapeo
+        "discapacidad_visual": "discapacidad_visual",
+        # Mantener compatibilidad con valores antiguos por si acaso
+        "inmigrante": "migrante",            # Por compatibilidad  
+        "adulto_mayor": "mayor_70"           # Por compatibilidad
     }
     
-    etapa_bd = mapeo.get(etapa_interna, "adulto_activo")  # Fallback seguro
+    etapa_bd = mapeo.get(etapa_interna, "joven")  # Fallback cambiado a 'joven' (más neutral)
     
     if etapa_bd != etapa_interna:
         logger.info(f"Mapeando etapa '{etapa_interna}' -> '{etapa_bd}' para BD")
@@ -45,7 +53,7 @@ def mapear_etapa_a_bd(etapa_interna: str) -> str:
 
 def mapear_etapa_desde_bd(etapa_bd: str) -> str:
     """
-    Mapea los valores de BD de vuelta a etapas internas
+    Mapea los valores de BD de vuelta a etapas internas del sistema
     
     Args:
         etapa_bd: Valor de la base de datos
@@ -53,12 +61,17 @@ def mapear_etapa_desde_bd(etapa_bd: str) -> str:
     Returns:
         str: Etapa interna del sistema
     """
+    # Los valores de BD y sistema ahora son idénticos, mapeo directo
     mapeo_inverso = {
         "joven": "joven",
         "adulto_activo": "adulto_activo",
-        "inmigrante": "inmigrante", 
-        "senior": "adulto_mayor",  # Mapeo inverso
-        "discapacidad_visual": "discapacidad_visual"
+        "migrante": "migrante",              # CORREGIDO: BD y sistema usan mismo valor
+        "mayor_70": "mayor_70",              # CORREGIDO: BD y sistema usan mismo valor
+        "discapacidad_visual": "discapacidad_visual",
+        # Compatibilidad con valores antiguos en BD (por si quedaron registros viejos)
+        "inmigrante": "migrante",            # Convertir valores antiguos
+        "adulto_mayor": "mayor_70",          # Convertir valores antiguos
+        "senior": "mayor_70"                 # Compatibilidad anterior
     }
     
     return mapeo_inverso.get(etapa_bd, etapa_bd)

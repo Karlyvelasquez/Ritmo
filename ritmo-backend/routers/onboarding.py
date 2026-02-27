@@ -90,7 +90,7 @@ async def iniciar_onboarding(request: OnboardingInicio) -> OnboardingResponse:
         )
         
         # 5. Obtener primera pregunta
-        mensaje_bienvenida = f"¡Hola {request.nombre}! 👋\\n\\nSoy tu asistente personal de RITMO. Me encanta conocerte y quiero entender mejor tu situación para poder ayudarte de la mejor manera.\\n\\nTe haré algunas preguntas casuales, como si fuéramos amigos charlando. No te preocupes, no hay respuestas correctas o incorrectas.\\n\\n¡Empecemos!"
+        mensaje_bienvenida = f"¡Hola {request.nombre}! 👋\n\nSoy tu asistente personal de RITMO. Me encanta conocerte y quiero entender mejor tu situación para poder ayudarte de la mejor manera.\n\nTe haré algunas preguntas casuales, como si fuéramos amigos charlando. No te preocupes, no hay respuestas correctas o incorrectas.\n\n¡Empecemos!"
         
         primera_pregunta, estado_actualizado = onboarding_agent.obtener_siguiente_pregunta(estado_inicial)
         
@@ -98,7 +98,7 @@ async def iniciar_onboarding(request: OnboardingInicio) -> OnboardingResponse:
         session_manager.guardar_estado(sesion_id, estado_actualizado)
         
         # 7. Generar respuesta
-        mensaje_completo = f"{mensaje_bienvenida}\\n\\n{primera_pregunta}"
+        mensaje_completo = f"{mensaje_bienvenida}\n\n{primera_pregunta}"
         
         response = OnboardingResponse(
             mensaje=mensaje_completo,
@@ -196,8 +196,9 @@ async def procesar_respuesta(request: OnboardingRespuesta) -> OnboardingResponse
                 estado_actualizado.completado = False
                 session_manager.guardar_estado(request.sesion_id, estado_actualizado)
                 
-                # Mensaje de error claro
-                mensaje_final = f"{mensaje_respuesta}\n\n❌ Error técnico: No se pudo crear tu perfil en este momento.\n\n🔄 Por favor, contacta con soporte o inténtalo más tarde.\n\nDetalles del error: Problema de conectividad con la base de datos."
+                # Mensaje de error detallado
+                detalle_error = f"Detalle técnico: {str(e)}" if "SUPABASE" not in str(e).upper() else "Problema de conectividad con la base de datos."
+                mensaje_final = f"{mensaje_respuesta}\n\n❌ Error técnico: No se pudo crear tu perfil en este momento.\n\n🔄 Por favor, contacta con soporte o inténtalo más tarde.\n\nDetalles del error: {detalle_error}"
                 
                 # NO limpiar la sesión para permitir reintento
         else:
@@ -441,7 +442,7 @@ async def probar_todas_las_etapas():
     """
     Endpoint de debug para probar todos los valores de etapa_vida
     """
-    etapas_a_probar = ["joven", "adulto_activo", "inmigrante", "adulto_mayor", "discapacidad_visual"]
+    etapas_a_probar = ["joven", "adulto_activo", "migrante", "mayor_70", "discapacidad_visual"]
     resultados = []
     
     for etapa in etapas_a_probar:

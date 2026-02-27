@@ -48,6 +48,17 @@ class SupabaseClient:
             self._initialize_client()
         return self._client
 
+    def test_connection(self) -> bool:
+        """Prueba la conexión con Supabase"""
+        try:
+            # Intentar obtener información de la tabla usuarios
+            response = self.client.table('usuarios').select('id').limit(1).execute()
+            logger.info("Supabase connection test successful")
+            return True
+        except Exception as e:
+            logger.error(f"Supabase connection test failed: {e}")
+            return False
+
 
 def get_supabase_client() -> Client:
     """
@@ -57,34 +68,3 @@ def get_supabase_client() -> Client:
         Client: Cliente inicializado de Supabase
     """
     return SupabaseClient().client
-    
-def test_connection(self) -> bool:
-    """Prueba la conexión con Supabase"""
-    try:
-        # Intentar obtener información de la tabla usuarios
-        response = self.client.table('usuarios').select('id').limit(1).execute()
-        logger.info("Supabase connection test successful")
-        return True
-    except Exception as e:
-        logger.error(f"Supabase connection test failed: {e}")
-        return False
-
-
-# Instancia global del cliente
-_supabase_client_instance = None
-
-
-def get_supabase_client() -> Client:
-    """
-    Función helper para obtener el cliente Supabase
-    
-    Returns:
-        Client: Instancia del cliente Supabase
-        
-    Raises:
-        RuntimeError: Si el cliente no está inicializado
-    """
-    global _supabase_client_instance
-    if _supabase_client_instance is None:
-        _supabase_client_instance = SupabaseClient()
-    return _supabase_client_instance.client

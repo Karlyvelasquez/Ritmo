@@ -20,7 +20,7 @@ const profiles = [
     route: '/dashboard'
   },
   {
-    id: 'inmigrante',
+    id: 'migrante',
     title: 'Inmigrante',
     subtitle: 'Adaptación cultural',
     description: 'Apoyo emocional y guía práctica para tu nueva vida',
@@ -42,7 +42,7 @@ const profiles = [
     route: '/dashboard'
   },
   {
-    id: 'adulto_mayor',
+    id: 'mayor_70',
     title: 'Adulto Mayor',
     subtitle: 'Bienestar senior',
     description: 'Cuidado, motivación y entretenimiento para cada día',
@@ -120,7 +120,7 @@ export default function ProfileSelection() {
           <div className="blob blob-2"></div>
           <div className="blob blob-3"></div>
         </div>
-        
+
         <motion.div
           className="profile-selection-container"
           initial={{ opacity: 0, y: 20 }}
@@ -152,7 +152,7 @@ export default function ProfileSelection() {
             </motion.p>
           </div>
 
-          <motion.div 
+          <motion.div
             className="profiles-grid"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -174,14 +174,14 @@ export default function ProfileSelection() {
                   whileTap={{ scale: 0.98 }}
                 >
                   {isRecommended && (
-                    <motion.div 
-                      className="recommended-badge" 
+                    <motion.div
+                      className="recommended-badge"
                       style={{ backgroundColor: profile.color }}
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.3, delay: 0.7 }}
                     >
-                      ⭐ Perfecto para ti
+                      🎆 Este es el mejor para ti
                     </motion.div>
                   )}
 
@@ -199,7 +199,7 @@ export default function ProfileSelection() {
                     <span className="profile-subtitle">{profile.subtitle}</span>
                     <p className="profile-description">{profile.description}</p>
 
-                    <motion.div 
+                    <motion.div
                       className="profile-action"
                       whileHover={{ x: 4 }}
                       transition={{ duration: 0.2 }}
@@ -218,7 +218,7 @@ export default function ProfileSelection() {
             })}
           </motion.div>
 
-          <motion.p 
+          <motion.p
             className="info-text"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
