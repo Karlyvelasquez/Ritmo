@@ -84,14 +84,14 @@ El bot necesita estas variables en el archivo `.env`:
 
 ```env
 # Token del bot (ambos formatos por compatibilidad)
-BOT_TOKEN=8597946447:AAFOv0s1A5UWGBMcBIuEqyh1UkjIkHQiMNA
-TELEGRAM_BOT_TOKEN=8597946447:AAFOv0s1A5UWGBMcBIuEqyh1UkjIkHQiMNA
+BOT_TOKEN=1234567890:AABBCCDDEEFFggHHiiJJkkLLmmNNooP_EJEMPLO
+TELEGRAM_BOT_TOKEN=1234567890:AABBCCDDEEFFggHHiiJJkkLLmmNNooP_EJEMPLO
 
 # OpenAI para respuestas IA
 OPENAI_API_KEY=tu_api_key_aqui
 
 # Supabase para base de datos
-SUPABASE_URL=https://kypbabqsxncrpjvkhdsc.supabase.co
+SUPABASE_URL=https://tu-proyecto.supabase.co
 SUPABASE_KEY=tu_supabase_key
 
 # Backend RITMO
