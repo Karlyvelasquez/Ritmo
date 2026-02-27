@@ -4,6 +4,10 @@ services:
     build:
       context: ./ritmo-frontend/landing
     container_name: ritmo-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - ritmo-backend
     restart: unless-stopped
 
   # Backend FastAPI
@@ -33,15 +37,5 @@ services:
       - SUPABASE_KEY=${SUPABASE_KEY}
       - OPENAI_MODEL=gpt-4o-mini
     depends_on:
-      - ritmo-backend
-    restart: unless-stopped
-
-  # Nginx (required for domain configuration)
-  nginx:
-    build:
-      context: ./nginx
-    container_name: ritmo-nginx
-    depends_on:
-      - ritmo-frontend
       - ritmo-backend
     restart: unless-stopped
