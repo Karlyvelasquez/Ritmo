@@ -21,32 +21,27 @@ def verificar_configuracion():
     
     print("🔧 Verificando configuración del bot RITMO...")
     
-    # Verificar archivo .env
-    env_file = project_root / ".env"
-    if not env_file.exists():
-        print("❌ Archivo .env no encontrado")
-        print("💡 Copia el archivo .env.template a .env y completa las variables")
-        template_file = project_root / ".env.template"
-        if template_file.exists():
-            print(f"📄 Template disponible en: {template_file}")
-        return False
+    # Cargar variables de entorno (funciona con o sin archivo .env)
+    from dotenv import load_dotenv
+    load_dotenv()  # No falla si no hay .env
     
-    # Verificar variables críticas
-    variables_criticas = [
-        "TELEGRAM_BOT_TOKEN",
-        "OPENAI_API_KEY",
-        "SUPABASE_URL",
-        "SUPABASE_KEY"
-    ]
+    # Verificar variables críticas (desde env vars del sistema o .env)
+    variables_criticas = {
+        "TELEGRAM_BOT_TOKEN": os.getenv("TELEGRAM_BOT_TOKEN") or os.getenv("BOT_TOKEN"),
+        "OPENAI_API_KEY": os.getenv("OPENAI_API_KEY"),
+        "SUPABASE_URL": os.getenv("SUPABASE_URL"),
+        "SUPABASE_KEY": os.getenv("SUPABASE_KEY")
+    }
     
     missing_vars = []
-    for var in variables_criticas:
-        if not os.getenv(var):
-            missing_vars.append(var)
+    for var_name, var_value in variables_criticas.items():
+        if not var_value:
+            missing_vars.append(var_name)
     
     if missing_vars:
-        print(f"Variables de entorno faltantes: {', '.join(missing_vars)}")
-        print("Completa estas variables en tu archivo .env")
+        print(f"❌ Variables de entorno faltantes: {', '.join(missing_vars)}")
+        print("💡 En desarrollo: crea un archivo .env")
+        print("💡 En producción: configura las variables de entorno en tu plataforma")
         return False
     
     print("✅ Configuración válida")

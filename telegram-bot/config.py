@@ -21,8 +21,8 @@ class Config:
     # Modelo a usar: "gpt-4o", "gpt-4o-mini", "gpt-4-turbo", etc.
     OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
-    # Telegram Bot Token
-    TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
+    # Telegram Bot Token (compatible con BOT_TOKEN y TELEGRAM_BOT_TOKEN)
+    TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN") or os.getenv("BOT_TOKEN", "")
     
     # RITMO Backend Configuration
     RITMO_BACKEND_URL: str = os.getenv("RITMO_BACKEND_URL", "http://127.0.0.1:8001")
