@@ -31,15 +31,38 @@ class DatabaseManager:
     def _initialize_client(self):
         """Inicializa cliente Supabase con configuración robusta"""
         try:
+            # Validar que las credenciales estén disponibles
+            if not config.SUPABASE_URL or not config.SUPABASE_KEY:
+                logger.error("❌ Credenciales de Supabase faltantes:")
+                logger.error(f"   SUPABASE_URL: {'✓' if config.SUPABASE_URL else '✗ FALTA'}")
+                logger.error(f"   SUPABASE_KEY: {'✓' if config.SUPABASE_KEY else '✗ FALTA'}")
+                self._initialized = False
+                self._client = None
+                return
+
+            logger.info(f"🔗 Conectando a Supabase: {config.SUPABASE_URL[:30]}...")
+            
             # Configuración simplificada sin argumentos problemáticos
             self._client = create_client(
                 supabase_url=config.SUPABASE_URL,
                 supabase_key=config.SUPABASE_KEY
             )
+            
+            # Test de conectividad básico
+            try:
+                # Intentar una consulta simple para verificar la conexión
+                test_result = self._client.table("usuarios").select("id").limit(1).execute()
+                logger.info("📡 Test de conectividad exitoso")
+            except Exception as test_error:
+                logger.warning(f"⚠️ Error en test de conectividad: {test_error}")
+                logger.warning("Cliente inicializado pero conectividad no verificada")
+            
             self._initialized = True
-            logger.info("✅ Cliente Supabase inicializado")
+            logger.info("✅ Cliente Supabase inicializado correctamente")
+            
         except Exception as e:
-            logger.error(f"❌ Error inicializando Supabase: {e}")
+            logger.error(f"❌ Error crítico inicializando Supabase: {e}")
+            logger.error(f"Tipo de error: {type(e).__name__}")
             self._initialized = False
             self._client = None
             # No raise para permitir que el bot funcione sin DB
@@ -55,7 +78,8 @@ class DatabaseManager:
         """
         try:
             if not self._initialized or not self._client:
-                logger.warning("Cliente Supabase no inicializado")
+                logger.warning("🚨 Cliente Supabase no inicializado - búsqueda por nombre no disponible")
+                logger.info("💡 Verificar credenciales SUPABASE_URL y SUPABASE_KEY en .env")
                 return None
                 
             result = (
@@ -83,7 +107,8 @@ class DatabaseManager:
         """
         try:
             if not self._initialized or not self._client:
-                logger.warning("Cliente Supabase no inicializado")
+                logger.warning("🚨 Cliente Supabase no inicializado - búsqueda por telegram_id no disponible")
+                logger.info("💡 El bot funcionará solo con funciones básicas")
                 return None
                 
             result = (
