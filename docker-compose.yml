@@ -2,12 +2,10 @@ version: '3.8'
 
 services:
   # Frontend React/Vite con Nginx
-  ritmo-frontend:
+  nginx:
     build:
       context: ./ritmo-frontend/landing
-    container_name: ritmo-frontend
-    ports:
-      - "80:80"
+    container_name: nginx
     depends_on:
       - ritmo-backend
     restart: unless-stopped
