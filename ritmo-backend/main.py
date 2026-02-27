@@ -16,43 +16,27 @@ from routers.health import router as health_router
 # Cargar variables de entorno desde el directorio correcto
 current_dir = pathlib.Path(__file__).parent
 env_path = current_dir / '.env'
-print(f"Cargando .env desde: {env_path}")
 load_dotenv(env_path)
-
-# Verificar que la API key se cargó
-openai_key = os.getenv("OPENAI_API_KEY")
-print(f"OPENAI_API_KEY cargada: {'Sí' if openai_key else 'No'}")
-if openai_key:
-    print(f"API Key (primeros 10 chars): {openai_key[:10]}...")
-
-# Verificar que las variables estén cargadas
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-
-if not SUPABASE_URL or not SUPABASE_KEY:
-    print("ADVERTENCIA: Variables de entorno SUPABASE_URL y/o SUPABASE_KEY no encontradas")
-    print("   Asegúrate de configurar el archivo .env correctamente")
 
 # Inicializar FastAPI
 app = FastAPI(
     title="RITMO Backend",
-    description="API para Agente de Contexto de Vida y Patrones y Señales Web con Onboarding Inteligente",
+    description="Ecosistema de Acompañamiento Inteligente para Colectivos Vulnerables",
     version="1.0.0"
 )
 
-# Obtener orígenes permitidos de las variables de entorno
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:5174,http://localhost:3000").split(",")
-
-print(f"CORS configurado para: {ALLOWED_ORIGINS}")
+# Obtener orígenes permitidos de las variables de entorno para CORS
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:5174,http://localhost:3000,http://localhost:*").split(",")
 
 # CORS para el frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # Registrar routers
 app.include_router(contexto_router)

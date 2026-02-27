@@ -1,56 +1,46 @@
-version: '3.8'
+﻿version: '3.8'
 
 services:
-  # Domain service (required for domain routing)
-  db:
+  # Ritmo Frontend (Nginx + React App)
+  ritmo-frontend:
     build:
       context: ./ritmo-frontend/landing
       dockerfile: Dockerfile
-    container_name: db
+    container_name: ritmo-frontend
     ports:
       - "80:80"
     depends_on:
       - ritmo-backend
     restart: unless-stopped
 
-  # Frontend React/Vite con Nginx
-  ritmo-frontend:
-    build:
-      context: ./ritmo-frontend/landing
-      dockerfile: Dockerfile
-    container_name: ritmo-frontend
-    depends_on:
-      - ritmo-backend
-    restart: unless-stopped
-
-  # Backend FastAPI
+  # Ritmo Backend (FastAPI)
   ritmo-backend:
     build:
       context: ./ritmo-backend
       dockerfile: Dockerfile
     container_name: ritmo-backend
     environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_KEY=${SUPABASE_KEY}
+      - OPENAI_API_KEY=\
+      - OPENAI_MODEL=\
+      - SUPABASE_URL=\
+      - SUPABASE_KEY=\
       - ENVIRONMENT=production
-      - PORT=${PORT:-8000}
+      - PORT=\
     restart: unless-stopped
 
-  # Telegram Bot
+  # Telegram Bot (Python)
   telegram-bot:
     build:
       context: ./telegram-bot
       dockerfile: Dockerfile
     container_name: telegram-bot
     environment:
-      - TELEGRAM_BOT_TOKEN=${BOT_TOKEN}
-      - BOT_TOKEN=${BOT_TOKEN}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - TELEGRAM_BOT_TOKEN=\
+      - BOT_TOKEN=\
+      - OPENAI_API_KEY=\
       - OPENAI_MODEL=gpt-4o-mini
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_KEY=${SUPABASE_KEY}
+      - SUPABASE_URL=\
+      - SUPABASE_KEY=\
       - RITMO_BACKEND_URL=http://ritmo-backend:8000
     depends_on:
       - ritmo-backend

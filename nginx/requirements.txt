@@ -1,2 +1,0 @@
-# Nginx no requiere requirements.txt de Python
-# Archivo vacío para evitar errores en builds
