@@ -35,7 +35,7 @@ export default function Team() {
         transition={{ duration: 0.6 }}
       >
         <h2 className="section-title">Equipo detrás</h2>
-        <p className="section-subtitle">
+        <p className="section-desc">
           Las personas que hacen posible RITMO
         </p>
       </motion.div>

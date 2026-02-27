@@ -1,0 +1,484 @@
+.energy-meter-preview {
+  cursor: pointer;
+}
+
+.energy-badge {
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.energy-gauge-preview {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.gauge-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gauge-center {
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.energy-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.energy-trend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #10b981;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Full View Styles */
+.energy-meter-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.energy-header {
+  margin-bottom: 2rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f59e0b 0%, #f97316 50%, #ea580c 100%);
+  color: white;
+  border-radius: 16px;
+}
+
+.title-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.title-section h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.title-section p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 1.1rem;
+}
+
+.current-status {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.status-display {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.status-emoji {
+  font-size: 2rem;
+}
+
+.status-text {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.energy-percentage {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.energy-dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 2rem;
+}
+
+.energy-gauge-section {
+  grid-column: span 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.main-gauge {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gauge-center-main {
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.main-energy-value {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.energy-status-text {
+  display: block;
+  font-size: 1rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.energy-controls {
+  display: flex;
+  gap: 1rem;
+}
+
+.energy-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.energy-btn.decrease {
+  background: linear-gradient(45deg, #ef4444, #dc2626);
+  color: white;
+}
+
+.energy-btn.increase {
+  background: linear-gradient(45deg, #10b981, #059669);
+  color: white;
+}
+
+.energy-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(110%);
+}
+
+.energy-history {
+  grid-column: span 1;
+}
+
+.history-chart {
+  display: flex;
+  align-items: end;
+  gap: 1rem;
+  height: 150px;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+
+.history-point {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  height: 100%;
+}
+
+.time-label {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.energy-bar {
+  width: 20px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  min-height: 10px;
+  margin-top: auto;
+}
+
+.level-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.energy-insights {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.insight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: #f1f5f9;
+  border-radius: 8px;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.insight svg {
+  color: #3b82f6;
+}
+
+.energy-recommendations {
+  grid-column: span 2;
+}
+
+.recommendations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.recommendation {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  border-left: 4px solid;
+  transition: all 0.2s ease;
+}
+
+.recommendation.high {
+  background: #fef2f2;
+  border-left-color: #ef4444;
+}
+
+.recommendation.medium {
+  background: #fffbeb;
+  border-left-color: #f59e0b;
+}
+
+.recommendation.low {
+  background: #f0fdf4;
+  border-left-color: #10b981;
+}
+
+.recommendation:hover {
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.rec-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  color: #64748b;
+}
+
+.rec-text {
+  flex: 1;
+  font-weight: 500;
+  color: #334155;
+}
+
+.rec-action {
+  padding: 0.5rem 1rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rec-action:hover {
+  background: #1e40af;
+}
+
+.energy-patterns {
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  border-radius: 12px;
+}
+
+.energy-patterns h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 1rem 0;
+}
+
+.pattern {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.pattern-icon {
+  font-size: 1.5rem;
+}
+
+.pattern-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pattern-title {
+  font-weight: 500;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.pattern-detail {
+  font-weight: 600;
+  color: #3b82f6;
+  font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .energy-dashboard {
+    grid-template-columns: 1fr;
+  }
+  
+  .energy-recommendations {
+    grid-column: span 1;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .energy-meter-container {
+    padding: 1rem;
+  }
+  
+  .main-energy-value {
+    font-size: 2rem;
+  }
+  
+  .energy-controls {
+    flex-direction: column;
+  }
+  
+  .history-chart {
+    height: 120px;
+  }
+  
+  .recommendation {
+    padding: 0.75rem;
+  }
+  
+  .rec-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Dark Mode */
+[data-theme="dark"] .energy-value,
+[data-theme="dark"] .main-energy-value {
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .energy-status-text {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .history-chart {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+[data-theme="dark"] .level-label {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .insight {
+  background: rgba(15, 23, 42, 0.5);
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .recommendation {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+[data-theme="dark"] .recommendation:hover {
+  background: rgba(30, 41, 59, 0.8);
+}
+
+[data-theme="dark"] .rec-icon {
+  background: rgba(30, 41, 59, 0.8);
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .rec-text {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .energy-patterns {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+[data-theme="dark"] .energy-patterns h4 {
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .pattern {
+  background: rgba(30, 41, 59, 0.8);
+}
+
+[data-theme="dark"] .pattern-title {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .pattern-detail {
+  color: #60a5fa;
+}

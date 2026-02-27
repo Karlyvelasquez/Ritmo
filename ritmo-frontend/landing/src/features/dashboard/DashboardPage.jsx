@@ -17,6 +17,7 @@ import MoodSection from './components/MoodSection'
 import ChatRitmo from './components/ChatRitmo'
 import PlaylistsRitmo from './components/PlaylistsRitmo'
 import ProgressRitmo from './components/ProgressRitmo'
+import AjustesJoven from './components/AjustesJoven'
 import { userData } from './mockData'
 import './DashboardPage.css'
 
@@ -74,7 +75,7 @@ export default function DashboardPage() {
       case 'progreso':
         return <ProgressRitmo />
       case 'ajustes':
-        return <div><h2>Ajustes - En desarrollo</h2></div>
+        return <AjustesJoven />
       default:
         return (
           <>

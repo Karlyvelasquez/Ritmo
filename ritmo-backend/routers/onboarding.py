@@ -18,6 +18,7 @@ from db.usuarios import (
     crear_usuario, existe_usuario_telegram, obtener_usuario_por_telegram,
     obtener_usuario_por_codigo
 )
+from db.admins import obtener_admin_por_codigo, listar_todos_los_admins
 
 
 class LoginRequest(BaseModel):
@@ -28,6 +29,7 @@ class LoginRequest(BaseModel):
 class LoginResponse(BaseModel):
     autenticado: bool
     mensaje: str
+    tipo_usuario: Optional[str] = None  # 'admin' o 'user'
     usuario: Optional[Dict[str, Any]] = None
 
 # Configurar logging
@@ -339,37 +341,60 @@ async def obtener_estadisticas_onboarding() -> Dict[str, Any]:
 @router.post("/login", response_model=LoginResponse)
 async def login_usuario(request: LoginRequest) -> LoginResponse:
     """
-    Autentica un usuario existente con su telegram_id y código secreto
+    Autentica un usuario o administrador con su telegram_id y código secreto
     
     Args:
-        request: telegram_id y codigo_secreto del usuario
+        request: telegram_id y codigo_secreto del usuario/admin
         
     Returns:
-        LoginResponse: Resultado de autenticación con datos del usuario
+        LoginResponse: Resultado de autenticación con datos del usuario/admin
     """
     try:
         logger.info(f"Intento de login para: {request.telegram_id}")
         
-        usuario = await obtener_usuario_por_codigo(request.telegram_id, request.codigo_secreto)
+        # 1. Primero verificar si es un administrador
+        admin = await obtener_admin_por_codigo(request.telegram_id, request.codigo_secreto)
         
-        if not usuario:
+        if admin:
             return LoginResponse(
-                autenticado=False,
-                mensaje="Credenciales incorrectas. Verifica tu ID de Telegram y código secreto.",
-                usuario=None
+                autenticado=True,
+                mensaje=f"Bienvenido, Administrador {admin['nombre']}! 🔧",
+                tipo_usuario="admin",
+                usuario={
+                    "id": admin['id'],
+                    "nombre": admin['nombre'],
+                    "telegram_id": admin['telegram_id'],
+                    "nivel": admin['nivel'],
+                    "ultimo_acceso": admin.get('ultimo_acceso'),
+                    "tipo": "admin"
+                }
             )
         
+        # 2. Si no es admin, verificar si es usuario normal
+        usuario = await obtener_usuario_por_codigo(request.telegram_id, request.codigo_secreto)
+        
+        if usuario:
+            return LoginResponse(
+                autenticado=True,
+                mensaje=f"¡Bienvenido de nuevo, {usuario.nombre}! 🎉",
+                tipo_usuario="user",
+                usuario={
+                    "id": usuario.id,
+                    "nombre": usuario.nombre,
+                    "etapa_vida": usuario.etapa_vida,
+                    "telegram_id": usuario.telegram_id,
+                    "onboarding_completado": usuario.onboarding_completado,
+                    "codigo_secreto": usuario.codigo_secreto,
+                    "tipo": "user"
+                }
+            )
+        
+        # 3. Si no es ni admin ni usuario
         return LoginResponse(
-            autenticado=True,
-            mensaje=f"¡Bienvenido de nuevo, {usuario.nombre}! 🎉",
-            usuario={
-                "id": usuario.id,
-                "nombre": usuario.nombre,
-                "etapa_vida": usuario.etapa_vida,
-                "telegram_id": usuario.telegram_id,
-                "onboarding_completado": usuario.onboarding_completado,
-                "codigo_secreto": usuario.codigo_secreto,
-            }
+            autenticado=False,
+            mensaje="Credenciales incorrectas. Verifica tu ID de Telegram y código secreto.",
+            tipo_usuario=None,
+            usuario=None
         )
         
     except Exception as e:
@@ -396,6 +421,32 @@ async def verificar_estado_base_datos():
             "error": str(e),
             "timestamp": "unknown"
         }
+
+
+@router.get("/debug/admins")
+async def listar_admins_debug():
+    """
+    Endpoint de debug para ver qué administradores están en la base de datos
+    """
+    try:
+        admins = await listar_todos_los_admins()
+        return {
+            "total": len(admins),
+            "admins": [
+                {
+                    "id": admin.get("id"),
+                    "telegram_id": admin.get("telegram_id"),
+                    "codigo_secreto": admin.get("codigo_secreto"),
+                    "nivel": admin.get("nivel"),
+                    "nombre": admin.get("nombre"),
+                    "activo": admin.get("activo"),
+                }
+                for admin in admins
+            ]
+        }
+    except Exception as e:
+        logger.error(f"Error en debug admins: {e}")
+        return {"error": str(e)}
 
 
 @router.post("/debug/test-user-creation")

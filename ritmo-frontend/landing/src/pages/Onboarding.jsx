@@ -60,7 +60,13 @@ export default function Onboarding() {
                 const data = await res.json()
                 if (data.autenticado) {
                     localStorage.setItem('ritmo_user', JSON.stringify(data.usuario))
-                    navigate('/profile-selection')
+                    
+                    // Redirigir según el tipo de usuario
+                    if (data.tipo_usuario === 'admin') {
+                        navigate('/admin/dashboard')
+                    } else {
+                        navigate('/profile-selection')
+                    }
                 } else {
                     setError(data.mensaje || 'Error de autenticación')
                 }

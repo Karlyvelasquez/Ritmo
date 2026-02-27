@@ -1,39 +1,32 @@
 import { motion } from 'framer-motion'
-import { FiHeart, FiVolumeX, FiCpu, FiSend, FiBarChart2, FiLock } from 'react-icons/fi'
 
 const features = [
   {
-    icon: <FiHeart />,
     color: 'sage',
     title: 'Acompañamiento proactivo',
     desc: 'RITMO no espera a que le escribas. Si detecta señales de aislamiento o malestar, es él quien abre la conversación.',
   },
   {
-    icon: <FiVolumeX />,
     color: 'navy',
     title: 'El silencio como feature',
     desc: 'A veces la respuesta correcta es no decir nada. RITMO sabe cuándo ese día no hace falta hablar.',
   },
   {
-    icon: <FiCpu />,
     color: 'warm',
     title: 'Memoria continua',
     desc: 'Recuerda lo que importa entre sesiones. Si ayer mencionaste algo, hoy pregunta cómo te fue.',
   },
   {
-    icon: <FiSend />,
     color: 'sage',
     title: 'Bot de Telegram',
     desc: 'Habla con RITMO como si fuera un amigo. La IA reconoce quién eres y continúa donde lo dejaron.',
   },
   {
-    icon: <FiBarChart2 />,
     color: 'navy',
     title: 'Panel para investigadores',
     desc: 'Tendencias agregadas y anonimizadas. Sin datos individuales. Solo conocimiento para actuar.',
   },
   {
-    icon: <FiLock />,
     color: 'warm',
     title: 'Privacidad por diseño',
     desc: 'RITMO no vigila. No controla. Las señales que recoge son para entender, no para juzgar.',
@@ -87,7 +80,6 @@ export default function Features() {
       >
         {features.map((f, i) => (
           <motion.div className="feature-card" key={i} variants={cardVariants}>
-            <div className={`feature-icon-wrapper ${f.color}`}>{f.icon}</div>
             <h3 className="feature-title">{f.title}</h3>
             <p className="feature-desc">{f.desc}</p>
           </motion.div>

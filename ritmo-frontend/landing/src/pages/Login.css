@@ -92,6 +92,10 @@
     text-align: center;
 }
 
+[data-theme="dark"] .welcome-title {
+    color: #ffffff !important;
+}
+
 .brand-logo-wrapper {
     margin: 0.5rem 0 1rem;
 }

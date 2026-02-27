@@ -1,9 +1,10 @@
-import { Home, Heart, Activity, MessageCircle, Music, TrendingUp, Settings, ChevronLeft, LogOut, Sun, Moon } from 'lucide-react'
+import { Home, Heart, Activity, MessageCircle, Music, TrendingUp, Settings, ChevronLeft, LogOut, Sun, Moon, Briefcase, Target, Clock, Battery, Brain, Zap, Users, DollarSign, BookOpen, Compass } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Sidebar.css'
 
-const menuItems = [
+// Menú para perfil joven (original)
+const menuItemsJoven = [
   { id: 'inicio', label: 'Inicio', icon: Home },
   { id: 'animo', label: 'Mi ánimo', icon: Heart },
   { id: 'habitos', label: 'Mis hábitos', icon: Activity },
@@ -13,9 +14,41 @@ const menuItems = [
   { id: 'ajustes', label: 'Ajustes', icon: Settings },
 ]
 
-export default function Sidebar({ darkMode, toggleDark, activeSection, onSectionChange }) {
+// Menú para adulto activo (profesional)
+const menuItemsAdultoActivo = [
+  { id: 'inicio', label: 'Dashboard', icon: Home },
+  { id: 'productividad', label: 'Productividad', icon: Briefcase },
+  { id: 'energia', label: 'Energía', icon: Battery },
+  { id: 'objetivos', label: 'Objetivos', icon: Target },
+  { id: 'balance', label: 'Equilibrio', icon: Heart },
+  { id: 'rendimiento', label: 'Rendimiento', icon: TrendingUp },
+  { id: 'estres', label: 'Gestión Estrés', icon: Brain },
+  { id: 'tiempo', label: 'Tiempo', icon: Clock },
+  // { id: 'networking', label: 'Red Contactos', icon: Users },
+  // { id: 'finanzas', label: 'Finanzas', icon: DollarSign },
+  // { id: 'skills', label: 'Habilidades', icon: BookOpen },
+  // { id: 'carrera', label: 'Carrera', icon: Compass },
+  { id: 'chat', label: 'Chat RITMO', icon: MessageCircle },
+  { id: 'progreso', label: 'Progreso', icon: Zap },
+  // { id: 'ajustes', label: 'Ajustes', icon: Settings },
+]
+
+export default function Sidebar({ darkMode, toggleDark, activeSection, onSectionChange, profileType = 'joven' }) {
   const [collapsed, setCollapsed] = useState(false)
   const navigate = useNavigate()
+
+  // Obtener el menú apropiado según el tipo de perfil
+  const getMenuItems = () => {
+    switch (profileType) {
+      case 'adulto_activo':
+        return menuItemsAdultoActivo
+      case 'joven':
+      default:
+        return menuItemsJoven
+    }
+  }
+
+  const menuItems = getMenuItems()
 
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
@@ -43,7 +76,7 @@ export default function Sidebar({ darkMode, toggleDark, activeSection, onSection
       <div className="sidebar-bottom">
 
         <button
-          className="sidebar-action"
+          className="sidebar-action dark-mode-toggle"
           onClick={toggleDark}
           title={darkMode ? 'Modo claro' : 'Modo oscuro'}
         >
@@ -69,6 +102,7 @@ export default function Sidebar({ darkMode, toggleDark, activeSection, onSection
         <button
           className="sidebar-action logout"
           onClick={() => navigate('/')}
+          title="Cerrar sesión"
         >
           <LogOut size={18} />
           {!collapsed && <span>Cerrar sesión</span>}
@@ -77,6 +111,7 @@ export default function Sidebar({ darkMode, toggleDark, activeSection, onSection
         <button
           className="sidebar-collapse"
           onClick={() => setCollapsed(!collapsed)}
+          title={collapsed ? 'Expandir' : 'Colapsar'}
         >
           <ChevronLeft size={18} className={collapsed ? 'rotated' : ''} />
           {!collapsed && <span>Colapsar</span>}
