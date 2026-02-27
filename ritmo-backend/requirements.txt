@@ -6,9 +6,9 @@ uvicorn[standard]==0.24.0
 python-dotenv==1.0.0
 pydantic==2.5.0
 
-# Database & APIs (compatible versions)
-supabase==2.0.0
-httpx==0.24.1
+# Database & APIs (let pip resolve compatible versions)
+supabase>=2.7.0
+httpx
 aiohttp==3.9.1
 
 # AI & ML
