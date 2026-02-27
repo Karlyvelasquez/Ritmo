@@ -6,6 +6,8 @@ services:
     build:
       context: ./ritmo-frontend/landing
     container_name: nginx
+    ports:
+      - "80"
     depends_on:
       - ritmo-backend
     restart: unless-stopped
