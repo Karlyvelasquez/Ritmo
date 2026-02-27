@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   # Frontend React/Vite con Nginx
   ritmo-frontend:
