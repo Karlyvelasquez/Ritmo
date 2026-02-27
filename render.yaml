@@ -7,16 +7,12 @@ services:
   # BACKEND API (FastAPI)
   - type: web
     name: ritmo-backend
-    runtime: python3
+    runtime: python
     plan: starter  # Gratis por 90 días, luego $7/mes
     buildCommand: "pip install -r requirements.txt"
     startCommand: "python -m uvicorn main:app --host 0.0.0.0 --port $PORT"
     rootDir: ./ritmo-backend
     healthCheckPath: /health
-    disk:
-      name: ritmo-backend-disk
-      mountPath: /opt/render
-      sizeGB: 1
     envVars:
       - key: ENVIRONMENT
         value: production
@@ -27,9 +23,9 @@ services:
   - type: web
     name: ritmo-frontend
     runtime: static
-    plan: starter  # Gratis para sitios estáticos
-    buildCommand: "cd ritmo-frontend/landing && npm install && npm run build"
-    staticPublishPath: ./ritmo-frontend/landing/dist
+    buildCommand: "npm install && npm run build"
+    rootDir: ./ritmo-frontend/landing
+    staticPublishPath: ./dist
     pullRequestPreviewsEnabled: false
     headers:
       - path: /*
@@ -38,9 +34,7 @@ services:
       - path: /*
         name: X-Content-Type-Options
         value: nosniff
-      - path: /*
-        name: Cache-Control
-        value: public, max-age=31536000
+
     routes:
       - type: rewrite  
         source: /*
@@ -49,11 +43,14 @@ services:
   # TELEGRAM BOT (Background Service)
   - type: worker
     name: ritmo-telegram-bot  
-    runtime: python3
+    runtime: python
     plan: starter
-    buildCommand: "cd telegram-bot && pip install -r requirements.txt"
-    startCommand: "cd telegram-bot && python bot.py"
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python bot.py"
     rootDir: ./telegram-bot
+    envVars:
+      - key: ENVIRONMENT
+        value: production
 
 # =============================================================================
 # AUTO-DEPLOYMENT DESDE GITHUB
