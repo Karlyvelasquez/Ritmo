@@ -5,9 +5,10 @@ services:
   nginx:
     build:
       context: ./ritmo-frontend/landing
+      dockerfile: Dockerfile
     container_name: nginx
     ports:
-      - "80"
+      - "80:80"
     depends_on:
       - ritmo-backend
     restart: unless-stopped
@@ -16,6 +17,7 @@ services:
   ritmo-backend:
     build:
       context: ./ritmo-backend
+      dockerfile: Dockerfile
     container_name: ritmo-backend
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
@@ -30,6 +32,7 @@ services:
   telegram-bot:
     build:
       context: ./telegram-bot
+      dockerfile: Dockerfile
     container_name: telegram-bot
     environment:
       - TELEGRAM_BOT_TOKEN=${BOT_TOKEN}
