@@ -1,418 +1,414 @@
-# RITMO - Onboarding Conversacional Inteligente
+# RITMO - Plataforma de Acompañamiento para Poblaciones Vulnerables
 
-Sistema de onboarding conversacional que detecta automáticamente la etapa de vida del usuario mediante preguntas dinámicas y genera códigos secretos únicos.
+RITMO es una plataforma integral de acompañamiento psicosocial diseñada para apoyar a poblaciones vulnerables a través de tecnología conversacional inteligente. La plataforma combina análisis de patrones de vida, inteligencia artificial y comunicación multicanal para ofrecer apoyo personalizado y seguimiento continuo.
 
-## 🚀 Características Principales
+## Descripción del Producto
 
-### ✨ Onboarding Conversacional Inteligente
-- **Detección automática** de etapa de vida (joven, adulto_activo, inmigrante, persona_mayor)
-- **Preguntas dinámicas** - máximo 2 por categoría, entre 4-6 total
-- **Sistema de puntuación** con análisis de palabras clave e intención
-- **Umbral de confianza** para determinar cuándo parar
-- **Sin formularios tradicionales** - conversación natural
+RITMO identifica automáticamente la etapa de vida y necesidades específicas de cada usuario mediante conversación natural, proporcionando acompañamiento adaptado a sus circunstancias particulares. La plataforma está especialmente diseñada para trabajar con:
 
-### 🔐 Generación de Código Secreto
-- Código único de 4 dígitos numéricos
-- Verificación de unicidad en base de datos
-- Generación automática al finalizar onboarding
-- Mensaje final amigable y humano
+- **Jóvenes en situación de vulnerabilidad**: Orientación educativa y laboral
+- **Adultos en transición laboral**: Apoyo en reubicación profesional y desarrollo de habilidades
+- **Población migrante**: Adaptación cultural y acceso a servicios básicos
+- **Personas mayores**: Acompañamiento social y acceso a servicios de salud
 
-### 🏗️ Arquitectura Robusta
-- FastAPI backend con Supabase
-- Agentes especializados modulares
+## Funcionamiento Principal
+
+### 1. Proceso de Identificación Inteligente
+El sistema utiliza conversación natural para determinar la etapa de vida del usuario sin formularios tradicionales. A través de 4-6 preguntas dinámicas, la plataforma identifica:
+
+- Situación socioeconómica actual
+- Necesidades inmediatas
+- Recursos disponibles
+- Objetivos a corto y mediano plazo
+
+### 2. Generación de Perfil Personalizado
+Basándose en la información recolectada, RITMO genera:
+
+- Código de acceso único para cada usuario
+- Perfil de necesidades específicas
+- Plan de acompañamiento inicial
+- Conexión con recursos apropiados
+
+### 3. Seguimiento Continuo
+La plataforma mantiene comunicación regular a través de:
+
+- Bot de Telegram integrado
+- Interfaz web adaptable
+- Notificaciones personalizadas
+- Seguimiento de objetivos
+
+## Arquitectura Tecnológica
+
+La plataforma está construida con tecnologías modernas que garantizan escalabilidad y confiabilidad:
+
+### Backend (FastAPI)
+- API RESTful para gestión de usuarios y sesiones
+- Agentes de inteligencia artificial especializados
+- Integración con base de datos Supabase
+- Sistema de autenticación seguro
+
+### Frontend (React/Vite)
+- Interfaz web responsive
+- Dashboard adaptado por tipo de usuario
+- Formularios de registro inteligentes
+- Visualización de progreso
+
+### Bot de Telegram
+- Comunicación directa con usuarios
+- Procesamiento de lenguaje natural
+- Seguimiento de check-ins
+- Notificaciones automáticas
+
+### Base de Datos (Supabase)
+- Almacenamiento seguro de información de usuarios
 - Gestión de sesiones temporales
-- Docker completamente configurado
+- Historial de interacciones
+- Análisis de patrones
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 Ritmo/
-├── ritmo-backend/              # Backend FastAPI
+├── ritmo-backend/              # API Backend (FastAPI)
 │   ├── main.py                 # Aplicación principal
 │   ├── models/
-│   │   └── schemas.py          # Modelos Pydantic actualizados
+│   │   └── schemas.py          # Modelos de datos
 │   ├── routers/
-│   │   ├── contexto.py         # Endpoints existentes
-│   │   ├── chat.py             # Chat endpoints
-│   │   ├── admin.py            # Administración
-│   │   └── onboarding.py       # 🆕 Onboarding conversacional
+│   │   ├── onboarding.py       # Proceso de registro inteligente
+│   │   ├── chat.py             # Comunicación con usuarios
+│   │   ├── admin.py            # Panel administrativo
+│   │   └── health.py           # Monitoreo del sistema
 │   ├── agents/
-│   │   ├── contexto_vida.py    # Agentes existentes
-│   │   ├── conversacional.py   
-│   │   ├── habitos.py          
-│   │   ├── orquestador.py      
-│   │   ├── patrones.py         
-│   │   ├── prediccion_ml.py    
-│   │   └── onboarding.py       # 🆕 Agente onboarding inteligente
+│   │   ├── onboarding.py       # Agente de identificación
+│   │   ├── contexto_vida.py    # Análisis de contexto
+│   │   └── orquestador.py      # Coordinación de agentes
 │   ├── db/
-│   │   ├── supabase_client.py  # Cliente Supabase actualizado
-│   │   ├── sesiones.py         # Sesiones existentes
-│   │   ├── usuarios.py         # 🆕 Gestión de usuarios
-│   │   └── onboarding_sessions.py # 🆕 Sesiones temporales
-│   ├── requirements.txt        # Dependencias Python
-│   └── Dockerfile              # 🆕 Contenedor backend
-├── telegram-bot/               # Bot Telegram existente
-│   └── Dockerfile              # 🆕 Contenedor bot
-├── nginx/                      # 🆕 Configuración proxy
-│   └── nginx.conf              
-├── database/                   # 🆕 Scripts SQL
-│   └── init_usuarios.sql       # Inicialización base de datos
-├── docker-compose.yml          # 🆕 Orquestación completa
-├── .env.example                # 🆕 Variables de entorno ejemplo
-└── README.md                   # Esta documentación
+│   │   ├── supabase_client.py  # Conectividad base de datos
+│   │   ├── usuarios.py         # Gestión de usuarios
+│   │   └── sesiones.py         # Manejo de sesiones
+│   └── requirements.txt        # Dependencias Python
+├── ritmo-frontend/             # Interfaz Web (React)
+│   └── landing/
+│       ├── src/
+│       │   ├── pages/          # Páginas principales
+│       │   ├── components/     # Componentes reutilizables
+│       │   └── features/       # Funcionalidades específicas
+│       ├── package.json        # Dependencias Node.js
+│       └── vite.config.js      # Configuración del bundler
+├── telegram-bot/               # Bot de Telegram
+│   ├── bot.py                  # Aplicación principal del bot
+│   ├── handlers.py             # Manejadores de eventos
+│   ├── agents/                 # Agentes especializados
+│   └── requirements.txt        # Dependencias del bot
+├── deployment/                 # Scripts de despliegue
+│   ├── setup_server.sh         # Configuración inicial del servidor
+│   ├── deploy_app.sh           # Despliegue de la aplicación
+│   └── nginx.conf              # Configuración del proxy
+├── docker-compose.yml          # Orquestación de servicios
+└── .env.example                # Template de variables de entorno
 ```
 
-## 🔧 Instalación y Configuración
+## Configuración e Instalación
 
-### Prerrequisitos
-- Docker & Docker Compose
-- Cuenta Supabase configurada
-- Python 3.11+ (para desarrollo local)
+### Requisitos Previos
 
-### 1. Configurar Base de Datos
+- **Base de datos**: Cuenta activa en Supabase
+- **Bot de Telegram**: Token obtenido de @BotFather  
+- **Entorno de desarrollo**: Python 3.11+, Node.js 18+
+- **Despliegue**: Docker y Docker Compose (opcional)
 
-```sql
--- Ejecutar en Supabase SQL Editor
--- El archivo completo está en database/init_usuarios.sql
-CREATE TABLE usuarios (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    etapa_vida VARCHAR(20) NOT NULL CHECK (etapa_vida IN ('joven', 'adulto_activo', 'inmigrante', 'persona_mayor')),
-    modo_comunicacion VARCHAR(10) NOT NULL CHECK (modo_comunicacion IN ('texto', 'voz')),
-    zona_horaria VARCHAR(50) DEFAULT 'America/Bogota',
-    telegram_id VARCHAR(50) UNIQUE NOT NULL,
-    onboarding_completado BOOLEAN DEFAULT FALSE,
-    codigo_secreto VARCHAR(4) UNIQUE NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-```
+### Configuración Inicial
 
-### 2. Configurar Variables de Entorno
+1. **Base de Datos Supabase**
+   ```sql
+   -- Crear tabla de usuarios
+   CREATE TABLE usuarios (
+       id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+       nombre VARCHAR(100) NOT NULL,
+       etapa_vida VARCHAR(20) CHECK (etapa_vida IN ('joven', 'adulto_activo', 'inmigrante', 'persona_mayor')),
+       telegram_id VARCHAR(50) UNIQUE NOT NULL,
+       codigo_secreto VARCHAR(4) UNIQUE NOT NULL,
+       onboarding_completado BOOLEAN DEFAULT FALSE,
+       created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+   );
+   ```
 
-```bash
-# Copiar archivo de ejemplo
-cp .env.example .env
+2. **Variables de Entorno**
+   ```env
+   # Configuración de Supabase
+   SUPABASE_URL=https://tu-proyecto.supabase.co
+   SUPABASE_KEY=tu-clave-anon-supabase
+   
+   # Token del Bot de Telegram
+   TELEGRAM_BOT_TOKEN=1234567890:AABBCCDDEEFFggHHiiJJkkLLmmN
+   
+   # Configuración del servidor
+   HOST=0.0.0.0
+   PORT=8001
+   ENVIRONMENT=development
+   ```
 
-# Editar con tus credenciales
-nano .env
-```
+### Instalación para Desarrollo
 
-```env
-# Configuración mínima requerida
-SUPABASE_URL=https://tu-proyecto.supabase.co
-SUPABASE_KEY=tu-clave-supabase
-BOT_TOKEN=tu-token-telegram  # Opcional para bot
-```
+1. **Clonar el repositorio**
+   ```bash
+   git clone [url-del-repositorio]
+   cd Ritmo
+   ```
 
-### 3. Ejecutar con Docker
+2. **Configurar Backend**
+   ```bash
+   cd ritmo-backend
+   python -m venv venv
+   source venv/bin/activate  # Linux/macOS
+   venv\Scripts\activate     # Windows
+   pip install -r requirements.txt
+   ```
 
-```bash
-# Desarrollo completo
-docker-compose up --build
+3. **Configurar Frontend**
+   ```bash
+   cd ritmo-frontend/landing
+   npm install
+   ```
 
-# Solo backend
-docker-compose up ritmo-backend
+4. **Configurar Bot de Telegram**
+   ```bash
+   cd telegram-bot
+   pip install -r requirements.txt
+   ```
 
-# Producción con nginx
-docker-compose --profile production up
-```
+### Ejecución en Desarrollo
 
-### 4. Desarrollo Local (Opcional)
+1. **Iniciar Backend**
+   ```bash
+   cd ritmo-backend
+   python main.py
+   # API disponible en: http://localhost:8001
+   ```
 
-```bash
-cd ritmo-backend
+2. **Iniciar Frontend**
+   ```bash
+   cd ritmo-frontend/landing
+   npm run dev
+   # Aplicación disponible en: http://localhost:3000
+   ```
 
-# Crear entorno virtual
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# venv\Scripts\activate   # Windows
+3. **Iniciar Bot de Telegram**
+   ```bash
+   cd telegram-bot  
+   python bot.py
+   ```
 
-# Instalar dependencias
-pip install -r requirements.txt
+## API y Uso del Sistema
 
-# Ejecutar servidor de desarrollo
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
+### Endpoints Principales
 
-## 📱 Uso del Sistema
-
-### Endpoints del Onboarding
-
-#### 1. Iniciar Onboarding
+#### Proceso de Registro Inteligente
 ```http
 POST /onboarding/iniciar
 Content-Type: application/json
 
 {
-    "telegram_id": "user123",
-    "nombre": "Juan Pérez"
+    "telegram_id": "123456789",
+    "nombre": "María González"
 }
 ```
 
-**Respuesta:**
+**Respuesta inicial:**
 ```json
 {
-    "mensaje": "¡Hola Juan! 👋\n\nSoy tu asistente personal de RITMO...\n\nPregunta 1:\n\n¿En qué momento de tu vida te encuentras ahora?",
+    "mensaje": "Hola María! Soy tu asistente personal de RITMO. Te haré algunas preguntas para conocerte mejor...",
     "completado": false,
-    "etapa_detectada": null,
-    "codigo_secreto": null,
-    "pregunta_numero": 1,
-    "sesion_id": "uuid-de-sesion"
+    "sesion_id": "uuid-generado",
+    "pregunta_numero": 1
 }
 ```
 
-#### 2. Responder Pregunta
+#### Continuación del Diálogo
 ```http
 POST /onboarding/responder
 Content-Type: application/json
 
 {
-    "telegram_id": "user123",
-    "respuesta": "Estoy estudiando en la universidad y buscando mi primer trabajo",
-    "sesion_id": "uuid-de-sesion"
+    "telegram_id": "123456789",
+    "respuesta": "Soy estudiante universitaria y busco mi primer empleo",
+    "sesion_id": "uuid-generado"
 }
 ```
 
-#### 3. Finalización Automática
-Cuando el sistema tenga suficiente confianza (después de 4-6 preguntas):
-
+#### Finalización del Registro
+Al completar el análisis (4-6 preguntas), el sistema genera automáticamente:
 ```json
 {
-    "mensaje": "🎉 ¡Perfecto! Tu perfil ha sido creado exitosamente.\n\n🔐 **Tu código secreto es:** `1234`\n\n¡Bienvenido/a a RITMO!",
+    "mensaje": "Perfecto! Tu perfil ha sido creado. Tu código de acceso es: 1234",
     "completado": true,
     "etapa_detectada": "joven",
-    "codigo_secreto": "1234",
-    "pregunta_numero": 5,
-    "sesion_id": "uuid-de-sesion"
+    "codigo_secreto": "1234"
 }
 ```
 
-### Otros Endpoints
+### Otros Endpoints Disponibles
 
-```http
-# Verificar estado de sesión
-GET /onboarding/estado/{sesion_id}
+- `GET /health` - Estado del sistema
+- `GET /docs` - Documentación interactiva de la API
+- `POST /onboarding/login` - Autenticación con código secreto
+- `GET /admin/dashboard` - Panel administrativo
 
-# Cancelar onboarding
-DELETE /onboarding/cancelar/{sesion_id}
+## Sistema de Clasificación de Usuarios
 
-# Estadísticas del sistema
-GET /onboarding/estadisticas
+### Perfiles Identificables
 
-# Documentación interactiva
-GET /docs
-```
+**Joven (18-30 años)**
+- Características: Estudiante, inicio de carrera, búsqueda de independencia
+- Necesidades: Orientación laboral, desarrollo de habilidades, red de apoyo
 
-## 🤖 Sistema de Clasificación
+**Adulto Activo (30-55 años)**
+- Características: Profesional establecido, responsabilidades familiares
+- Necesidades: Equilibrio trabajo-vida, capacitación, planificación financiera
 
-### Etapas Detectables
-1. **joven** - Estudiantes, inicio de carrera profesional
-2. **adulto_activo** - Profesionales establecidos, responsabilidades familiares
-3. **inmigrante** - Personas en proceso de adaptación a nuevo país
-4. **persona_mayor** - Jubilados, etapa de experiencia y sabiduría
+**Migrante**
+- Características: Adaptación cultural, barreras idiomáticas
+- Necesidades: Acceso a servicios, integración social, documentación
 
-### Banco de Preguntas por Categoría
-- **edad_contexto** - Situación actual y planes
-- **tecnologia** - Adaptación a tecnologías
-- **familia** - Situación familiar y rol
-- **trabajo** - Actividad laboral actual y futura
-- **tiempo_libre** - Actividades y preferencias
+**Persona Mayor (65+ años)**
+- Características: Jubilado, experiencia acumulada, posible aislamiento
+- Necesidades: Acompañamiento social, acceso a salud, actividades
 
-### Algoritmo de Selección
-1. **Pregunta inicial**: Siempre de categoría "edad_contexto"
-2. **Máximo 2 preguntas por categoría**
-3. **Prioridad a categorías no exploradas**
-4. **Detención por confianza**: Umbral del 70%
-5. **Rango de preguntas**: 4-6 total
+### Algoritmo de Identificación
 
-## 🔍 Monitoreo y Logs
+El sistema utiliza un enfoque conversacional que:
 
-### Logs del Sistema
+1. **Inicia con pregunta abierta** sobre situación actual
+2. **Analiza palabras clave** en las respuestas usando puntuación ponderada
+3. **Adapta preguntas siguientes** según las respuestas anteriores
+4. **Determina perfil** cuando alcanza umbral de confianza (70%)
+5. **Limita interacción** a máximo 6 preguntas para evitar fatiga
+
+## Despliegue en Producción
+
+### Infraestructura Recomendada
+
+- **Servidor**: Ubuntu 20.04+ con 4GB RAM mínimo
+- **Base de datos**: Instancia Supabase en producción
+- **SSL**: Certificados Let's Encrypt automáticos
+- **Monitoreo**: PM2 para gestión de procesos
+- **Proxy**: Nginx para distribución de carga
+
+### Scripts de Despliegue Automatizados
+
+El proyecto incluye scripts bash para automatizar el despliegue:
+
 ```bash
-# Ver logs en tiempo real
-docker-compose logs -f ritmo-backend
+# Despliegue completo en servidor nuevo
+./main_deploy.sh full
 
-# Logs específicos del onboarding
-docker-compose logs -f | grep onboarding
+# Solo actualizar código
+./main_deploy.sh deploy
+
+# Verificar estado
+./main_deploy.sh status
 ```
 
-### Métricas Disponibles
-- Sesiones activas de onboarding
-- Distribución por etapa de vida detectada
-- Tiempo promedio de completación
-- Tasa de conversión del onboarding
+Consultar [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) para instrucciones detalladas.
 
-## 🛠️ Desarrollo y Contribución
+## Desarrollo y Contribución
 
-### Estructura del Agente de Onboarding
-```python
-# agents/onboarding.py
-class OnboardingAgent:
-    def iniciar_onboarding()           # Crear nueva sesión
-    def obtener_siguiente_pregunta()   # Selección inteligente
-    def procesar_respuesta()           # Análisis y puntuación
-    def _clasificar_usuario()          # Algoritmo de clasificación
-```
+### Estructura de Agentes
 
-### Añadir Nuevas Preguntas
-```python
-# En agents/onboarding.py - método _inicializar_banco_preguntas()
-PreguntaOnboarding(
-    id="nueva_01",
-    categoria="nueva_categoria",
-    pregunta="¿Tu nueva pregunta aquí?",
-    palabras_clave={
-        "joven": ["palabra1", "palabra2"],
-        "adulto_activo": ["palabra3", "palabra4"],
-        # ...
-    },
-    peso=1.2
-)
-```
+El sistema utiliza una arquitectura basada en agentes especializados:
+
+- **OnboardingAgent**: Gestiona el proceso de identificación
+- **RitmoOrchestrator**: Coordina la comunicación general
+- **MemoryAgent**: Mantiene contexto entre sesiones
+- **CompanionAgent**: Proporciona respuestas empáticas
+
+### Configuración para Desarrollo Local
+
+1. **Configurar variables de entorno:**
+   ```bash
+   cp .env.example .env
+   # Editar .env con credenciales reales
+   ```
+
+2. **Instalar dependencias:**
+   ```bash
+   # Backend
+   cd ritmo-backend && pip install -r requirements.txt
+   
+   # Frontend  
+   cd ritmo-frontend/landing && npm install
+   
+   # Bot
+   cd telegram-bot && pip install -r requirements.txt
+   ```
+
+3. **Ejecutar servicios:**
+   - Backend: `python main.py` (puerto 8001)
+   - Frontend: `npm run dev` (puerto 3000)
+   - Bot: `python bot.py`
 
 ### Testing
+
 ```bash
-# Ejecutar tests
+# Ejecutar tests del backend
 cd ritmo-backend
 python -m pytest tests/ -v
 
-# Test específico del onboarding
+# Tests específicos del módulo de onboarding
 python -m pytest tests/test_onboarding.py -v
 ```
 
-## 🚀 Despliegue en Producción
+## Monitoreo y Mantenimiento
 
-### 1. Preparar Entorno
+### Logs del Sistema
+
 ```bash
-# Variables de entorno de producción
-ENVIRONMENT=production
-SUPABASE_URL=https://prod-supabase.co
-# ... otras variables
+# Ver logs en tiempo real (desarrollo)
+tail -f ritmo-backend/logs/*.log
+
+# Ver logs en producción
+pm2 logs
 ```
 
-### 2. Desplegar con Docker
-```bash
-# Con nginx y SSL
-docker-compose --profile production up -d
+### Métricas Importantes
 
-# Verificar servicios
-docker-compose ps
-```
+- Tiempo promedio de completación del onboarding
+- Distribución de perfiles identificados  
+- Tasa de éxito en la clasificación
+- Errores en la API
 
-### 3. Configurar SSL (Opcional)
-```bash
-# Colocar certificados en nginx/certs/
-# Descomentar configuración SSL en nginx.conf
-```
+### Respaldo y Recuperación
 
-## 📊 Mejoras Futuras
+Los datos críticos se almacenan en Supabase con respaldo automático. Para entornos de producción se recomienda:
 
-- [ ] Integración con Redis para sesiones
-- [ ] Análisis de sentimientos en respuestas
-- [ ] Preguntas adaptativas basadas en ML
-- [ ] Dashboard de analytics en tiempo real
-- [ ] Soporte multiidioma
-- [ ] API de webhooks para integración externa
+- Respaldo diario de la base de datos
+- Monitoreo de disponibilidad
+- Procedimientos de recuperación documentados
 
-## 🐛 Troubleshooting
+## Tecnologías Utilizadas
 
-### Problemas Comunes
-
-**Error de conexión Supabase:**
-```bash
-# Verificar variables de entorno
-docker-compose exec ritmo-backend cat /app/.env
-
-# Verificar logs
-docker-compose logs ritmo-backend
-```
-
-**Sesiones expiradas:**
-```http
-# Limpiar sesiones manualmente
-GET /onboarding/estadisticas
-```
-
-**Códigos secretos duplicados:**
-- El sistema maneja automáticamente la unicidad
-- Máximo 100 reintentos antes de fallar
-
-## 📞 Soporte
-
-Para issues y mejoras, abrir ticket en el repositorio del proyecto.
+| Componente | Tecnología | Propósito |
+|------------|------------|-----------|
+| API Backend | FastAPI | Endpoints REST y lógica de negocio |
+| Frontend | React + Vite | Interfaz web responsive |
+| Base de Datos | Supabase (PostgreSQL) | Almacenamiento de usuarios y sesiones |
+| Bot | Python Telegram Bot | Comunicación directa con usuarios |
+| IA | Claude API | Procesamiento de lenguaje natural |
+| Infraestructura | Nginx + PM2 | Proxy reverso y gestión de procesos |
+| Contenedores | Docker | Empaquetado y despliegue |
 
 ---
 
-**Desarrollado con ❤️ para RITMO - Sistema de Acompañamiento Inteligente**
+## Licencia y Contribución
 
-| Perfil | Cómo responde RITMO |
-|--------|---------------------|
-| 👴 **Persona mayor (+70)** | Frases cortas, ritmo lento, prioridad audio, nunca la apresura |
-| 🧑‍🎓 **Joven** | Cercano sin ser forzado, valida antes de sugerir, entiende la ansiedad no nombrada |
-| 💼 **Adulto activo** | Reconoce el cansancio como válido, no añade presión, tono directo |
-| 🌍 **Migrante o refugiado** | Entiende el desarraigo, valida sin comparar, no asume red de apoyo cercana |
-| ♿ **Discapacidad visual** | Todo por audio, sin referencias visuales, pausas, claridad máxima |
+Este proyecto fue desarrollado como parte del **II Hackathon Internacional de IA para Colectivos Vulnerables - OdiseIA4Good 2026**, organizado por OdiseIA con el apoyo de Google.org y la Fundación Pablo VI.
 
----
-
-## Características principales
-
-**🤝 Acompañamiento proactivo**
-RITMO no espera a que le escribas. Si detecta señales de aislamiento o malestar, es él quien abre la conversación. Con suavidad. Sin alarmar.
-
-**🔇 El silencio como feature**
-A veces la respuesta correcta es no decir nada. RITMO sabe cuándo ese día no hace falta hablar y solo acompaña con presencia.
-
-**🧠 Memoria continua**
-Recuerda lo que importa entre sesiones. Si el martes mencionaste que estabas nervioso por algo, el miércoles pregunta cómo te fue.
-
-**📱 Bot de Telegram**
-El usuario puede hablar con RITMO desde Telegram como si fuera un amigo. La IA reconoce quién es, accede a su perfil, y continúa donde lo dejaron. Incluso puede decir: *"Anoche entraste a la app a las 3am, ¿todo bien?"*
-
-**📊 Panel para investigadores**
-Entidades de salud, ONG e instituciones pueden ver tendencias agregadas y anonimizadas: qué dolores son más frecuentes en jóvenes, cómo está el estado emocional de una región, qué hábitos se abandonan más. Sin datos individuales. Sin nombres. Solo conocimiento para actuar.
-
-**🔒 Privacidad por diseño**
-RITMO no vigila. No controla. No comparte datos individuales. Las señales que recoge son para entender, no para juzgar. El panel de investigación usa k-anonimato mínimo de 5 usuarios.
+Para contribuir al proyecto:
+1. Fork del repositorio
+2. Crear rama para nueva funcionalidad
+3. Implementar cambios con tests
+4. Crear Pull Request con descripción detallada
 
 ---
 
-## Impacto social
-
-RITMO está diseñado desde y para España, con sus horarios reales, su cultura, su forma de vivir lo social y el descanso. No con consejos genéricos de internet.
-
-Está guiado por un marco claro de hábitos basado en evidencia y psicología real. No improvisa.
-
-Y lo más importante: **no intenta arreglar a la persona. Intenta acompañarla.**
-
-No reemplaza a un terapeuta. No promete curar nada. Solo ayuda a que la persona se entienda mejor, se cuide sin presión, y no se sienta sola.
-
----
-
-## Tecnología
-
-| Componente | Tecnología |
-|------------|------------|
-| Frontend | React · PWA |
-| Backend | Python · FastAPI |
-| IA principal | Claude API (Anthropic) |
-| Base de datos | Supabase (PostgreSQL) |
-| Bot | Telegram · python-telegram-bot |
-| ML | scikit-learn · Regresión logística |
-| Señales | Browser APIs · Eventos de comportamiento |
-
----
-
-## El equipo
-
-Somos cuatro ingenieras con una convicción clara: la tecnología más poderosa no es la que hace más cosas, sino la que sabe cuándo no hacer nada.
-
----
-
-## OdiseIA4Good 2026
-
-Este proyecto nació en el **II Hackathon Internacional de IA para Colectivos Vulnerables**, organizado por OdiseIA con el apoyo de Google.org y la Fundación Pablo VI. Su misión: usar la inteligencia artificial para crear soluciones que transformen la vida de quienes más lo necesitan.
-
----
-
-*RITMO · OdiseIA4Good 2026 · Madrid*
+*RITMO - Tecnología con propósito social · 2026*

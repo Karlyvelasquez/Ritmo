@@ -90,6 +90,28 @@ class RitmoOrchestrator:
         if not nombre:
             return self._pedir_nombre()
 
+        # Validar si es una respuesta negativa o no un nombre
+        if self._es_respuesta_negativa(nombre):
+            return (
+                "Entiendo que aún no te has registrado 😊\n\n"
+                "Para poder acompañarte, necesitas registrarte primero "
+                "en la app de RITMO.\n\n"
+                "💡 **Para registrarte necesitarás tu Telegram ID:**\n"
+                "1. Ve a: https://t.me/userinfobot\n"
+                "2. Copia el número que aparece en el campo 'ID'\n\n"
+                "Una vez registrado, vuelve aquí y dime tu nombre exacto "
+                "como lo pusiste en la app 💙"
+            )
+        
+        # Validar si parece un nombre válido
+        if not self._es_nombre_valido(nombre):
+            return (
+                "Hmm, no parece que sea tu nombre 🤔\n\n"
+                "Por favor, dime tu nombre exacto tal como lo "
+                "registraste en la app de RITMO.\n\n"
+                "Por ejemplo: \"María García\" o \"Juan\" 😊"
+            )
+
         usuario_db = await self.db.buscar_usuario_por_nombre(nombre)
 
         if usuario_db:
@@ -131,9 +153,13 @@ class RitmoOrchestrator:
         # No encontrado → invitar a registrarse
         return (
             f"Lo siento, no encontré a nadie con el nombre \"{nombre}\" 😔\n\n"
-            "Quisiera conocerte, pero primero necesito que te registres "
-            "en la app de RITMO.\n\n"
-            "Una vez que estés registrado, vuelve aquí y dime tu nombre 💙"
+            "Verifica que escribiste tu nombre exactamente como "
+            "lo registraste en la app de RITMO.\n\n"
+            "Si aún no te has registrado, hazlo primero en la app. "
+            "\n\n💡 **Para registrarte necesitarás tu Telegram ID:**\n"
+            "1. Ve a: https://t.me/userinfobot\n"
+            "2. Copia el número que aparece en el campo 'ID'\n\n"
+            "Luego vuelve aquí y dime tu nombre 💙"
         )
 
     @staticmethod
@@ -141,7 +167,11 @@ class RitmoOrchestrator:
         return (
             "¡Hola! Soy RITMO, tu compañero de acompañamiento 💙\n\n"
             "Dime tu nombre, tal como te registraste en la app, "
-            "para poder reconocerte 😊"
+            "para poder reconocerte 😊\n\n"
+            "Si no te has registrado aún, puedes hacerlo desde la app. "
+            "Para conseguir tu Telegram ID, ve a @userinfobot en Telegram "
+            "(https://t.me/userinfobot) y envíale cualquier mensaje, "
+            "te dará tu ID que necesitas para registrarte."
         )
 
     # ------------------------------------------------------------------ #
@@ -251,3 +281,93 @@ class RitmoOrchestrator:
         except Exception as e:
             logger.debug(f"[Orchestrator] Backend RITMO no disponible: {e}")
             return None
+
+    def _es_respuesta_negativa(self, texto: str) -> bool:
+        """Detecta si el texto es una respuesta negativa sobre registro."""
+        texto_lower = texto.lower().strip()
+        
+        # Frases que indican que no está registrado
+        frases_negativas = [
+            "no me he registrado",
+            "no estoy registrado", 
+            "no me registré",
+            "aun no me he registrado",
+            "aún no me he registrado",
+            "todavia no me he registrado",
+            "todavía no me he registrado",
+            "no tengo cuenta",
+            "no me he dado de alta",
+            "no me apunté",
+            "no me inscribí",
+            "no me he inscrito",
+            "no he hecho el registro",
+            "no estoy dado de alta",
+            "no tengo perfil",
+            "no soy usuario",
+            "no me uni",
+            "no me uní",
+        ]
+        
+        # También detectar patrones comunes de negación
+        patrones_negacion = [
+            "no ",
+            "nunca ",
+            "jamás ",
+            "todavía no",
+            "aún no",
+            "aun no",
+        ]
+        
+        # Verificar frases completas primero
+        if any(frase in texto_lower for frase in frases_negativas):
+            return True
+            
+        # Verificar patrones de negación + palabras relacionadas con registro
+        palabras_registro = ["registro", "registrado", "cuenta", "perfil", "usuario", "app", "aplicación"]
+        
+        for patron in patrones_negacion:
+            if patron in texto_lower:
+                for palabra in palabras_registro:
+                    if palabra in texto_lower:
+                        return True
+        
+        return False
+    
+    def _es_nombre_valido(self, texto: str) -> bool:
+        """Valida si el texto parece ser un nombre válido."""
+        texto = texto.strip()
+        
+        # Muy corto o muy largo probablemente no es un nombre
+        if len(texto) < 2 or len(texto) > 50:
+            return False
+        
+        # No debe contener números (la mayoría de los nombres no los tienen)
+        if any(char.isdigit() for char in texto):
+            return False
+        
+        # No debe ser solo símbolos o caracteres especiales
+        if not any(char.isalpha() for char in texto):
+            return False
+        
+        # No debe contener muchos símbolos especiales seguidos
+        simbolos_especiales = "!@#$%^&*()_+={}[]|\\:;\"'<>,.?/~`"
+        if sum(1 for char in texto if char in simbolos_especiales) > 2:
+            return False
+        
+        # Palabras que claramente no son nombres
+        palabras_no_nombres = [
+            "hola", "hello", "hi", "buenas", "buenos",
+            "que tal", "cómo estás", "como estas",
+            "bien", "mal", "regular", "genial",
+            "gracias", "de nada", "por favor",
+            "sí", "si", "no", "quizás", "tal vez",
+            "ayuda", "help", "info", "información",
+            "test", "prueba", "ejemplo",
+        ]
+        
+        texto_lower = texto.lower()
+        if any(palabra in texto_lower for palabra in palabras_no_nombres):
+            return False
+        
+        # Si pasa todas las validaciones, probablemente es un nombre válido
+        return True

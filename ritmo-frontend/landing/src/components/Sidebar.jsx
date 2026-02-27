@@ -33,6 +33,18 @@ const menuItemsAdultoActivo = [
   // { id: 'ajustes', label: 'Ajustes', icon: Settings },
 ]
 
+// Menú para administrador (investigación psicológica)
+const menuItemsAdmin = [
+  { id: 'inicio', label: 'Dashboard', icon: Home },
+  { id: 'salud-mental', label: 'Salud Mental', icon: Brain },
+  { id: 'crisis', label: 'Crisis y Riesgo', icon: Heart },
+  { id: 'demografia', label: 'Demografía', icon: Users },
+  { id: 'juventud', label: 'Juventud', icon: TrendingUp },
+  { id: 'geografico', label: 'Geográfico', icon: Compass },
+  { id: 'reportes', label: 'Reportes', icon: BookOpen },
+  { id: 'configuracion', label: 'Configuración', icon: Settings }
+]
+
 export default function Sidebar({ darkMode, toggleDark, activeSection, onSectionChange, profileType = 'joven' }) {
   const [collapsed, setCollapsed] = useState(false)
   const navigate = useNavigate()
@@ -42,6 +54,8 @@ export default function Sidebar({ darkMode, toggleDark, activeSection, onSection
     switch (profileType) {
       case 'adulto_activo':
         return menuItemsAdultoActivo
+      case 'admin':
+        return menuItemsAdmin
       case 'joven':
       default:
         return menuItemsJoven

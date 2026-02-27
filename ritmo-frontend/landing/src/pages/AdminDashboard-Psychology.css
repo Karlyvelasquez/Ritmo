@@ -1,0 +1,221 @@
+/* Estilos específicos para panel de investigación psicológica */
+
+/* Animación para loader */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Nuevos estilos para sección header */
+.section-header {
+  margin-bottom: 2rem;
+}
+
+.section-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+}
+
+.section-header p {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Nuevos íconos de estadísticas específicos para salud mental */
+.stat-icon.crisis {
+  background: linear-gradient(135deg, #EF4444, #FF6B6B);
+}
+
+.stat-icon.mental {
+  background: linear-gradient(135deg, #8AAF8B, #6EE7B7);
+}
+
+.stat-icon.youth {
+  background: linear-gradient(135deg, #EC4899, #F472B6);
+}
+
+.stat-icon.immigration {
+  background: linear-gradient(135deg, #6366F1, #8B5CF6);
+}
+
+/* Efectos especiales para estadísticas críticas de salud mental */
+.stat-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card.critical::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.stat-card.mental-health::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(138, 175, 139, 0.1) 0%, rgba(138, 175, 139, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.stat-card.youth-pain::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.stat-card.immigration::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.stat-card:hover::before {
+  opacity: 1;
+}
+
+/* Contenido de las estadísticas con contexto relativo */
+.stat-content {
+  position: relative;
+  z-index: 1;
+}
+
+.stat-unit {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.stat-subtitle {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin: 0.5rem 0 0;
+  opacity: 0.8;
+}
+
+/* Nuevas tarjetas de menú con indicadores estadísticos */
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.quick-stat {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.stat-indicator {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 8px;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.menu-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.menu-tags {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background: rgba(138, 175, 139, 0.1);
+  color: var(--color-sage);
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tag.urgent {
+  background: rgba(239, 68, 68, 0.1);
+  color: #EF4444;
+  animation: pulse-urgent 2s ease-in-out infinite;
+}
+
+@keyframes pulse-urgent {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Estilos específicos para entidades de investigación */
+.research-entity-indicator {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(138, 175, 139, 0.2);
+  color: var(--color-sage);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+}
+
+/* Responsive específico para investigación psicológica */
+@media (max-width: 768px) {
+  .section-header p {
+    font-size: 0.9rem;
+  }
+  
+  .menu-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .quick-stat {
+    align-self: flex-end;
+  }
+}

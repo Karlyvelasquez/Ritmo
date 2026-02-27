@@ -1,9 +1,46 @@
-import { BarChart, Bar, XAxis, ResponsiveContainer, Cell } from 'recharts'
+import { Bar } from 'react-chartjs-2'
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, Filler } from 'chart.js'
 import { Smile, Meh, Frown } from 'lucide-react'
 import { weekMoodData, todayMood } from '../mockData'
 import './WeekMoodChart.css'
 
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, Filler)
+
 export default function WeekMoodChart() {
+  const chartData = {
+    labels: weekMoodData.map(item => item.day),
+    datasets: [{
+      data: weekMoodData.map(item => item.value),
+      backgroundColor: weekMoodData.map(item => item.color),
+      borderRadius: 10,
+      borderSkipped: false,
+      maxBarThickness: 40
+    }]
+  }
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false }
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        border: { display: false },
+        ticks: {
+          color: 'var(--color-text-secondary)',
+          font: { size: 13, weight: '600' }
+        }
+      },
+      y: { display: false }
+    },
+    animation: {
+      duration: 1500,
+      easing: 'easeOutBounce'
+    }
+  }
+
   return (
     <div className="mood-chart-card">
       <div className="card-header">
@@ -12,25 +49,7 @@ export default function WeekMoodChart() {
       </div>
 
       <div className="chart-container">
-        <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={weekMoodData}>
-            <XAxis 
-              dataKey="day" 
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: 'var(--color-text-secondary)', fontSize: 13, fontWeight: 600 }}
-            />
-            <Bar 
-              dataKey="value" 
-              radius={[10, 10, 0, 0]}
-              maxBarSize={40}
-            >
-              {weekMoodData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+        <Bar data={chartData} options={chartOptions} height={200} />
       </div>
 
       <div className="mood-legend">

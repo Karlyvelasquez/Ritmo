@@ -70,8 +70,8 @@ async def comando_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         else:
             nombre = usuario.first_name if usuario.first_name else "amigo"
             respuesta = (
-                f"¡Hola {nombre}! 👋\n\n"
-                "Soy RITMO, tu compañero de acompañamiento 💙\n\n"
+                f"¡Holaaaaaaa {nombre}! 👋\n\n"
+                "Soy RITMO, quiero acompañarte, aquí estoy 💙\n\n"
                 "Dime tu nombre, tal como te registraste en la app, "
                 "para poder reconocerte 😊"
             )
@@ -290,6 +290,25 @@ def _generar_respuesta_basica(text: str, usuario) -> str:
     text_lower = text.lower()
     nombre = usuario.first_name if usuario.first_name else "amigo"
     
+    # Detectar respuestas sobre no estar registrado
+    frases_no_registrado = [
+        "no me he registrado", "no estoy registrado", "aun no me he registrado",
+        "aún no me he registrado", "no tengo cuenta", "no me registré"
+    ]
+    
+    if any(frase in text_lower for frase in frases_no_registrado):
+        return (
+            "Entiendo que aún no te has registrado 😊\n\n"
+            "Para poder acompañarte, necesitas registrarte primero "
+            "en la app de RITMO.\n\n"
+            "💡 **Para registrarte necesitarás tu Telegram ID:**\n"
+            "1. Ve a: https://t.me/userinfobot\n"
+            "2. Copia el número que aparece en el campo 'ID'\n\n"
+            "Una vez registrado, vuelve aquí y dime tu nombre exacto "
+            "como lo pusiste en la app 💙"
+        )
+    
+    # Respuestas emocionales
     if any(palabra in text_lower for palabra in ["bien", "genial", "perfecto", "feliz"]):
         return f"¡Me alegra saber que estás bien, {nombre}! 😊✨"
     elif any(palabra in text_lower for palabra in ["mal", "triste", "difícil", "cansado"]):

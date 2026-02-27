@@ -40,7 +40,18 @@ export default function Onboarding() {
         if (step === 'chat') scrollToBottom()
     }, [messages, step])
 
-    const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
+    const handleChange = e => {
+        const { name, value } = e.target;
+        
+        // Validación: evitar que se ponga el telegram_id como nombre
+        if (name === 'nombre' && value === form.telegram_id) {
+            setError('El nombre no puede ser el mismo que tu Telegram ID');
+            return;
+        }
+        
+        setForm(f => ({ ...f, [name]: value }));
+        setError(''); // Limpiar error al cambiar cualquier campo
+    }
 
     const handleAuthSubmit = async (e) => {
         e.preventDefault()
@@ -419,7 +430,21 @@ export default function Onboarding() {
                                 onChange={handleChange}
                                 required
                             />
-                            {!isLogin && <p className="help-text">Obtén tu ID hablando con @Aturitmo_bot</p>}
+                            {!isLogin && (
+                                <div className="telegram-id-help">
+                                    <p className="help-text">¿No sabes tu Telegram ID?</p>
+                                    <button 
+                                        type="button" 
+                                        className="help-button"
+                                        onClick={() => window.open('https://t.me/userinfobot', '_blank')}
+                                    >
+                                        Conseguir mi Telegram ID
+                                    </button>
+                                    <p className="help-text small">
+                                        Haz clic en el botón y envía cualquier mensaje a @userinfobot para obtener tu ID
+                                    </p>
+                                </div>
+                            )}
                         </div>
 
                         <AnimatePresence mode="wait">

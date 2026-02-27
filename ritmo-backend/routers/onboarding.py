@@ -84,6 +84,10 @@ async def iniciar_onboarding(request: OnboardingInicio) -> OnboardingResponse:
                 )
         
         # 3. Crear nueva sesión
+        
+        # Debug: Verificar qué datos está recibiendo
+        logger.info(f"Datos recibidos - telegram_id: {request.telegram_id}, nombre: '{request.nombre}'")
+        
         sesion_id = session_manager.crear_sesion(request.telegram_id, request.nombre)
         
         # 4. Iniciar onboarding con el agente
