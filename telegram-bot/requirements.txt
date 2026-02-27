@@ -11,6 +11,7 @@ openai==1.3.7
 # 🌐 HTTP requests (required by python-telegram-bot 20.7.0)
 httpx==0.25.2
 aiohttp==3.9.1
+requests==2.31.0
 
 # 🗃️ Database (compatible with httpx 0.25.2)
 supabase==2.7.0
@@ -23,6 +24,15 @@ pytz==2023.3
 
 # 🔍 Data validation
 pydantic==2.5.0
+
+# 📊 Data analysis and ML
+joblib==1.3.2
+numpy==1.26.2
+pandas==2.1.4
+scikit-learn==1.3.2
+
+# 🔧 System monitoring
+psutil==5.9.6
 
 # Logging
 structlog==23.2.0
