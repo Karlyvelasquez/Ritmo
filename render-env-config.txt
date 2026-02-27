@@ -1,0 +1,82 @@
+# =============================================================================
+# RENDER.COM ENVIRONMENT VARIABLES 
+# Configurar en render.com Dashboard > Settings > Environment Variables
+# =============================================================================
+
+# ────────────────────────────────────────────────────────────────────────────
+# BACKEND SERVICE (ritmo-backend) - Web Service
+# ────────────────────────────────────────────────────────────────────────────
+
+# ⚙️ Sistema  
+ENVIRONMENT=production
+PYTHON_VERSION=3.11.0
+
+# 🗃️ Base de datos Supabase
+# Obtén en: https://supabase.com/dashboard/project/[tu-proyecto]/settings/api
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_KEY=your-anon-key-here
+SUPABASE_ANON_KEY=your-anon-key-here
+
+# 🤖 OpenAI API  
+# Obtén en: https://platform.openai.com/api-keys
+OPENAI_API_KEY=sk-your-openai-api-key-here
+
+# 📱 Telegram Bot
+# Obtén hablando con @BotFather
+TELEGRAM_BOT_TOKEN=1234567890:your-telegram-bot-token-here
+
+# 🔐 Seguridad
+SECRET_KEY=your-secret-key-here-32-chars
+JWT_SECRET_KEY=your-jwt-secret-key-here-32-chars
+
+# 🌐 CORS - URLs permitidas (Actualizar después del deploy)
+CORS_ORIGINS=https://ritmo-frontend.onrender.com,https://localhost:3000
+
+# ────────────────────────────────────────────────────────────────────────────
+# FRONTEND SERVICE (ritmo-frontend) - Static Site  
+# ────────────────────────────────────────────────────────────────────────────
+
+# Las variables del frontend no se configuran en render.com
+# Se configuran en un archivo .env.production en el código
+
+# ────────────────────────────────────────────────────────────────────────────
+# TELEGRAM BOT SERVICE (ritmo-telegram-bot) - Worker Service
+# ────────────────────────────────────────────────────────────────────────────
+
+# 📱 Telegram
+TELEGRAM_BOT_TOKEN=1234567890:your-telegram-bot-token-here
+
+# 🗃️ Base de datos (mismo que backend)
+SUPABASE_URL=https://your-project-id.supabase.co  
+SUPABASE_KEY=your-anon-key-here
+
+# 🤖 OpenAI (mismo que backend)
+OPENAI_API_KEY=sk-your-openai-api-key-here
+
+# 🔗 Backend API URL (Actualizar después del deploy del backend)
+BACKEND_URL=https://ritmo-backend.onrender.com
+
+# =============================================================================
+# 📋 PASOS PARA CONFIGURAR EN RENDER.COM:
+#
+# 1. 🌐 Ir a render.com y conectar tu repositorio GitHub
+# 
+# 2. 🚀 Crear Servicios:
+#    - Backend: Web Service → Auto-deploy from Git
+#    - Frontend: Static Site → Auto-deploy from Git  
+#    - Bot: Worker → Auto-deploy from Git
+#
+# 3. ⚙️ Configurar Variables (para cada servicio):
+#    - Settings > Environment Variables
+#    - Agregar cada variable una por una
+#    - ⚠️ NUNCA commitear valores reales a GitHub
+#
+# 4. 🔄 Deploy automático:
+#    - Render detecta cambios en GitHub
+#    - Deploy automático en cada push a main
+#
+# 5. 📝 URLs finales (después del deploy):
+#    Backend: https://ritmo-backend.onrender.com
+#    Frontend: https://ritmo-frontend.onrender.com
+#    Health: https://ritmo-backend.onrender.com/health
+# =============================================================================

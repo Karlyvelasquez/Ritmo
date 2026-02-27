@@ -107,14 +107,26 @@ async def frontend():
 
 if __name__ == "__main__":
     import uvicorn
-    # Obtener puerto desde variables de entorno
+    # Obtener puerto desde variables de entorno (Render.com usa PORT)
     port = int(os.getenv("PORT", "8001"))
-    print(f" Iniciando servidor RITMO Backend en puerto {port}...")
-    print(" Endpoints disponibles:")
-    print(f"   - Documentación API: http://localhost:{port}/docs")
-    print(f"   - Health check: http://localhost:{port}/health")
-    print(f"   - Análisis de contexto: POST http://localhost:{port}/contexto")
-    print(f"   - Análisis IA: POST http://localhost:{port}/admin/ai-analysis")
-    print(f"   - Root endpoint: http://localhost:{port}/")
+    host = os.getenv("HOST", "0.0.0.0")  # Render.com requiere 0.0.0.0
+    
+    print(f"🚀 Iniciando servidor RITMO Backend en {host}:{port}...")
+    print("📊 Endpoints disponibles:")
+    print(f"   - Documentación API: http://{host}:{port}/docs")
+    print(f"   - Health check: http://{host}:{port}/health")
+    print(f"   - Análisis de contexto: POST http://{host}:{port}/contexto")
+    print(f"   - Análisis IA: POST http://{host}:{port}/admin/ai-analysis")
+    print(f"   - Root endpoint: http://{host}:{port}/")
     print("")
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    
+    # Configuración para producción en render.com
+    reload_mode = os.getenv("ENVIRONMENT", "development") != "production"
+    
+    uvicorn.run(
+        app, 
+        host=host, 
+        port=port,
+        reload=reload_mode,  # No reload en producción
+        log_level="info"
+    )
