@@ -1,18 +1,18 @@
 # =============================================================================
-# RITMO Telegram Bot Dependencies - OPTIMIZED
+# RITMO Telegram Bot Dependencies - FIXED COMPATIBILITY
 # =============================================================================
 
 # 🤖 Bot framework
 python-telegram-bot==20.7.0
 
-# 🤖 LLM: OpenAI GPT
+# 🤖 LLM: OpenAI GPT 
 openai==1.3.7
 
-# 🌐 HTTP requests (compatible con supabase 2.7.0)
-httpx==0.24.1
+# 🌐 HTTP requests (required by python-telegram-bot 20.7.0)
+httpx==0.25.2
 aiohttp==3.9.1
 
-# 🗃️ Database (versión actualizada compatible)
+# 🗃️ Database (compatible with httpx 0.25.2)
 supabase==2.7.0
 
 # ⚙️ Environment variables
