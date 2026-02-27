@@ -6,8 +6,9 @@ import os
 from typing import Optional
 from dotenv import load_dotenv
 
-# Cargar variables de entorno (override=True para que .env tenga prioridad)
-load_dotenv(override=True)
+# Cargar variables de entorno (override=False para priorizar env vars del sistema)
+# No falla si no hay archivo .env en producción
+load_dotenv(override=False)
 
 
 class Config:
