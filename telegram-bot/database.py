@@ -75,7 +75,7 @@ class DatabaseManager:
             result = (
                 self.client.table("usuarios")
                 .select("*")
-                .eq("telegram_id", str(telegram_id))
+                .eq("telegram_id", telegram_user_id)
                 .execute()
             )
 
