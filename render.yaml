@@ -1,25 +1,10 @@
 # =============================================================================
-# RENDER.COM DEPLOYMENT - RITMO PLATFORM  
-# Deploy Backend + Frontend + Bot automáticamente
+# RENDER.COM DEPLOYMENT - RITMO PLATFORM (SOLO FRONTEND GRATUITO)
+# Solo despliega el frontend - Backend y Bot requieren tarjeta
 # =============================================================================
 
 services:
-  # BACKEND API (FastAPI)
-  - type: web
-    name: ritmo-backend
-    runtime: python
-    plan: starter  # Gratis por 90 días, luego $7/mes
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "python -m uvicorn main:app --host 0.0.0.0 --port $PORT"
-    rootDir: ./ritmo-backend
-    healthCheckPath: /health
-    envVars:
-      - key: ENVIRONMENT
-        value: production
-      - key: PYTHON_VERSION  
-        value: "3.11.0"
-
-  # FRONTEND (React/Vite)  
+  # FRONTEND (React/Vite) - COMPLETAMENTE GRATUITO
   - type: web
     name: ritmo-frontend
     runtime: static
@@ -34,28 +19,31 @@ services:
       - path: /*
         name: X-Content-Type-Options
         value: nosniff
-
     routes:
       - type: rewrite  
         source: /*
         destination: /index.html
 
-  # TELEGRAM BOT (Background Service)
-  - type: worker
-    name: ritmo-telegram-bot  
-    runtime: python
-    plan: starter
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "python bot.py"
-    rootDir: ./telegram-bot
-    envVars:
-      - key: ENVIRONMENT
-        value: production
+# =============================================================================
+# NOTA: Backend y Bot comentados porque requieren tarjeta de crédito
+# Para usarlos, descomenta y agrega tarjeta en render.com
+# =============================================================================
 
-# =============================================================================
-# AUTO-DEPLOYMENT DESDE GITHUB
-# 1. Sube tu código a GitHub
-# 2. Conecta render.com a tu repositorio  
-# 3. Render detecta automáticamente este archivo
-# 4. Deploy automático en cada push a main/master
-# =============================================================================
+# BACKEND Y BOT (REQUIEREN TARJETA)
+# services:
+#   - type: web
+#     name: ritmo-backend
+#     runtime: python
+#     plan: starter
+#     buildCommand: "pip install -r requirements.txt"
+#     startCommand: "python -m uvicorn main:app --host 0.0.0.0 --port $PORT"
+#     rootDir: ./ritmo-backend
+#     healthCheckPath: /health
+#   
+#   - type: worker
+#     name: ritmo-telegram-bot  
+#     runtime: python
+#     plan: starter
+#     buildCommand: "pip install -r requirements.txt"
+#     startCommand: "python bot.py"
+#     rootDir: ./telegram-bot
