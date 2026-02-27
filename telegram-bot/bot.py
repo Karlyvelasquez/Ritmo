@@ -26,6 +26,7 @@ from handlers import (
 from database import DatabaseManager
 from agents import RitmoOrchestrator
 from checkin_system import CheckinSystem
+from instance_lock import BotInstanceManager
 
 # Configurar logging
 logging.basicConfig(
@@ -231,6 +232,14 @@ def main():
     
     logger.info("🚀 Iniciando RITMO Telegram Bot")
     
+    # Verificar instancia única
+    instance_manager = BotInstanceManager()
+    
+    if not instance_manager.acquire_lock():
+        logger.error("❌ No se puede iniciar: otra instancia del bot está corriendo")
+        logger.info("💡 Si no hay otra instancia corriendo, eliminar archivo /tmp/ritmo_bot.lock")
+        sys.exit(1)
+    
     try:
         # Inicializar bot
         ritmo_bot.inicializar()
@@ -246,6 +255,8 @@ def main():
         logger.error(f"❌ Error ejecutando bot: {e}")
         raise
     finally:
+        logger.info("🔓 Liberando bloqueo de instancia...")
+        instance_manager.release_lock()
         logger.info("🔴 Bot detenido completamente")
 
 

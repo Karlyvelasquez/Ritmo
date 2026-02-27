@@ -97,15 +97,32 @@ config = Config()
 def debug_config():
     """Debug de variables de configuración críticas"""
     logger.info("🔍 === DEBUG CONFIGURACIÓN ===")
+    
+    # Debug completo de variables de entorno
+    logger.info("📋 Variables de entorno disponibles:")
+    import os
+    env_vars = ['SUPABASE_URL', 'SUPABASE_KEY', 'TELEGRAM_BOT_TOKEN', 'BOT_TOKEN', 'OPENAI_API_KEY']
+    for var in env_vars:
+        value = os.getenv(var, "NO_ENCONTRADA")
+        if value == "NO_ENCONTRADA":
+            logger.error(f"   ❌ {var}: NO_ENCONTRADA")
+        else:
+            logger.info(f"   ✅ {var}: {value[:30]}...")
+    
+    # Debug de configuración cargada
+    logger.info("🎯 Configuración cargada en config object:")
     logger.info(f"SUPABASE_URL: {'✅ CONFIGURADO' if config.SUPABASE_URL else '❌ VACÍO'}")
     logger.info(f"SUPABASE_KEY: {'✅ CONFIGURADO' if config.SUPABASE_KEY else '❌ VACÍO'}")
     logger.info(f"TELEGRAM_BOT_TOKEN: {'✅ CONFIGURADO' if config.TELEGRAM_BOT_TOKEN else '❌ VACÍO'}")
     logger.info(f"OPENAI_API_KEY: {'✅ CONFIGURADO' if config.OPENAI_API_KEY else '❌ VACÍO'}")
     
     if config.SUPABASE_URL:
-        logger.info(f"SUPABASE_URL preview: {config.SUPABASE_URL[:30]}...")
+        logger.info(f"SUPABASE_URL preview: {config.SUPABASE_URL[:50]}...")
     if config.SUPABASE_KEY:
-        logger.info(f"SUPABASE_KEY preview: {config.SUPABASE_KEY[:30]}...")
+        logger.info(f"SUPABASE_KEY preview: {config.SUPABASE_KEY[:50]}...")
+    
+    # Verificar si dotenv cargó un archivo
+    logger.info(f"🔧 Dotenv cargó archivo .env: {dotenv_loaded}")
     logger.info("🔍 === FIN DEBUG ===")
 
 # Ejecutar debug al cargar el módulo
