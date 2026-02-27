@@ -3,12 +3,17 @@ Configuración del bot de Telegram RITMO
 """
 
 import os
+import logging
 from typing import Optional
 from dotenv import load_dotenv
 
+# Configurar logger para debug temprano
+logger = logging.getLogger(__name__)
+
 # Cargar variables de entorno (override=False para priorizar env vars del sistema)
 # No falla si no hay archivo .env en producción
-load_dotenv(override=False)
+dotenv_loaded = load_dotenv(override=False)
+logger.info(f"🔧 Dotenv cargado desde archivo: {dotenv_loaded}")
 
 
 class Config:
@@ -87,3 +92,21 @@ class Config:
 
 # Instancia global de configuración
 config = Config()
+
+# Debug de configuración al cargar el módulo
+def debug_config():
+    """Debug de variables de configuración críticas"""
+    logger.info("🔍 === DEBUG CONFIGURACIÓN ===")
+    logger.info(f"SUPABASE_URL: {'✅ CONFIGURADO' if config.SUPABASE_URL else '❌ VACÍO'}")
+    logger.info(f"SUPABASE_KEY: {'✅ CONFIGURADO' if config.SUPABASE_KEY else '❌ VACÍO'}")
+    logger.info(f"TELEGRAM_BOT_TOKEN: {'✅ CONFIGURADO' if config.TELEGRAM_BOT_TOKEN else '❌ VACÍO'}")
+    logger.info(f"OPENAI_API_KEY: {'✅ CONFIGURADO' if config.OPENAI_API_KEY else '❌ VACÍO'}")
+    
+    if config.SUPABASE_URL:
+        logger.info(f"SUPABASE_URL preview: {config.SUPABASE_URL[:30]}...")
+    if config.SUPABASE_KEY:
+        logger.info(f"SUPABASE_KEY preview: {config.SUPABASE_KEY[:30]}...")
+    logger.info("🔍 === FIN DEBUG ===")
+
+# Ejecutar debug al cargar el módulo
+debug_config()

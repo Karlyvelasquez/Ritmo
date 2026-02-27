@@ -31,11 +31,22 @@ class DatabaseManager:
     def _initialize_client(self):
         """Inicializa cliente Supabase con configuración robusta"""
         try:
+            # Debug: Mostrar variables de entorno disponibles
+            logger.info("🔍 DEBUG: Verificando variables de entorno de Supabase...")
+            logger.info(f"   SUPABASE_URL disponible: {'✅' if config.SUPABASE_URL else '❌'}")
+            logger.info(f"   SUPABASE_KEY disponible: {'✅' if config.SUPABASE_KEY else '❌'}")
+            
+            if config.SUPABASE_URL:
+                logger.info(f"   SUPABASE_URL: {config.SUPABASE_URL[:50]}...")
+            if config.SUPABASE_KEY:
+                logger.info(f"   SUPABASE_KEY: {config.SUPABASE_KEY[:30]}...")
+
             # Validar que las credenciales estén disponibles
             if not config.SUPABASE_URL or not config.SUPABASE_KEY:
                 logger.error("❌ Credenciales de Supabase faltantes:")
                 logger.error(f"   SUPABASE_URL: {'✓' if config.SUPABASE_URL else '✗ FALTA'}")
                 logger.error(f"   SUPABASE_KEY: {'✓' if config.SUPABASE_KEY else '✗ FALTA'}")
+                logger.error("💡 Verificar que las variables de entorno estén configuradas en el deployment")
                 self._initialized = False
                 self._client = None
                 return
@@ -50,12 +61,15 @@ class DatabaseManager:
             
             # Test de conectividad básico
             try:
+                logger.info("🧪 Ejecutando test de conectividad...")
                 # Intentar una consulta simple para verificar la conexión
                 test_result = self._client.table("usuarios").select("id").limit(1).execute()
-                logger.info("📡 Test de conectividad exitoso")
+                logger.info(f"📡 Test de conectividad exitoso - encontrados {len(test_result.data if test_result.data else [])} registros")
             except Exception as test_error:
-                logger.warning(f"⚠️ Error en test de conectividad: {test_error}")
+                logger.error(f"⚠️ Error en test de conectividad: {test_error}")
+                logger.error(f"Tipo de error: {type(test_error).__name__}")
                 logger.warning("Cliente inicializado pero conectividad no verificada")
+                # No fallar aquí, el cliente podría funcionar para otras operaciones
             
             self._initialized = True
             logger.info("✅ Cliente Supabase inicializado correctamente")
@@ -63,6 +77,7 @@ class DatabaseManager:
         except Exception as e:
             logger.error(f"❌ Error crítico inicializando Supabase: {e}")
             logger.error(f"Tipo de error: {type(e).__name__}")
+            logger.error(f"Detalles completos: {str(e)}")
             self._initialized = False
             self._client = None
             # No raise para permitir que el bot funcione sin DB
