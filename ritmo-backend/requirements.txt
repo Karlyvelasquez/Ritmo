@@ -12,7 +12,7 @@ httpx
 aiohttp==3.9.1
 
 # AI & ML
-openai==1.3.7
+openai>=1.12.0
 numpy==1.26.2
 scikit-learn==1.3.2
 joblib==1.3.2

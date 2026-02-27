@@ -130,28 +130,107 @@ print("AUC ROC:", roc_auc_score(y_test, y_proba))
 joblib.dump(modelo, "modelo_riesgo.pkl")
 print("\nModelo guardado como 'modelo_riesgo.pkl'")
 
-# Función para cargar el modelo entrenado
-def CargarModeloRiesgo():
-    """Carga el modelo de riesgo desde el archivo modelo_riesgo.pkl."""
-    import joblib
-    try:
-        modelo = joblib.load("modelo_riesgo.pkl")
-        print("Modelo cargado exitosamente.")
-        return modelo
-    except FileNotFoundError:
-        print("Error: El archivo modelo_riesgo.pkl no existe.")
-        return None
+# Clase para cargar el modelo entrenado
+class CargarModeloRiesgo:
+    """Clase para cargar y usar el modelo de riesgo desde el archivo modelo_riesgo.pkl."""
+    
+    def __init__(self):
+        """Inicializa y carga el modelo de riesgo."""
+        import joblib
+        import os
+        
+        self.modelo = None
+        self.features = [
+            "cumplimiento_porcentaje", "dias_bien", "dias_normal", "dias_dificil",
+            "racha_actual_negativa", "alertas_criticas", "alertas_preocupantes", "alertas_atencion"
+        ]
+        
+        # Buscar el modelo en el directorio actual del telegram-bot
+        ruta_modelo = os.path.join(os.path.dirname(__file__), "modelo_riesgo.pkl")
+        
+        try:
+            if os.path.exists(ruta_modelo):
+                self.modelo = joblib.load(ruta_modelo)
+                print(f"Modelo cargado exitosamente desde {ruta_modelo}")
+            else:
+                print(f"Warning: El archivo {ruta_modelo} no existe. Usando predicciones por defecto.")
+                self.modelo = None
+        except Exception as e:
+            print(f"Error cargando modelo: {e}. Usando predicciones por defecto.")
+            self.modelo = None
+    
+    def predecir(self, caracteristicas):
+        """
+        Predice el riesgo de abandono para un conjunto de características.
+        
+        Args:
+            caracteristicas: Lista de características o diccionario de usuario
+            
+        Returns:
+            dict: Predicción con probabilidad y clase
+        """
+        try:
+            if self.modelo is None:
+                # Predicción por defecto si no hay modelo
+                return {
+                    "riesgo_abandono": 0,
+                    "probabilidad": 0.5,
+                    "prediccion": "modelo_no_disponible"
+                }
+            
+            # Si recibe una lista, usar directamente
+            if isinstance(caracteristicas, list):
+                features_array = np.array(caracteristicas).reshape(1, -1)
+            else:
+                # Si recibe un dict, extraer características
+                features_array = np.array(extraer_caracteristicas_riesgo(caracteristicas)).reshape(1, -1)
+            
+            # Predecir
+            pred_class = self.modelo.predict(features_array)[0]
+            pred_proba = self.modelo.predict_proba(features_array)[0]
+            
+            return {
+                "riesgo_abandono": int(pred_class),
+                "probabilidad": float(pred_proba[1]),  # Probabilidad de la clase 1 (riesgo alto)
+                "prediccion": "alto_riesgo" if pred_class == 1 else "bajo_riesgo"
+            }
+            
+        except Exception as e:
+            print(f"Error en predicción: {e}")
+            return {
+                "riesgo_abandono": 0,
+                "probabilidad": 0.5,
+                "prediccion": f"error: {e}"
+            }
 
 # Función para extraer características de un usuario
 def extraer_caracteristicas_riesgo(usuario):
-    """Extrae las características necesarias para el modelo de riesgo de un usuario."""
-    return [
-        usuario.get("cumplimiento_porcentaje", 0),
-        usuario.get("dias_bien", 0),
-        usuario.get("dias_normal", 0),
-        usuario.get("dias_dificil", 0),
-        usuario.get("racha_actual_negativa", 0),
-        usuario.get("alertas_criticas", 0),
-        usuario.get("alertas_preocupantes", 0),
-        usuario.get("alertas_atencion", 0),
-    ]
+    """
+    Extrae las características necesarias para el modelo de riesgo de un usuario.
+    
+    Args:
+        usuario: Diccionario con datos del usuario
+        
+    Returns:
+        Lista de características numéricas para el modelo
+    """
+    try:
+        # Manejar diferentes formatos de entrada
+        if isinstance(usuario, dict):
+            return [
+                usuario.get("cumplimiento_porcentaje", 0),
+                usuario.get("dias_bien", 0),
+                usuario.get("dias_normal", 0),
+                usuario.get("dias_dificil", 0),
+                usuario.get("racha_actual_negativa", 0),
+                usuario.get("alertas_criticas", 0),
+                usuario.get("alertas_preocupantes", 0),
+                usuario.get("alertas_atencion", 0),
+            ]
+        else:
+            # Si no es un dict, devolver características por defecto
+            return [0, 0, 0, 0, 0, 0, 0, 0]
+            
+    except Exception as e:
+        print(f"Error extrayendo características: {e}")
+        return [0, 0, 0, 0, 0, 0, 0, 0]
