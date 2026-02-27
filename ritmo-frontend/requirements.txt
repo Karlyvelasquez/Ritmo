@@ -1,0 +1,2 @@
+# Frontend no usa Python
+# Archivo vacío para evitar errores

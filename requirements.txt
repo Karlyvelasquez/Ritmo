@@ -1,0 +1,2 @@
+# Requirements para proyecto RITMO
+# Este archivo puede estar vacío si no hay dependencias Python globales
